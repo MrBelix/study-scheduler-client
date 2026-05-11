@@ -1,5 +1,13 @@
-function App() {
-  return <div>App</div>
-}
+import '@telegram-apps/telegram-ui/dist/styles.css'
+import { BrowserRouter, useRoutes } from 'react-router-dom'
+import { AppRoot } from '@telegram-apps/telegram-ui';
+import { routes } from "./routes";
 
-export default App
+const Router = () => useRoutes(routes);
+
+export const App = () => (
+<AppRoot>
+  <BrowserRouter>
+    <Router />
+  </BrowserRouter>
+</AppRoot>)

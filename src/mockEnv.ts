@@ -1,30 +1,25 @@
 import { mockTelegramEnv, retrieveLaunchParams } from '@telegram-apps/sdk-react'
 
-// Імітуємо середовище Telegram у режимі розробки.
-// Це дозволяє запускати застосунок поза Telegram-клієнтом.
 if (import.meta.env.DEV) {
   try {
     retrieveLaunchParams()
   } catch {
-    // tgWebAppData — в форматі URLSearchParams (raw init data).
     const tgWebAppData = new URLSearchParams([
-      [
-        'user',
-        JSON.stringify({
-          id: 99281932,
-          first_name: 'Andrew',
-          last_name: 'Rogue',
-          username: 'rogue',
-          language_code: 'uk',
-          is_premium: true,
-          allows_write_to_pm: true,
-        }),
-      ],
+      ['user', JSON.stringify({
+        id: 99281932,
+        first_name: 'Andrew',
+        last_name: 'Rogue',
+        username: 'rogue',
+        language_code: 'uk',
+        is_premium: true,
+        allows_write_to_pm: true,
+      })],
       ['hash', '89d6079ad6762351f38c6dbbc41bb53048264e5fdaf83a9ad8ad29f54fef0b32'],
       ['auth_date', '1716922846'],
       ['start_param', 'debug'],
       ['chat_type', 'sender'],
       ['chat_instance', '8428209589180549439'],
+      ['signature', 'abc123def456'],
     ])
 
     mockTelegramEnv({
@@ -49,10 +44,5 @@ if (import.meta.env.DEV) {
         },
       },
     })
-
-    // eslint-disable-next-line no-console
-    console.info(
-      '[Telegram Mock] Запущено dev mock — застосунок працює як у Telegram з тестовим користувачем.',
-    )
   }
 }

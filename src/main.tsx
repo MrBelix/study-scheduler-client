@@ -1,22 +1,23 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-
-// Mock-середовище Telegram має імпортуватись ПЕРЕД будь-яким SDK API.
-import './mockEnv.ts'
-
-import App from './App.tsx'
-import { init } from './init.ts'
-
+import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import '@telegram-apps/telegram-ui/dist/styles.css'
-import './index.css'
+import './index.scss'
+import './mockEnv.ts'
+import { init } from './init.ts'
+import App from './App.tsx'
 
-// Ініціалізуємо Telegram SDK перед рендером.
-init(import.meta.env.DEV).catch((e) => {
-  console.error('Не вдалося ініціалізувати Telegram SDK:', e)
-})
+init(import.meta.env.DEV).catch(console.error)
+
+const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </BrowserRouter>
   </StrictMode>,
 )

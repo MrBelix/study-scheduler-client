@@ -1,0 +1,34 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+}
+
+.app-layout {
+  min-height: var(--tg-viewport-height);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--tg-theme-secondary-bg-color);
+  padding-top: var(--tg-content-safe-area-inset-top, 0);
+  padding-bottom: var(--tg-safe-area-inset-bottom, 0px);
+  padding-left: var(--tg-safe-area-inset-left, 0px);
+  padding-right: var(--tg-safe-area-inset-right, 0px);
+  container-type: inline-size;
+  container-name: app-shell;
+}
+
+.app-layout__content {
+  padding-top: 44px;
+  padding-bottom: 76px;
+  padding-left: 16px;
+  padding-right: 16px;
+  
+  /* Дозволяємо контенту скролитися, якщо він довгий */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.app-tabbar {
+  padding-bottom: var(--tg-safe-area-inset-bottom, 0) !important;
+}

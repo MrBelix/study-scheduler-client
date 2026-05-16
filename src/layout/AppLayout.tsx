@@ -5,9 +5,9 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 type TabId = 'home' | 'students' | 'schedule' | 'finance' | 'settings'
 
 const tabs: { id: TabId; path: string; label: string }[] = [
-  { id: 'home',     path: '/',         label: 'Сьогодні' },
   { id: 'students', path: '/students', label: 'Учні'     },
   { id: 'schedule', path: '/schedule', label: 'Розклад'  },
+  { id: 'home',     path: '/',         label: 'Сьогодні' },
   { id: 'finance',  path: '/finance',  label: 'Фінанси'  },
   { id: 'settings', path: '/settings', label: 'Налаш.'   },
 ]
@@ -27,11 +27,6 @@ const HomeIcon: Icon = (p) => (
   <svg viewBox="0 0 24 24" fill="none" width={28} height={28} {...p}>
     <path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2h-3v-7H8v7H5a2 2 0 0 1-2-2v-9Z"
       stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
-  </svg>
-)
-const HomeFilledIcon: Icon = (p) => (
-  <svg viewBox="0 0 24 24" width={28} height={28} {...p}>
-    <path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2h-3v-7H8v7H5a2 2 0 0 1-2-2v-9Z" fill="currentColor"/>
   </svg>
 )
 const PeopleIcon: Icon = (p) => (
@@ -64,7 +59,7 @@ const GearIcon: Icon = (p) => (
 )
 
 function tabIcon(id: TabId, active: boolean): ReactNode {
-  if (id === 'home')     return active ? <HomeFilledIcon /> : <HomeIcon />
+  if (id === 'home')     return <HomeIcon />
   if (id === 'students') return <PeopleIcon />
   if (id === 'schedule') return <CalIcon />
   if (id === 'finance')  return <WalletIcon />
@@ -81,7 +76,7 @@ export const AppLayout = () => {
       <main className="app-layout__content">
         <Outlet />
       </main>
-      <Tabbar>
+      <Tabbar className="app-tabbar">
         {tabs.map(({ id, path, label }) => (
           <Tabbar.Item
             key={id}

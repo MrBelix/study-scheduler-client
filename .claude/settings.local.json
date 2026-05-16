@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s https://raw.githubusercontent.com/Telegram-Mini-Apps/reactjs-template/master/src/index.tsx)",
+      "Bash(curl -s https://api.github.com/repos/Telegram-Mini-Apps/reactjs-template/contents/src/css)",
+      "Bash(curl -s https://api.github.com/repos/Telegram-Mini-Apps/reactjs-template/contents/src/components)",
+      "Bash(curl -s https://raw.githubusercontent.com/Telegram-Mini-Apps/reactjs-template/master/src/components/App.tsx)",
+      "Bash(curl -s https://raw.githubusercontent.com/Telegram-Mini-Apps/reactjs-template/master/src/components/Root.tsx)",
+      "Bash(curl -s https://raw.githubusercontent.com/Telegram-Mini-Apps/reactjs-template/master/src/components/Page.tsx)",
+      "Bash(curl -s https://api.github.com/repos/Telegram-Mini-Apps/reactjs-template/contents/src/css --raw)",
+      "Bash(curl -s https://api.github.com/repos/Telegram-Mini-Apps/reactjs-template/contents/src/components --raw)",
+      "Bash(curl -s https://raw.githubusercontent.com/Telegram-Mini-Apps/reactjs-template/master/src/init.ts)"
+    ]
+  }
+}

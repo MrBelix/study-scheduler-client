@@ -58,7 +58,7 @@ const GearIcon: Icon = (p) => (
   </svg>
 )
 
-function tabIcon(id: TabId, active: boolean): ReactNode {
+function tabIcon(id: TabId): ReactNode {
   if (id === 'home')     return <HomeIcon />
   if (id === 'students') return <PeopleIcon />
   if (id === 'schedule') return <CalIcon />
@@ -84,7 +84,7 @@ export const AppLayout = () => {
             selected={active === id}
             onClick={() => navigate(path)}
           >
-            {tabIcon(id, active === id)}
+            {tabIcon(id)}
           </Tabbar.Item>
         ))}
       </Tabbar>

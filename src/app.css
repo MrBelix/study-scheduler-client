@@ -17,8 +17,8 @@ html, body, #root {
 }
 
 .app-layout__content {
-  padding-top: 44px;
-  padding-bottom: 76px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   padding-left: 16px;
   padding-right: 16px;
   
@@ -31,4 +31,16 @@ html, body, #root {
 
 .app-tabbar {
   padding-bottom: var(--tg-safe-area-inset-bottom, 0) !important;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-space-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
 }

@@ -1,14 +1,16 @@
-import '@telegram-apps/telegram-ui/dist/styles.css'
-import './app.css'
 import { BrowserRouter, useRoutes } from 'react-router-dom'
-import { AppRoot } from '@telegram-apps/telegram-ui';
-import { routes } from "./routes";
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { routes } from './routes'
+import { theme } from './md3/theme'
+import './app.css'
 
-const Router = () => useRoutes(routes);
+const Router = () => useRoutes(routes)
 
 export const App = () => (
-<AppRoot>
-  <BrowserRouter>
-    <Router />
-  </BrowserRouter>
-</AppRoot>)
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
+  </ThemeProvider>
+)

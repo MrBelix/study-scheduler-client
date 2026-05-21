@@ -1,6 +1,17 @@
-﻿import {Avatar, Cell, IconButton, LargeTitle, Section} from "@telegram-apps/telegram-ui";
+﻿import {
+    Avatar,
+    Button,
+    Cell,
+    IconButton,
+    Input,
+    LargeTitle,
+    Modal,
+    Section
+} from "@telegram-apps/telegram-ui";
 import {Icon28AddCircle} from "@telegram-apps/telegram-ui/dist/icons/28/add_circle";
-import {useNavigate} from "react-router-dom";
+import {
+    ModalHeader
+} from "@telegram-apps/telegram-ui/dist/components/Overlays/Modal/components/ModalHeader/ModalHeader";
 
 const getInitials = (str: string) => str.split(' ').slice(0, 2).map(w => w[0]).join('');
 interface Student {
@@ -24,12 +35,9 @@ const CreditTransaction = ({amount} : {amount: number}) => {
     return (<span style={{ color, fontWeight: 600 }}>{sign}₴{formattedAmount}</span>);
 };
 const PageHeader = () => {
-    const navigate = useNavigate();
     return <section className="d-flex justify-space-between align-items-center">
         <LargeTitle>Учні</LargeTitle>
-        <IconButton size="s" onClick={() => navigate("/students/create")}>
-            <Icon28AddCircle />
-        </IconButton>
+        <CreateStudentForm/>
     </section>}
 
 
@@ -38,6 +46,18 @@ const StudentItem = ({name, credits}: Student) => (<Cell
     before={<Avatar size={40} acronym={getInitials(name)}/>}>
     {name}
 </Cell>)
+
+
+const CreateStudentForm = () => (<Modal header={<ModalHeader>Only iOS header</ModalHeader>} trigger={<IconButton size="s"><Icon28AddCircle /></IconButton>}>
+    <div style={{ padding: '10px', paddingTop: '10px'}}>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+            <Avatar size={96} acronym={"AA"} />
+        </div>
+        <Input header="Імя"/>
+        <Input header="опис"/>
+        <Button size="l" mode="filled" stretched={true}>Додати</Button>
+    </div>
+</Modal>)
 
 const StudentsList = () => {
     const items = [

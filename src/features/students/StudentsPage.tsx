@@ -1,5 +1,6 @@
 ﻿import {Avatar, Cell, IconButton, LargeTitle, Section} from "@telegram-apps/telegram-ui";
 import {Icon28AddCircle} from "@telegram-apps/telegram-ui/dist/icons/28/add_circle";
+import {useNavigate} from "react-router-dom";
 
 const getInitials = (str: string) => str.split(' ').slice(0, 2).map(w => w[0]).join('');
 interface Student {
@@ -22,13 +23,15 @@ const CreditTransaction = ({amount} : {amount: number}) => {
 
     return (<span style={{ color, fontWeight: 600 }}>{sign}₴{formattedAmount}</span>);
 };
-const PageHeader = () => (
-    <section className="d-flex justify-space-between align-items-center">
+const PageHeader = () => {
+    const navigate = useNavigate();
+    return <section className="d-flex justify-space-between align-items-center">
         <LargeTitle>Учні</LargeTitle>
-        <IconButton size="s">
+        <IconButton size="s" onClick={() => navigate("/students/create")}>
             <Icon28AddCircle />
         </IconButton>
-    </section>);
+    </section>}
+
 
 const StudentItem = ({name, credits}: Student) => (<Cell
     after={<CreditTransaction amount={credits}/>}

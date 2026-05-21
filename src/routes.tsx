@@ -1,6 +1,7 @@
 import type { RouteObject } from 'react-router-dom'
 import { AppLayout } from './layout/AppLayout'
 import { StudentsPage } from './features/students/StudentsPage'
+import { CreateStudentPage } from './features/students/CreateStudentPage'
 
 export const routes: RouteObject[] = [
   {
@@ -13,6 +14,6 @@ export const routes: RouteObject[] = [
       { path: '/settings', element: <div>Settings</div>  },
     ],
   },
-  { path: '/students/new', element: <div>Add Student</div>    },
+  { path: '/students/create', element: <CreateStudentPage />    },
   { path: '/students/:id', element: <div>Student Detail</div> },
 ]

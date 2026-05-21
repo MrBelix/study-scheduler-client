@@ -2,8 +2,7 @@
 // text fields, color swatch picker, subjects list, recurring-schedule
 // toggle, day chips, time/notification rows, full-width submit.
 import {
-  ArrowBack, Check, Edit, NotificationsActive,
-  Repeat, Schedule,
+  ArrowBack, Check, Edit, NotificationsActive, Repeat, Schedule,
 } from '@mui/icons-material'
 import {
   Avatar, Box, Button, Chip, IconButton, List, ListItem, ListItemAvatar,
@@ -11,9 +10,9 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { SectionHeader } from '../../md3/components'
-import { md3Light } from '../../md3/theme'
-import { COLORS } from './mock'
+import { SectionHeader, md3Light } from '../../../shared/ui'
+import { SubjectTile } from '../components/SubjectTile'
+import { COLORS } from '../mock'
 
 const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'] as const
 type Day = (typeof DAYS)[number]
@@ -29,31 +28,12 @@ const TopBar = ({ onBack, title }: { onBack: () => void; title: string }) => (
   </Stack>
 )
 
-const SubjectTile = ({ letter, tint }: { letter: string; tint: 'primary' | 'tertiary' | 'neutral' }) => {
-  const bg = tint === 'primary' ? md3Light.primaryContainer
-    : tint === 'tertiary' ? md3Light.tertiaryContainer
-    : md3Light.surfaceContainerHigh
-  const fg = tint === 'primary' ? md3Light.onPrimaryContainer
-    : tint === 'tertiary' ? md3Light.onTertiaryContainer
-    : md3Light.onSurfaceVariant
-  return (
-    <Box sx={{
-      width: 40, height: 40, borderRadius: '12px',
-      background: bg, color: fg,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontWeight: 500, fontSize: 16,
-    }}>
-      {letter}
-    </Box>
-  )
-}
-
 export const CreateStudentPage = () => {
   const navigate = useNavigate()
-  const [colorIdx, setColorIdx]   = useState(5)
-  const [recur, setRecur]         = useState(true)
-  const [notif, setNotif]         = useState(true)
-  const [days, setDays]           = useState<Record<Day, boolean>>({
+  const [colorIdx, setColorIdx] = useState(5)
+  const [recur, setRecur]       = useState(true)
+  const [notif, setNotif]       = useState(true)
+  const [days, setDays]         = useState<Record<Day, boolean>>({
     Пн: false, Вт: true, Ср: false, Чт: true, Пт: false, Сб: false, Нд: false,
   })
   const toggleDay = (d: Day) => setDays(prev => ({ ...prev, [d]: !prev[d] }))

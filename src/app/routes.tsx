@@ -1,8 +1,6 @@
 import type { RouteObject } from 'react-router-dom'
-import { AppLayout } from './layout/AppLayout'
-import { StudentsPage } from './features/students/StudentsPage'
-import { StudentDetailPage } from './features/students/StudentDetailPage'
-import { CreateStudentPage } from './features/students/CreateStudentPage'
+import { AppLayout } from '../shared/layout/AppLayout'
+import { CreateStudentPage, StudentDetailPage, StudentsPage } from '../features/students'
 
 export const routes: RouteObject[] = [
   {

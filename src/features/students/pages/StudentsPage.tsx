@@ -1,8 +1,6 @@
 // MD3 students list — large top bar, M3 search, filter chips,
 // student rows with colored avatars, FAB Extended for adding a student.
-import {
-  Add, FilterList, MoreVert, Search,
-} from '@mui/icons-material'
+import { Add, FilterList, MoreVert, Search } from '@mui/icons-material'
 import {
   Box, Chip, Fab, IconButton, InputBase,
   List, ListItem, ListItemAvatar, ListItemText, Stack, Typography,
@@ -10,10 +8,10 @@ import {
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  StudentAvatar, balanceColor, balanceLabel,
-} from '../../md3/components'
-import { md3Light } from '../../md3/theme'
-import { STUDENTS, type Student } from './mock'
+  StudentAvatar, balanceColor, balanceLabel, md3Light,
+} from '../../../shared/ui'
+import { STUDENTS } from '../mock'
+import type { Student } from '../types'
 
 // ────────────────────────────────────────────────────────────────────
 // M3 Large Top App Bar — icon row + title + subtitle stacked.
@@ -66,10 +64,10 @@ const SearchBar = ({ value, onChange }: { value: string; onChange: (v: string) =
 type Filter = 'all' | 'debt' | 'no_schedule' | 'new'
 
 const FILTERS: { id: Filter; label: (s: Student[]) => string; predicate: (s: Student) => boolean }[] = [
-  { id: 'all',         label: s => `Усі · ${s.length}`,                                   predicate: () => true                    },
-  { id: 'debt',        label: s => `Боргують · ${s.filter(x => x.balance < 0).length}`,   predicate: s => s.balance < 0            },
-  { id: 'no_schedule', label: s => `Без розкладу · ${s.filter(x => x.next === '—').length}`, predicate: s => s.next === '—'        },
-  { id: 'new',         label: () => 'Нові',                                                predicate: s => s.lessons < 5            },
+  { id: 'all',         label: s => `Усі · ${s.length}`,                                       predicate: () => true                    },
+  { id: 'debt',        label: s => `Боргують · ${s.filter(x => x.balance < 0).length}`,       predicate: s => s.balance < 0            },
+  { id: 'no_schedule', label: s => `Без розкладу · ${s.filter(x => x.next === '—').length}`,  predicate: s => s.next === '—'           },
+  { id: 'new',         label: () => 'Нові',                                                    predicate: s => s.lessons < 5            },
 ]
 
 export const StudentsPage = () => {
@@ -137,7 +135,7 @@ export const StudentsPage = () => {
         ))}
       </List>
 
-      {/* Spacer so FAB doesn't overlap last row */}
+      {/* Spacer so the FAB doesn't overlap the last row */}
       <Box sx={{ height: 100 }} />
 
       <Fab

@@ -6,7 +6,7 @@ import {
   Settings, SettingsOutlined,
   Wallet, WalletOutlined,
 } from '@mui/icons-material'
-import { MdNavBar, type NavItem } from '../md3/components'
+import { MdNavBar, type NavItem } from '../ui'
 
 type TabId = 'home' | 'students' | 'schedule' | 'finance' | 'settings'
 
@@ -24,11 +24,11 @@ export const AppLayout = () => {
   const active = pathToTab(pathname)
 
   const items: NavItem[] = [
-    { id: 'home',     label: 'Сьогодні', icon: <Home />,           iconOutline: <HomeOutlined />,           onClick: () => navigate('/')         },
-    { id: 'students', label: 'Учні',     icon: <Group />,          iconOutline: <GroupOutlined />,          onClick: () => navigate('/students') },
-    { id: 'schedule', label: 'Розклад',  icon: <CalendarMonth />,  iconOutline: <CalendarMonthOutlined />,  onClick: () => navigate('/schedule') },
-    { id: 'finance',  label: 'Фінанси',  icon: <Wallet />,         iconOutline: <WalletOutlined />,         onClick: () => navigate('/finance')  },
-    { id: 'settings', label: 'Більше',   icon: <Settings />,       iconOutline: <SettingsOutlined />,       onClick: () => navigate('/settings') },
+    { id: 'home',     label: 'Сьогодні', icon: <Home />,          iconOutline: <HomeOutlined />,          onClick: () => navigate('/')         },
+    { id: 'students', label: 'Учні',     icon: <Group />,         iconOutline: <GroupOutlined />,         onClick: () => navigate('/students') },
+    { id: 'schedule', label: 'Розклад',  icon: <CalendarMonth />, iconOutline: <CalendarMonthOutlined />, onClick: () => navigate('/schedule') },
+    { id: 'finance',  label: 'Фінанси',  icon: <Wallet />,        iconOutline: <WalletOutlined />,        onClick: () => navigate('/finance')  },
+    { id: 'settings', label: 'Більше',   icon: <Settings />,      iconOutline: <SettingsOutlined />,      onClick: () => navigate('/settings') },
   ]
 
   return (

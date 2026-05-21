@@ -1,25 +1,10 @@
-// Mock data ported from the MD3 design bundle (studyscheduler/project/data.js).
+// Mock fixtures ported from the MD3 design bundle (studyscheduler/project/data.js).
+import type { HistoryItem, Student } from './types'
 
 export const COLORS = [
   '#FF6B6B', '#FFA94D', '#F2C94C', '#51CF66',
   '#3DBEEC', '#7B61FF', '#E27EC2', '#5B7CFA',
 ]
-
-export interface Subject {
-  name: string
-  rate: number
-}
-
-export interface Student {
-  id: string
-  name: string
-  short: string
-  color: string
-  subjects: Subject[]
-  balance: number
-  next: string
-  lessons: number
-}
 
 export const STUDENTS: Student[] = [
   { id: 's1', name: 'Анна Коваленко',   short: 'АК', color: COLORS[2],
@@ -51,15 +36,6 @@ export const STUDENTS: Student[] = [
     subjects: [{ name: 'Англійська · A1', rate: 550 }],
     balance: +275, next: '—', lessons: 3 },
 ]
-
-export interface HistoryItem {
-  date: string
-  day: string
-  kind: 'lesson' | 'pay'
-  label: string
-  amount: number
-  note?: string
-}
 
 export const HISTORY: HistoryItem[] = [
   { date: '14 тра', day: 'Чт', kind: 'lesson', label: 'Математика · 60 хв', amount: -600, note: 'Рівняння з модулем' },

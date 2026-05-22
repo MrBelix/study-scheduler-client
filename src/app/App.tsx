@@ -1,16 +1,13 @@
-import { BrowserRouter, useRoutes } from 'react-router-dom'
-import { CssBaseline, ThemeProvider } from '@mui/material'
-import { routes } from './routes'
-import { theme } from '../shared/ui'
-import '../app.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router';
 
-const Router = () => useRoutes(routes)
+const queryClient = new QueryClient();
 
-export const App = () => (
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
-  </ThemeProvider>
-)
+export function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
+}

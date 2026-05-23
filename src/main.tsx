@@ -1,3 +1,4 @@
+import './mockEnv';
 import ReactDOM from 'react-dom/client';
 import { StrictMode } from 'react';
 import './app/styles/global.scss';

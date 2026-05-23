@@ -5,30 +5,29 @@ import styles from './SchedulePage.module.scss';
 
 const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
 
-const SCHEDULE: Record<number, { time: string; subject: string; info: string }[]> = {
+const SCHEDULE: Record<number, { time: string; subject: string; student: string }[]> = {
   0: [
-    { time: '08:00', subject: 'Математичний аналіз', info: 'Гр. 1-А · Ауд. 302' },
-    { time: '09:45', subject: 'Лінійна алгебра', info: 'Гр. 2-Б · Ауд. 215' },
-    { time: '11:30', subject: 'Математичний аналіз', info: 'Гр. 1-Б · Ауд. 302' },
+    { time: '09:00', subject: 'Математика', student: 'Максим Петренко' },
+    { time: '11:00', subject: 'Англійська', student: 'Аліса Коваль' },
+    { time: '14:00', subject: 'Фізика', student: 'Дмитро Лисенко' },
   ],
   1: [
-    { time: '08:00', subject: 'Дискретна математика', info: 'Гр. 3-А · Ауд. 110' },
-    { time: '11:30', subject: 'Лінійна алгебра', info: 'Гр. 1-А · Ауд. 215' },
-    { time: '13:15', subject: 'Теорія ймовірностей', info: 'Гр. 2-А · Ауд. 401' },
+    { time: '10:00', subject: 'Математика', student: 'Юлія Бондаренко' },
+    { time: '13:00', subject: 'Хімія', student: 'Олег Мазуренко' },
   ],
   2: [
-    { time: '09:45', subject: 'Математичний аналіз', info: 'Гр. 2-А · Ауд. 302' },
-    { time: '13:15', subject: 'Дискретна математика', info: 'Гр. 1-А · Ауд. 110' },
+    { time: '09:00', subject: 'Математика', student: 'Максим Петренко' },
+    { time: '11:30', subject: 'Англійська', student: 'Соня Яценко' },
+    { time: '15:00', subject: 'Англійська', student: 'Аліса Коваль' },
   ],
   3: [
-    { time: '08:00', subject: 'Лінійна алгебра', info: 'Гр. 3-Б · Ауд. 215' },
-    { time: '09:45', subject: 'Теорія ймовірностей', info: 'Гр. 1-Б · Ауд. 401' },
-    { time: '11:30', subject: 'Математичний аналіз', info: 'Гр. 3-А · Ауд. 302' },
-    { time: '13:15', subject: 'Дискретна математика', info: 'Гр. 2-Б · Ауд. 110' },
+    { time: '10:00', subject: 'Фізика', student: 'Дмитро Лисенко' },
+    { time: '13:00', subject: 'Математика', student: 'Юлія Бондаренко' },
   ],
   4: [
-    { time: '08:00', subject: 'Теорія ймовірностей', info: 'Гр. 2-А · Ауд. 401' },
-    { time: '11:30', subject: 'Лінійна алгебра', info: 'Гр. 1-А · Ауд. 215' },
+    { time: '09:00', subject: 'Хімія', student: 'Олег Мазуренко' },
+    { time: '11:00', subject: 'Математика', student: 'Максим Петренко' },
+    { time: '14:00', subject: 'Англійська', student: 'Соня Яценко' },
   ],
   5: [],
   6: [],
@@ -59,36 +58,36 @@ export function SchedulePage() {
   const lessons = SCHEDULE[selectedIdx] ?? [];
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Розклад</h1>
+    <div className={styles['schedule-page']}>
+      <div className={styles['schedule-page__header']}>
+        <h1 className={styles['schedule-page__title']}>Розклад</h1>
       </div>
 
-      <div className={styles.dayRow}>
+      <div className={styles['schedule-page__day-row']}>
         {DAYS.map((label, i) => (
           <button
             key={label}
             type="button"
-            className={`${styles.dayChip} ${i === selectedIdx ? styles.dayActive : ''}`}
+            className={`${styles['schedule-page__day-chip']}${i === selectedIdx ? ` ${styles['schedule-page__day-chip--active']}` : ''}`}
             onClick={() => setSelectedIdx(i)}
           >
-            <span className={styles.dayLabel}>{label}</span>
-            <span className={styles.dayNum}>{weekDays[i].getDate()}</span>
+            <span className={styles['schedule-page__day-label']}>{label}</span>
+            <span className={styles['schedule-page__day-num']}>{weekDays[i].getDate()}</span>
           </button>
         ))}
       </div>
 
-      <div className={styles.list}>
+      <div className={styles['schedule-page__list']}>
         {lessons.length === 0 ? (
-          <div className={styles.empty}>Занять немає</div>
+          <div className={styles['schedule-page__empty']}>Занять немає</div>
         ) : (
           <Section>
             {lessons.map((lesson) => (
               <Cell
-                key={`${lesson.time}-${lesson.subject}`}
+                key={`${lesson.time}-${lesson.student}`}
                 title={lesson.subject}
-                subtitle={lesson.info}
-                after={<span className={styles.time}>{lesson.time}</span>}
+                subtitle={lesson.student}
+                after={<span className={styles['schedule-page__time']}>{lesson.time}</span>}
                 onClick={() => {}}
               />
             ))}

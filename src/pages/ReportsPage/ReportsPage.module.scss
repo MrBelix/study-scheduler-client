@@ -1,27 +1,29 @@
-.page {
-  padding-bottom: 16px;
-}
+@use '../../app/styles/variables' as *;
 
-.header {
-  padding: 16px 16px 8px;
-}
+.reports-page {
+  padding-bottom: $space-lg;
 
-.title {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--tg-theme-text-color);
-  letter-spacing: -0.02em;
-}
+  &__header {
+    padding: $space-lg $space-lg $space-sm;
+  }
 
-.stat {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--tg-theme-button-color);
-  font-variant-numeric: tabular-nums;
-}
+  &__title {
+    font-size: $font-title;
+    font-weight: 700;
+    color: $color-text;
+    letter-spacing: -0.02em;
+  }
 
-.grade {
-  font-size: 17px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
+  &__stat {
+    font-size: $font-callout;
+    font-weight: 600;
+    color: $color-button;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__grade {
+    font-size: $font-callout;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
 }

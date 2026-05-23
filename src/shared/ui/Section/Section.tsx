@@ -10,9 +10,9 @@ interface SectionProps {
 export function Section({ header, footer, children }: SectionProps) {
   return (
     <div className={styles.section}>
-      {header && <div className={styles.header}>{header}</div>}
-      <div className={styles.body}>{children}</div>
-      {footer && <div className={styles.footer}>{footer}</div>}
+      {header && <div className={styles['section__header']}>{header}</div>}
+      <div className={styles['section__body']}>{children}</div>
+      {footer && <div className={styles['section__footer']}>{footer}</div>}
     </div>
   );
 }

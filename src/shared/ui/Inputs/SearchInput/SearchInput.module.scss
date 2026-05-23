@@ -1,0 +1,39 @@
+@use '../../../../app/styles/variables' as *;
+
+.search-input {
+  padding: $space-sm $space-lg $space-md;
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
+    background-color: $color-bg;
+    border-radius: $radius-sm;
+    padding: $space-sm $space-md;
+  }
+
+  &__icon {
+    color: $color-hint;
+    flex-shrink: 0;
+  }
+
+  &__field {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: $font-callout;
+    color: $color-text;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+
+    &::placeholder {
+      color: $color-hint;
+    }
+
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+    }
+  }
+}

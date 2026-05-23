@@ -1,84 +1,86 @@
+@use '../../../app/styles/variables' as *;
+
 .cell {
   display: flex;
   align-items: center;
   min-height: 50px;
-  padding-left: 16px;
+  padding-left: $space-lg;
   background: transparent;
   width: 100%;
   text-align: left;
-  color: var(--tg-theme-text-color);
-  font-size: 17px;
+  color: $color-text;
+  font-size: $font-callout;
   -webkit-tap-highlight-color: transparent;
 
-  &.clickable {
+  &--clickable {
     cursor: pointer;
 
     &:active {
       background-color: rgba(0, 0, 0, 0.04);
     }
   }
-}
 
-.before {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-
-.inner {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-height: 50px;
-  padding-right: 16px;
-  gap: 8px;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 0.5px;
-    background-color: var(--tg-theme-hint-color);
-    opacity: 0.3;
+  &__before {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-right: $space-md;
+    flex-shrink: 0;
   }
-}
 
-.cell:last-child .inner::after {
-  display: none;
-}
+  &__inner {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-height: 50px;
+    padding-right: $space-lg;
+    gap: $space-sm;
+    position: relative;
 
-.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-  padding: 10px 0;
-}
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: $separator-h;
+      background-color: $color-hint;
+      opacity: $separator-opacity;
+    }
+  }
 
-.title {
-  font-size: 17px;
-  color: var(--tg-theme-text-color);
-  line-height: 1.3;
-}
+  &:last-child &__inner::after {
+    display: none;
+  }
 
-.subtitle {
-  font-size: 14px;
-  color: var(--tg-theme-hint-color);
-  line-height: 1.3;
-}
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: 10px 0;
+  }
 
-.after {
-  display: flex;
-  align-items: center;
-  color: var(--tg-theme-hint-color);
-  flex-shrink: 0;
-  font-size: 15px;
+  &__title {
+    font-size: $font-callout;
+    color: $color-text;
+    line-height: 1.3;
+  }
+
+  &__subtitle {
+    font-size: $font-footnote;
+    color: $color-hint;
+    line-height: 1.3;
+  }
+
+  &__after {
+    display: flex;
+    align-items: center;
+    color: $color-hint;
+    flex-shrink: 0;
+    font-size: $font-body;
+  }
 }

@@ -4,8 +4,8 @@ import styles from './AppLayout.module.scss';
 
 export function AppLayout() {
   return (
-    <div className={styles.layout}>
-      <main className={styles.content}>
+    <div className={styles['app-layout']}>
+      <main className={styles['app-layout__content']}>
         <Outlet />
       </main>
       <TabBar />

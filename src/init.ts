@@ -9,6 +9,7 @@ import {
   emitEvent,
   miniApp,
   backButton,
+  postEvent,
 } from '@tma.js/sdk-react';
 
 const MOCK_THEME = {
@@ -57,10 +58,6 @@ function setupBrowserMock(): void {
 export async function init(options: { debug: boolean }): Promise<void> {
   setDebug(options.debug);
 
-  // Clear stale mock from previous dev session. In real Telegram params come
-  // from the URL hash (higher priority), so removing localStorage is safe.
-  localStorage.removeItem('launchParams');
-
   try {
     retrieveLaunchParams();
   } catch {
@@ -83,4 +80,14 @@ export async function init(options: { debug: boolean }): Promise<void> {
       viewport.bindCssVars();
     });
   }
+
+  // On iOS, locking and unlocking the phone clears Telegram-injected CSS vars.
+  // When the page becomes visible again, re-request the theme so Telegram
+  // responds with theme_changed and TMA.js re-applies all CSS vars.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      postEvent('web_app_request_theme');
+      postEvent('web_app_request_viewport');
+    }
+  });
 }

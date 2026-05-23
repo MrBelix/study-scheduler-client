@@ -1,51 +1,53 @@
-.page {
-  padding-bottom: 16px;
-}
+@use '../../app/styles/variables' as *;
 
-.avatarSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 32px 16px 24px;
-  gap: 8px;
-}
+.profile-page {
+  padding-bottom: $space-lg;
 
-.avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: var(--tg-theme-button-color);
-  color: var(--tg-theme-button-text-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  margin-bottom: 4px;
-}
+  &__avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: $space-2xl $space-lg $space-xl;
+    gap: $space-sm;
+  }
 
-.name {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--tg-theme-text-color);
-  text-align: center;
-}
+  &__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: $color-button;
+    color: $color-button-text;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: $space-xs;
+  }
 
-.role {
-  font-size: 14px;
-  color: var(--tg-theme-hint-color);
-  text-align: center;
-}
+  &__name {
+    font-size: $font-headline;
+    font-weight: 600;
+    color: $color-text;
+    text-align: center;
+  }
 
-.cellIcon {
-  color: var(--tg-theme-button-color);
-}
+  &__role {
+    font-size: $font-footnote;
+    color: $color-hint;
+    text-align: center;
+  }
 
-.valueHint {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--tg-theme-hint-color);
-  font-size: 15px;
+  &__cell-icon {
+    color: $color-button;
+  }
+
+  &__value-hint {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+    color: $color-hint;
+    font-size: $font-body;
+  }
 }

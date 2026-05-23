@@ -3,10 +3,10 @@ import { Cell } from '../../shared/ui/Cell/Cell';
 import styles from './ReportsPage.module.scss';
 
 const SUBJECTS = [
-  { name: 'Математичний аналіз', avg: 4.3, attendance: 84 },
-  { name: 'Лінійна алгебра', avg: 3.8, attendance: 79 },
-  { name: 'Дискретна математика', avg: 4.1, attendance: 88 },
-  { name: 'Теорія ймовірностей', avg: 3.5, attendance: 72 },
+  { name: 'Математика', students: 2, sessions: 22, avgProgress: 87 },
+  { name: 'Англійська мова', students: 2, sessions: 22, avgProgress: 94 },
+  { name: 'Фізика', students: 1, sessions: 6, avgProgress: 78 },
+  { name: 'Хімія', students: 1, sessions: 5, avgProgress: 67 },
 ];
 
 function BarIcon() {
@@ -25,30 +25,28 @@ function PersonIcon() {
   );
 }
 
-const overallAttendance = Math.round(
-  SUBJECTS.reduce((s, sub) => s + sub.attendance, 0) / SUBJECTS.length,
-);
-const overallAvg = (SUBJECTS.reduce((s, sub) => s + sub.avg, 0) / SUBJECTS.length).toFixed(1);
+const totalStudents = new Set(SUBJECTS.flatMap((s) => Array(s.students).fill(s.name))).size;
+const totalSessions = SUBJECTS.reduce((sum, s) => sum + s.sessions, 0);
 
 export function ReportsPage() {
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Звіти</h1>
+    <div className={styles['reports-page']}>
+      <div className={styles['reports-page__header']}>
+        <h1 className={styles['reports-page__title']}>Звіти</h1>
       </div>
 
-      <Section header="Загальна статистика">
+      <Section header="Загалом">
         <Cell
           before={<PersonIcon />}
-          title="Відвідуваність"
-          subtitle="Середня по всіх групах"
-          after={<span className={styles.stat}>{overallAttendance}%</span>}
+          title="Студентів"
+          subtitle="Загальна кількість"
+          after={<span className={styles['reports-page__stat']}>{totalStudents}</span>}
         />
         <Cell
           before={<BarIcon />}
-          title="Середній бал"
+          title="Занять цього місяця"
           subtitle="По всіх предметах"
-          after={<span className={styles.stat}>{overallAvg}</span>}
+          after={<span className={styles['reports-page__stat']}>{totalSessions}</span>}
         />
       </Section>
 
@@ -57,10 +55,20 @@ export function ReportsPage() {
           <Cell
             key={subject.name}
             title={subject.name}
-            subtitle={`Відвідуваність: ${subject.attendance}%`}
+            subtitle={`${subject.students} студ. · ${subject.sessions} занять`}
             after={
-              <span className={styles.grade} style={{ color: subject.avg >= 4 ? '#34C759' : subject.avg >= 3.5 ? '#FF9500' : '#FF3B30' }}>
-                {subject.avg.toFixed(1)}
+              <span
+                className={styles['reports-page__grade']}
+                style={{
+                  color:
+                    subject.avgProgress >= 85
+                      ? '#34C759'
+                      : subject.avgProgress >= 75
+                        ? '#FF9500'
+                        : '#FF3B30',
+                }}
+              >
+                {subject.avgProgress}%
               </span>
             }
             onClick={() => {}}

@@ -15,17 +15,17 @@ export function Cell({ before, after, title, subtitle, onClick }: CellProps) {
 
   return (
     <Tag
-      className={`${styles.cell} ${onClick ? styles.clickable : ''}`}
+      className={`${styles.cell}${onClick ? ` ${styles['cell--clickable']}` : ''}`}
       onClick={onClick}
       {...extraProps}
     >
-      {before && <span className={styles.before}>{before}</span>}
-      <div className={styles.inner}>
-        <div className={styles.content}>
-          <span className={styles.title}>{title}</span>
-          {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
+      {before && <span className={styles['cell__before']}>{before}</span>}
+      <div className={styles['cell__inner']}>
+        <div className={styles['cell__content']}>
+          <span className={styles['cell__title']}>{title}</span>
+          {subtitle && <span className={styles['cell__subtitle']}>{subtitle}</span>}
         </div>
-        {after && <span className={styles.after}>{after}</span>}
+        {after && <span className={styles['cell__after']}>{after}</span>}
       </div>
     </Tag>
   );

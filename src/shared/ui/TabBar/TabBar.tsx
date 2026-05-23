@@ -42,16 +42,18 @@ const tabs = [
 
 export function TabBar() {
   return (
-    <nav className={styles.tabbar}>
+    <nav className={styles['tab-bar']}>
       {tabs.map((tab) => (
         <NavLink
           key={tab.to}
           to={tab.to}
           end={tab.end}
-          className={({ isActive }) => `${styles.tab} ${isActive ? styles.active : ''}`}
+          className={({ isActive }) =>
+            `${styles['tab-bar__tab']}${isActive ? ` ${styles['tab-bar__tab--active']}` : ''}`
+          }
         >
-          <span className={styles.icon}>{tab.icon}</span>
-          <span className={styles.label}>{tab.label}</span>
+          <span className={styles['tab-bar__icon']}>{tab.icon}</span>
+          <span className={styles['tab-bar__label']}>{tab.label}</span>
         </NavLink>
       ))}
     </nav>

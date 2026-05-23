@@ -1,27 +1,29 @@
+@use '../../../app/styles/variables' as *;
+
 .section {
-  margin-bottom: 16px;
-}
+  margin-bottom: $space-lg;
 
-.header {
-  padding: 0 32px 6px;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--tg-theme-hint-color);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.3;
-}
+  &__header {
+    padding: 0 $space-2xl $space-sm;
+    font-size: $font-caption;
+    font-weight: 400;
+    color: $color-hint;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
 
-.body {
-  background-color: var(--tg-theme-bg-color);
-  border-radius: 12px;
-  overflow: hidden;
-  margin: 0 16px;
-}
+  &__body {
+    background-color: $color-bg;
+    border-radius: $radius-md;
+    overflow: hidden;
+    margin: 0 $space-lg;
+  }
 
-.footer {
-  padding: 6px 32px 0;
-  font-size: 13px;
-  color: var(--tg-theme-hint-color);
-  line-height: 1.4;
+  &__footer {
+    padding: $space-sm $space-2xl 0;
+    font-size: $font-caption;
+    color: $color-hint;
+    line-height: 1.4;
+  }
 }

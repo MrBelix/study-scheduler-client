@@ -1,0 +1,44 @@
+// Spacing
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 12px;
+$space-lg: 16px;
+$space-xl: 24px;
+$space-2xl: 32px;
+$space-3xl: 48px;
+
+// Typography (iOS / Telegram scale)
+$font-xs: 10px;
+$font-sm: 12px;
+$font-caption: 13px;
+$font-footnote: 14px;
+$font-body: 15px;
+$font-callout: 17px;
+$font-headline: 20px;
+$font-title: 28px;
+
+// Radii
+$radius-sm: 10px;
+$radius-md: 12px;
+
+// Separator
+$separator-h: 0.5px;
+$separator-opacity: 0.3;
+
+// Z-index
+$z-tabbar: 10;
+
+// Color aliases (Telegram CSS vars)
+$color-bg: var(--tg-theme-bg-color);
+$color-secondary-bg: var(--tg-theme-secondary-bg-color);
+$color-text: var(--tg-theme-text-color);
+$color-hint: var(--tg-theme-hint-color);
+$color-link: var(--tg-theme-link-color);
+$color-button: var(--tg-theme-button-color);
+$color-button-text: var(--tg-theme-button-text-color);
+$color-destructive: var(--tg-theme-destructive-text-color);
+
+// Semantic status colors
+$color-success: #34c759;
+$color-warning: #ff9500;
+$color-error: #ff3b30;

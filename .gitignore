@@ -26,8 +26,7 @@ build
 # Editor / IDE
 CLAUDE.md
 .claude
-.vscode/*
-!.vscode/extensions.json
+.vscode
 .idea
 .DS_Store
 Thumbs.db

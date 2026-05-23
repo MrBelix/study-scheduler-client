@@ -1,0 +1,13 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: var(--tg-content-safe-area-inset-top, 0px);
+}

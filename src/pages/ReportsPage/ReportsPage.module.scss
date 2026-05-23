@@ -1,0 +1,27 @@
+.page {
+  padding-bottom: 16px;
+}
+
+.header {
+  padding: 16px 16px 8px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  letter-spacing: -0.02em;
+}
+
+.stat {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--tg-theme-button-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.grade {
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}

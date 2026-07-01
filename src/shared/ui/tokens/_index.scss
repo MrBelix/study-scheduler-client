@@ -32,6 +32,13 @@ $radius-md: 12px;
 // Layout
 $nav-height: 52px;
 
+// Page layout — the horizontal gutter that page-level content (Sections,
+// SearchInput, form fields) insets from the screen edges, plus standard
+// top/bottom page padding. Keep page content on these so spacing stays uniform.
+$page-gutter: $space-lg; // 16px
+$page-pad-top: $space-md; // 12px
+$page-pad-bottom: $space-xl; // 24px
+
 // Separator (inset hairline rendered via scaleY(.5))
 $separator-h: 1px;
 

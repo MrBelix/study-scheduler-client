@@ -8,7 +8,7 @@
     flex-direction: column;
     align-items: center;
     gap: $space-md;
-    padding: 20px $space-lg $space-xl;
+    padding: 20px 0 $space-xl;
   }
 
   &__name {
@@ -34,7 +34,7 @@
   }
 
   &__footer {
-    padding: 0 $space-2xl;
+    padding: 0 $space-lg;
     font-size: $font-caption;
     line-height: 1.4;
     color: $color-hint;

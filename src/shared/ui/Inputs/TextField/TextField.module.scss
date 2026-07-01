@@ -6,7 +6,6 @@
   gap: 6px;
 
   &__header {
-    padding: 0 $space-lg;
     font-size: $font-caption;
     color: $color-subtitle;
   }
@@ -16,7 +15,7 @@
     border: none;
     background: $color-bg;
     border-radius: $radius-md;
-    padding: $space-md $space-lg;
+    padding: $space-md $space-lg; // internal text inset
     font-family: inherit;
     font-size: $font-callout;
     color: $color-text;
@@ -30,7 +29,6 @@
   }
 
   &__helper {
-    padding: 0 $space-lg;
     font-size: $font-caption;
     line-height: 1.4;
     color: $color-hint;

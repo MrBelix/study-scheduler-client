@@ -6,11 +6,11 @@
   }
 
   &__segment {
-    margin: 0 $space-lg 14px;
+    margin: 0 0 14px;
   }
 
   &__list-header {
-    padding: 0 $space-2xl 7px;
+    padding: 0 $space-lg 7px;
     font-size: $font-caption;
     text-transform: uppercase;
     letter-spacing: 0.03em;
@@ -18,7 +18,7 @@
   }
 
   &__footer {
-    padding: 0 $space-2xl;
+    padding: 0 $space-lg;
     color: $color-hint;
     font-size: $font-caption;
     line-height: 1.4;
@@ -28,7 +28,7 @@
     text-align: center;
     color: $color-hint;
     font-size: $font-body;
-    padding: $space-xl $space-2xl;
+    padding: $space-xl $space-lg;
   }
 
   // --- loading skeleton ---

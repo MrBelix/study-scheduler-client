@@ -10,7 +10,9 @@
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    // Keep content clear of any Telegram overlay at the top of the webview.
-    padding-top: var(--tg-content-safe-area-inset-top, 0px);
+    // Single source of the page horizontal gutter — page content sits full-width
+    // inside this padding, so no component repeats side margins. Top padding
+    // keeps content clear of any Telegram overlay; vertical spacing is per-page.
+    padding: var(--tg-content-safe-area-inset-top, 0px) $page-gutter 0;
   }
 }

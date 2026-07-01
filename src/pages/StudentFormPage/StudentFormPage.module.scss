@@ -5,6 +5,7 @@
     display: flex;
     flex-direction: column;
     gap: $space-lg;
-    padding: $space-lg 0;
+    // Vertical page padding only — TextField self-gutters horizontally.
+    padding: $page-pad-top 0 $page-pad-bottom;
   }
 }

@@ -3,8 +3,10 @@
 .section {
   margin-bottom: 20px;
 
+  // Header/footer keep the extra inner indent ($space-lg); the page gutter is
+  // supplied by the layout, so total inset matches the iOS grouped-list look.
   &__header {
-    padding: 0 $space-2xl 7px;
+    padding: 0 $space-lg 7px;
     font-size: $font-caption;
     font-weight: 400;
     color: $color-subtitle;
@@ -17,11 +19,10 @@
     background: $color-bg;
     border-radius: $radius-md;
     overflow: hidden;
-    margin: 0 $space-lg;
   }
 
   &__footer {
-    padding: 7px $space-2xl 0;
+    padding: 7px $space-lg 0;
     font-size: $font-caption;
     color: $color-hint;
     line-height: 1.4;

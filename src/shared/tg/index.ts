@@ -1,3 +1,5 @@
+import { retrieveRawInitData } from '@tma.js/sdk-react';
+
 export {
   useSignal,
   useLaunchParams,
@@ -12,3 +14,15 @@ export {
   themeParams,
   viewport,
 } from '@tma.js/sdk-react';
+
+/**
+ * Raw init data string for the `Authorization: tma <…>` header.
+ * Returns undefined outside a Mini App context instead of throwing.
+ */
+export function getRawInitData(): string | undefined {
+  try {
+    return retrieveRawInitData();
+  } catch {
+    return undefined;
+  }
+}

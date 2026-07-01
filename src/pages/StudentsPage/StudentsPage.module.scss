@@ -27,12 +27,44 @@
     flex-shrink: 0;
   }
 
-  &__badge {
-    font-size: $font-body;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
+  &__add {
+    display: flex;
+    gap: $space-sm;
+    padding: 0 $space-lg $space-sm;
   }
 
+  &__add-field {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background-color: $color-bg;
+    border-radius: $radius-sm;
+    padding: $space-sm $space-md;
+    font-family: inherit;
+    font-size: $font-callout;
+    color: $color-text;
+    outline: none;
+
+    &::placeholder {
+      color: $color-hint;
+    }
+  }
+
+  &__add-btn {
+    flex-shrink: 0;
+    padding: 0 $space-lg;
+    border-radius: $radius-sm;
+    background-color: $color-button;
+    color: $color-button-text;
+    font-size: $font-body;
+    font-weight: 600;
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+
+  &__status,
   &__empty {
     padding: $space-3xl $space-lg;
     text-align: center;

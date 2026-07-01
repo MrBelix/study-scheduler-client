@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { cx } from '../../lib/cx';
 import styles from './Cell.module.scss';
 
 interface CellProps {
@@ -15,7 +16,7 @@ export function Cell({ before, after, title, subtitle, onClick }: CellProps) {
 
   return (
     <Tag
-      className={`${styles.cell}${onClick ? ` ${styles['cell--clickable']}` : ''}`}
+      className={cx(styles.cell, onClick && styles['cell--clickable'])}
       onClick={onClick}
       {...extraProps}
     >

@@ -1,0 +1,23 @@
+@use '../../shared/ui/tokens' as *;
+
+.error-screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-sm;
+  padding: $space-2xl;
+  text-align: center;
+
+  &__title {
+    font-size: $font-headline;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &__hint {
+    font-size: $font-footnote;
+    color: $color-hint;
+  }
+}

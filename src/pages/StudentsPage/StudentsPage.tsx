@@ -1,42 +1,33 @@
-import { useState } from 'react';
-import { Section } from '../../shared/ui/Section/Section';
-import { Cell } from '../../shared/ui/Cell/Cell';
-import { SearchInput } from '../../shared/ui/Inputs/SearchInput/SearchInput';
+import { useState, type FormEvent } from 'react';
+import { Section, Cell, SearchInput, avatarColor } from '@/shared/ui';
+import { ApiError } from '@/shared/api';
+import { useStudents, useCreateStudent } from '@/features/students/queries';
 import styles from './StudentsPage.module.scss';
 
-const AVATAR_COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#DDA0DD', '#F7B731', '#78C8C8'];
-
-const STUDENTS = [
-  { name: 'Максим Петренко', subject: 'Математика', lessons: 12, progress: 85 },
-  { name: 'Аліса Коваль', subject: 'Англійська мова', lessons: 8, progress: 92 },
-  { name: 'Дмитро Лисенко', subject: 'Фізика', lessons: 6, progress: 78 },
-  { name: 'Юлія Бондаренко', subject: 'Математика', lessons: 10, progress: 88 },
-  { name: 'Олег Мазуренко', subject: 'Хімія', lessons: 5, progress: 67 },
-  { name: 'Соня Яценко', subject: 'Англійська мова', lessons: 14, progress: 95 },
-];
-
 function Avatar({ name }: { name: string }) {
-  const color = AVATAR_COLORS[name.charCodeAt(0) % AVATAR_COLORS.length];
   return (
-    <div className={styles['students-page__avatar']} style={{ backgroundColor: color }}>
+    <div className={styles['students-page__avatar']} style={{ backgroundColor: avatarColor(name) }}>
       {name[0]}
     </div>
   );
 }
 
-function ProgressBadge({ value }: { value: number }) {
-  const color = value >= 90 ? '#34C759' : value >= 75 ? '#FF9500' : '#FF3B30';
-  return <span className={styles['students-page__badge']} style={{ color }}>{value}%</span>;
-}
-
 export function StudentsPage() {
   const [query, setQuery] = useState('');
+  const [name, setName] = useState('');
 
-  const filtered = STUDENTS.filter(
-    (s) =>
-      s.name.toLowerCase().includes(query.toLowerCase()) ||
-      s.subject.toLowerCase().includes(query.toLowerCase()),
-  );
+  const { data, isPending, isError, error } = useStudents();
+  const createStudent = useCreateStudent();
+
+  const students = data ?? [];
+  const filtered = students.filter((s) => s.name.toLowerCase().includes(query.toLowerCase()));
+
+  const handleAdd = (e: FormEvent) => {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    createStudent.mutate({ name: trimmed }, { onSuccess: () => setName('') });
+  };
 
   return (
     <div className={styles['students-page']}>
@@ -44,23 +35,47 @@ export function StudentsPage() {
         <h1 className={styles['students-page__title']}>Студенти</h1>
       </div>
 
+      <form className={styles['students-page__add']} onSubmit={handleAdd}>
+        <input
+          className={styles['students-page__add-field']}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Імʼя нового студента"
+        />
+        <button
+          type="submit"
+          className={styles['students-page__add-btn']}
+          disabled={createStudent.isPending || name.trim() === ''}
+        >
+          Додати
+        </button>
+      </form>
+
       <SearchInput value={query} onChange={setQuery} />
 
-      {filtered.length > 0 ? (
+      {isPending ? (
+        <div className={styles['students-page__status']}>Завантаження…</div>
+      ) : isError ? (
+        <div className={styles['students-page__status']}>
+          {error instanceof ApiError && error.isAuthExpired
+            ? 'Сесія застаріла. Відкрийте застосунок знову.'
+            : 'Не вдалося завантажити студентів'}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className={styles['students-page__empty']}>
+          {students.length === 0 ? 'Ще немає студентів' : 'Студентів не знайдено'}
+        </div>
+      ) : (
         <Section>
           {filtered.map((student) => (
             <Cell
-              key={student.name}
+              key={student.id}
               before={<Avatar name={student.name} />}
               title={student.name}
-              subtitle={`${student.subject} · ${student.lessons} занять`}
-              after={<ProgressBadge value={student.progress} />}
               onClick={() => {}}
             />
           ))}
         </Section>
-      ) : (
-        <div className={styles['students-page__empty']}>Студентів не знайдено</div>
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Section } from '../../shared/ui/Section/Section';
-import { Cell } from '../../shared/ui/Cell/Cell';
+import { Section, Cell } from '@/shared/ui';
+import { cx } from '@/shared/lib/cx';
 import styles from './SchedulePage.module.scss';
 
 const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
@@ -68,7 +68,10 @@ export function SchedulePage() {
           <button
             key={label}
             type="button"
-            className={`${styles['schedule-page__day-chip']}${i === selectedIdx ? ` ${styles['schedule-page__day-chip--active']}` : ''}`}
+            className={cx(
+              styles['schedule-page__day-chip'],
+              i === selectedIdx && styles['schedule-page__day-chip--active'],
+            )}
             onClick={() => setSelectedIdx(i)}
           >
             <span className={styles['schedule-page__day-label']}>{label}</span>

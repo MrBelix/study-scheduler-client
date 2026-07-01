@@ -1,0 +1,51 @@
+// Design-system tokens — the single source of truth for the UI kit.
+//
+// Portability: components depend ONLY on this file, never on the host app.
+// Colors resolve to `--ds-*` custom properties that the host app maps to its
+// own theme (see app/styles/global.scss). Build-time scalars stay Sass vars.
+
+// Spacing
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 12px;
+$space-lg: 16px;
+$space-xl: 24px;
+$space-2xl: 32px;
+$space-3xl: 48px;
+
+// Typography (iOS / Telegram scale)
+$font-xs: 10px;
+$font-sm: 12px;
+$font-caption: 13px;
+$font-footnote: 14px;
+$font-body: 15px;
+$font-callout: 17px;
+$font-headline: 20px;
+$font-title: 28px;
+
+// Radii
+$radius-sm: 10px;
+$radius-md: 12px;
+
+// Separator
+$separator-h: 0.5px;
+$separator-opacity: 0.3;
+
+// Z-index
+$z-tabbar: 10;
+
+// Color aliases → host-themed CSS custom properties.
+// The `--ds-*` contract is defined and mapped by the host app.
+$color-bg: var(--ds-color-bg);
+$color-secondary-bg: var(--ds-color-secondary-bg);
+$color-text: var(--ds-color-text);
+$color-hint: var(--ds-color-hint);
+$color-link: var(--ds-color-link);
+$color-button: var(--ds-color-accent);
+$color-button-text: var(--ds-color-accent-text);
+$color-destructive: var(--ds-color-danger);
+
+// Semantic status colors
+$color-success: var(--ds-color-success);
+$color-warning: var(--ds-color-warning);
+$color-error: var(--ds-color-danger);

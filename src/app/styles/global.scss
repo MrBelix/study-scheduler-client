@@ -10,6 +10,20 @@
 
   --tg-content-safe-area-inset-top: 0px;
   --tg-safe-area-inset-bottom: 0px;
+
+  // Design-system contract: map the host theme (Telegram) onto the `--ds-*`
+  // tokens the UI kit consumes. To reuse the kit elsewhere, only this block
+  // changes — the components stay untouched.
+  --ds-color-bg: var(--tg-theme-bg-color);
+  --ds-color-secondary-bg: var(--tg-theme-secondary-bg-color);
+  --ds-color-text: var(--tg-theme-text-color);
+  --ds-color-hint: var(--tg-theme-hint-color);
+  --ds-color-link: var(--tg-theme-link-color);
+  --ds-color-accent: var(--tg-theme-button-color);
+  --ds-color-accent-text: var(--tg-theme-button-text-color);
+  --ds-color-danger: var(--tg-theme-destructive-text-color);
+  --ds-color-success: #34c759;
+  --ds-color-warning: #ff9500;
 }
 
 @media (prefers-color-scheme: dark) {

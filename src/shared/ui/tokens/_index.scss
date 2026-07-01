@@ -21,29 +21,40 @@ $font-footnote: 14px;
 $font-body: 15px;
 $font-callout: 17px;
 $font-headline: 20px;
+$font-balance: 22px;
+$font-large-title: 24px;
 $font-title: 28px;
 
 // Radii
 $radius-sm: 10px;
 $radius-md: 12px;
 
-// Separator
-$separator-h: 0.5px;
-$separator-opacity: 0.3;
+// Layout
+$nav-height: 52px;
+
+// Separator (inset hairline rendered via scaleY(.5))
+$separator-h: 1px;
 
 // Z-index
+$z-nav: 20;
 $z-tabbar: 10;
 
 // Color aliases → host-themed CSS custom properties.
 // The `--ds-*` contract is defined and mapped by the host app.
-$color-bg: var(--ds-color-bg);
-$color-secondary-bg: var(--ds-color-secondary-bg);
+$color-bg: var(--ds-color-bg); // card / section surface
+$color-secondary-bg: var(--ds-color-secondary-bg); // screen backdrop
+$color-header-bg: var(--ds-color-header-bg);
+$color-secondary-fill: var(--ds-color-secondary-fill);
+$color-tertiary-fill: var(--ds-color-tertiary-fill);
 $color-text: var(--ds-color-text);
+$color-subtitle: var(--ds-color-subtitle);
 $color-hint: var(--ds-color-hint);
 $color-link: var(--ds-color-link);
 $color-button: var(--ds-color-accent);
 $color-button-text: var(--ds-color-accent-text);
 $color-destructive: var(--ds-color-danger);
+$color-separator: var(--ds-color-separator);
+$color-section-separator: var(--ds-color-section-separator);
 
 // Semantic status colors
 $color-success: var(--ds-color-success);

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/colors.css">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/typography.css">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/radius.css">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/shadows.css">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/base.css">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/styles.css">
+<script src="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/_ds_bundle.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .tg-app input::placeholder { color: var(--tg-hint); }
+  .tg-app *::-webkit-scrollbar { width: 0; height: 0; }
+</style>
+</helmet>
+<div class="tg-app {{ themeClass }}" style="width:390px;height:820px;background:var(--tg-bg);color:var(--tg-text);font-family:var(--tg-font-family);border-radius:26px;overflow:hidden;display:flex;flex-direction:column;position:relative;border:1px solid var(--tg-separator);">
+
+  <!-- Nav header -->
+  <div style="position:relative;flex-shrink:0;height:52px;display:flex;align-items:center;justify-content:center;background:var(--tg-header-bg);border-bottom:.5px solid var(--tg-separator);">
+    <sc-if value="{{ showBack }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ back }}" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:2px;border:none;background:transparent;color:var(--tg-accent);font-family:inherit;font-size:17px;cursor:pointer;padding:6px 8px;">
+        <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2L3 10l7 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        Назад
+      </button>
+    </sc-if>
+    <div style="font-size:17px;font-weight:600;letter-spacing:-.01em;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ navTitle }}</div>
+  </div>
+
+  <!-- Scroll content -->
+  <div style="flex:1;overflow-y:auto;">
+
+    <!-- ============ STUDENTS LIST ============ -->
+    <sc-if value="{{ isStudents }}" hint-placeholder-val="{{ true }}">
+      <div style="padding-top:12px;">
+        <!-- Search -->
+        <div style="margin:0 16px 14px;">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--tg-secondary-fill);border-radius:10px;padding:9px 12px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="color:var(--tg-hint);flex-shrink:0;"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.9"></circle><path d="M20 20l-4.5-4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg>
+            <input value="{{ query }}" onInput="{{ onQuery }}" placeholder="Пошук" style="border:none;background:transparent;outline:none;flex:1;min-width:0;font-size:17px;color:var(--tg-text);font-family:inherit;">
+          </div>
+        </div>
+
+        <div style="margin:0 16px 14px;">
+          <x-import component-from-global-scope="DesignSystem_fb83c4.SegmentedControl" items="{{ segItems }}" value="{{ filter }}" on-change="{{ onSeg }}" hint-size="100%,34px"></x-import>
+        </div>
+
+        <div style="font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--tg-subtitle);padding:0 32px 7px;">{{ listHeader }}</div>
+
+        <div style="margin:0 16px 18px;background:var(--tg-section-bg);border-radius:12px;overflow:hidden;">
+          <sc-for list="{{ rows }}" as="item" hint-placeholder-count="6">
+            <div onClick="{{ item.open }}" style="position:relative;display:flex;align-items:center;gap:12px;min-height:60px;padding:9px 14px 9px 16px;cursor:pointer;opacity:{{ item.opacity }};">
+              <div style="width:42px;height:42px;flex-shrink:0;border-radius:50%;background:{{ item.avBg }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:600;user-select:none;">{{ item.avInitials }}</div>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+                <span style="font-size:17px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ item.name }}</span>
+                <span style="font-size:14px;line-height:1.2;color:{{ item.subtitleColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ item.subtitle }}</span>
+              </span>
+              <span style="flex-shrink:0;display:flex;align-items:center;gap:6px;">
+                <span style="font-size:16px;font-weight:600;color:{{ item.trailingColor }};white-space:nowrap;">{{ item.trailingText }}</span>
+                <svg width="8" height="13" viewBox="0 0 8 13" fill="none" style="color:var(--tg-hint);"><path d="M1.5 1.5L6.5 6.5L1.5 11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </span>
+              <sc-if value="{{ item.showDivider }}" hint-placeholder-val="{{ true }}">
+                <span style="position:absolute;left:70px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;color:var(--tg-hint);font-size:15px;padding:24px 32px;">{{ noResultsText }}</div>
+        </sc-if>
+
+        <div style="padding:0 32px 24px;color:var(--tg-hint);font-size:13px;line-height:1.4;">{{ listFooter }}</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ EMPTY STATE ============ -->
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px;height:100%;box-sizing:border-box;">
+        <div style="font-size:72px;line-height:1;margin-bottom:20px;">🧑‍🏫</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:8px;">Ще немає студентів</div>
+        <div style="font-size:15px;line-height:1.45;color:var(--tg-subtitle);max-width:250px;">Додайте першого студента, щоб вести розклад, оплати та баланс в одному місці.</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ STUDENT DETAIL ============ -->
+    <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <!-- Detail header -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 16px 22px;">
+          <div style="width:88px;height:88px;flex-shrink:0;border-radius:50%;background:{{ selected.avBg }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:34px;font-weight:600;user-select:none;">{{ selected.avInitials }}</div>
+          <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="font-size:24px;font-weight:700;letter-spacing:-.02em;">{{ selected.name }}</div>
+            <x-import component-from-global-scope="DesignSystem_fb83c4.Badge" mode="{{ selected.badgeMode }}" hint-size="auto,20px">{{ selected.statusText }}</x-import>
+          </div>
+        </div>
+
+        <!-- Profile section -->
+        <div style="font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--tg-subtitle);padding:0 32px 7px;">Профіль</div>
+        <div style="margin:0 16px 20px;background:var(--tg-section-bg);border-radius:12px;overflow:hidden;">
+          <div style="position:relative;display:flex;align-items:center;min-height:46px;padding:11px 16px;">
+            <span style="flex:1;font-size:17px;">Предмет</span>
+            <span style="color:{{ selected.subjectColor }};font-size:17px;">{{ selected.subjectText }}</span>
+            <span style="position:absolute;left:16px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;min-height:46px;padding:11px 16px;">
+            <span style="flex:1;font-size:17px;">Ставка</span>
+            <span style="color:{{ selected.rateColor }};font-size:17px;">{{ selected.rateText }}</span>
+            <span style="position:absolute;left:16px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;min-height:46px;padding:11px 16px;">
+            <span style="flex:1;font-size:17px;">Контакт</span>
+            <span style="color:var(--tg-link);font-size:17px;">{{ selected.contact }}</span>
+            <span style="position:absolute;left:16px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+          </div>
+          <div style="display:flex;align-items:center;min-height:46px;padding:11px 16px;">
+            <span style="flex:1;font-size:17px;">Додано</span>
+            <span style="color:var(--tg-subtitle);font-size:17px;">{{ selected.added }}</span>
+          </div>
+        </div>
+
+        <!-- Finances section -->
+        <div style="font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--tg-subtitle);padding:0 32px 7px;">Фінанси</div>
+        <div style="margin:0 16px 8px;background:var(--tg-section-bg);border-radius:12px;overflow:hidden;">
+          <div style="position:relative;display:flex;align-items:center;min-height:56px;padding:12px 16px;">
+            <span style="flex:1;font-size:17px;">{{ selected.balanceLabel }}</span>
+            <span style="font-size:22px;font-weight:700;color:{{ selected.balanceColor }};">{{ selected.balanceText }}</span>
+            <span style="position:absolute;left:16px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;min-height:46px;padding:11px 16px;">
+            <span style="flex:1;font-size:17px;">Оплачено загалом</span>
+            <span style="color:var(--tg-subtitle);font-size:17px;">{{ selected.paidText }}</span>
+            <span style="position:absolute;left:16px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+          </div>
+          <div style="display:flex;align-items:center;min-height:46px;padding:11px 16px;">
+            <span style="flex:1;font-size:17px;">Проведено занять</span>
+            <span style="color:var(--tg-subtitle);font-size:17px;">{{ selected.lessonCount }}</span>
+          </div>
+        </div>
+        <div style="padding:0 32px 20px;color:var(--tg-hint);font-size:13px;line-height:1.4;">Баланс = сума оплат − проведені заняття × ставка</div>
+
+        <!-- Actions -->
+        <div style="margin:0 16px 24px;background:var(--tg-section-bg);border-radius:12px;overflow:hidden;">
+          <div style="position:relative;display:flex;align-items:center;min-height:46px;padding:11px 16px;cursor:pointer;">
+            <span style="flex:1;font-size:17px;color:var(--tg-accent);">Додати оплату</span>
+            <span style="position:absolute;left:16px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+          </div>
+          <div style="display:flex;align-items:center;min-height:46px;padding:11px 16px;cursor:pointer;">
+            <span style="flex:1;font-size:17px;color:var(--tg-destructive);">Архівувати студента</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ ADD / EDIT FORM ============ -->
+    <sc-if value="{{ isAdd }}" hint-placeholder-val="{{ false }}">
+      <div style="padding-top:16px;">
+        <div style="margin:0 16px 8px;display:flex;flex-direction:column;gap:16px;">
+          <x-import component-from-global-scope="DesignSystem_fb83c4.Input" header="Ім'я" placeholder="Напр., Марія Коваленко" default-value="{{ form.name }}" hint-size="100%,64px"></x-import>
+          <x-import component-from-global-scope="DesignSystem_fb83c4.Input" header="Ставка за заняття, ₴" placeholder="300" default-value="{{ form.rate }}" helper="Ціна за замовчуванням — підставлятиметься в нові заняття цього студента." hint-size="100%,84px"></x-import>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ PROFILE ============ -->
+    <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+      <div style="padding-top:12px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 16px 24px;">
+          <div style="width:88px;height:88px;flex-shrink:0;border-radius:50%;background:{{ profAvBg }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:34px;font-weight:600;user-select:none;">{{ profAvInitials }}</div>
+          <div style="text-align:center;">
+            <div style="font-size:22px;font-weight:700;letter-spacing:-.02em;">Олена Гриценко</div>
+            <div style="font-size:15px;color:var(--tg-subtitle);margin-top:2px;">@olena_tutor</div>
+          </div>
+        </div>
+
+        <div style="font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--tg-subtitle);padding:0 32px 7px;">Налаштування</div>
+        <div style="margin:0 16px 20px;background:var(--tg-section-bg);border-radius:12px;overflow:hidden;">
+          <div style="position:relative;display:flex;align-items:center;gap:12px;min-height:46px;padding:9px 16px;">
+            <span style="width:29px;height:29px;border-radius:8px;background:#8e8e93;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style="color:#fff;"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.9"></circle><path d="M12 3.5v17" stroke="currentColor" stroke-width="1.9"></path><path d="M12 3.5a8.5 8.5 0 010 17" fill="currentColor"></path></svg>
+            </span>
+            <span style="flex:1;font-size:17px;">Тема</span>
+            <span style="color:var(--tg-subtitle);font-size:17px;">Авто</span>
+            <span style="color:var(--tg-hint);font-size:20px;">›</span>
+            <span style="position:absolute;left:56px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;gap:12px;min-height:46px;padding:9px 16px;">
+            <span style="width:29px;height:29px;border-radius:8px;background:#34c759;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style="color:#fff;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.9"></circle><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" stroke="currentColor" stroke-width="1.5"></path></svg>
+            </span>
+            <span style="flex:1;font-size:17px;">Мова</span>
+            <span style="color:var(--tg-subtitle);font-size:17px;">Українська</span>
+            <span style="color:var(--tg-hint);font-size:20px;">›</span>
+            <span style="position:absolute;left:56px;right:0;bottom:0;height:1px;transform:scaleY(.5);background:var(--tg-section-separator);"></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:46px;padding:9px 16px;">
+            <span style="width:29px;height:29px;border-radius:8px;background:#ff9500;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style="color:#fff;"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+            </span>
+            <span style="flex:1;font-size:17px;">Політика скасування</span>
+            <span style="color:var(--tg-hint);font-size:20px;">›</span>
+          </div>
+        </div>
+
+        <div style="font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--tg-subtitle);padding:0 32px 7px;">Про застосунок</div>
+        <div style="margin:0 16px 20px;background:var(--tg-section-bg);border-radius:12px;overflow:hidden;">
+          <div style="display:flex;align-items:center;min-height:46px;padding:11px 16px;">
+            <span style="flex:1;font-size:17px;">Версія</span>
+            <span style="color:var(--tg-subtitle);font-size:17px;">1.0.0</span>
+          </div>
+        </div>
+        <div style="padding:0 32px 24px;color:var(--tg-hint);font-size:13px;line-height:1.4;">Тема й мова визначаються Telegram. StudyScheduler · Mini App у Telegram</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ SCHEDULE / REPORTS placeholders ============ -->
+    <sc-if value="{{ isSchedule }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px;height:100%;box-sizing:border-box;">
+        <div style="font-size:64px;line-height:1;margin-bottom:18px;">🗓️</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:8px;">Розклад</div>
+        <div style="font-size:15px;line-height:1.45;color:var(--tg-subtitle);max-width:240px;">Тут з'явиться список занять на сьогодні.</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isReports }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px;height:100%;box-sizing:border-box;">
+        <div style="font-size:64px;line-height:1;margin-bottom:18px;">📊</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:8px;">Звіти</div>
+        <div style="font-size:15px;line-height:1.45;color:var(--tg-subtitle);max-width:240px;">Заробіток за місяць і список боржників.</div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <!-- Main Button -->
+  <sc-if value="{{ showMain }}" hint-placeholder-val="{{ true }}">
+    <div style="flex-shrink:0;padding:8px 14px 10px;background:var(--tg-bg);">
+      <x-import component-from-global-scope="DesignSystem_fb83c4.Button" mode="filled" size="l" stretched="{{ true }}" on-click="{{ mainAction }}" style="border-radius:12px;height:50px;font-size:17px;font-weight:600;" hint-size="100%,50px">{{ mainLabel }}</x-import>
+    </div>
+  </sc-if>
+
+  <!-- Tab bar -->
+  <div style="flex-shrink:0;padding-bottom:6px;">
+    <x-import component-from-global-scope="DesignSystem_fb83c4.Tabbar" items="{{ tabItems }}" value="{{ activeTab }}" on-change="{{ onTab }}" hint-size="100%,56px"></x-import>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:820},&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;students&quot;,&quot;options&quot;:[&quot;students&quot;,&quot;detail&quot;,&quot;add&quot;,&quot;profile&quot;,&quot;empty&quot;,&quot;schedule&quot;,&quot;reports&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Screen&quot;}}">
+class Component extends DCLogic {
+  state = {};
+
+  fmt(n) {
+    return String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00A0");
+  }
+
+  avatar(name) {
+    const ramp = ["var(--tg-avatar-1)", "var(--tg-avatar-2)", "var(--tg-avatar-3)", "var(--tg-avatar-4)", "var(--tg-avatar-5)", "var(--tg-avatar-6)", "var(--tg-avatar-7)"];
+    const str = String(name || "");
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % ramp.length;
+    const initials = str.trim().split(/\s+/).slice(0, 2).map((p) => p[0] || "").join("").toUpperCase();
+    return { bg: ramp[h], initials };
+  }
+
+  icon(children) {
+    return React.createElement(
+      "svg",
+      { width: 26, height: 26, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round" },
+      children
+    );
+  }
+
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const start = this.props.start || "students";
+    const view = this.state.view || start;
+    const query = this.state.query ?? "";
+
+    const students = [
+      { id: 7, name: "Богдан Кравець", subject: "", rate: 0, paid: 0, lessons: 0, contact: "@bohdan_k", added: "Сьогодні" },
+      { id: 1, name: "Марія Коваленко", subject: "Англійська", rate: 300, paid: 2400, lessons: 8, contact: "@maria_k", added: "12 січ 2026" },
+      { id: 2, name: "Олег Петренко", subject: "Математика", rate: 250, paid: 2000, lessons: 10, contact: "@oleh_p", added: "3 лют 2026" },
+      { id: 3, name: "Софія Бондаренко", subject: "Українська мова", rate: 350, paid: 6300, lessons: 15, contact: "@sofiia_b", added: "20 гру 2025" },
+      { id: 4, name: "Дмитро Шевченко", subject: "Фізика", rate: 400, paid: 2000, lessons: 5, contact: "+380 67 123 4567", added: "8 бер 2026" },
+      { id: 5, name: "Анна Ткаченко", subject: "Хімія", rate: 280, paid: 1680, lessons: 9, contact: "@anna_t", added: "15 лют 2026" },
+      { id: 6, name: "Іван Мельник", subject: "Історія", rate: 200, paid: 1400, lessons: 6, contact: "@ivan_m", added: "1 бер 2026" },
+      { id: 8, name: "Тарас Іваненко", subject: "Географія", rate: 220, paid: 1760, lessons: 8, contact: "@taras_i", added: "5 вер 2025", archived: true },
+      { id: 9, name: "Наталія Лисенко", subject: "Біологія", rate: 260, paid: 1040, lessons: 5, contact: "@natali_l", added: "2 жов 2025", archived: true },
+    ].map((s) => ({ ...s, lessonCount: s.lessons, balance: s.paid - s.lessons * s.rate }));
+
+    const balColor = (b) => (b > 0 ? "var(--tg-success)" : b < 0 ? "var(--tg-destructive)" : "var(--tg-hint)");
+    const balText = (b) => (b > 0 ? "+" + this.fmt(b) + " ₴" : b < 0 ? "−" + this.fmt(b) + " ₴" : "0 ₴");
+
+    const filter = this.state.filter || "active";
+    const activeCount = students.filter((s) => !s.archived).length;
+    const archCount = students.filter((s) => s.archived).length;
+    const q = query.trim().toLowerCase();
+    const base = students.filter((s) => (filter === "archived" ? s.archived : !s.archived));
+    const filtered = q ? base.filter((s) => s.name.toLowerCase().includes(q)) : base;
+    const archView = filter === "archived";
+
+    const rows = filtered.map((s, i) => ({
+      id: s.id,
+      name: s.name,
+      opacity: archView ? "0.5" : "1",
+      avBg: this.avatar(s.name).bg,
+      avInitials: this.avatar(s.name).initials,
+      subtitle: s.subject
+        ? s.subject + (s.rate ? " · " + this.fmt(s.rate) + " ₴/год" : "")
+        : "Предмет не вказано",
+      subtitleColor: s.subject ? "var(--tg-subtitle)" : "var(--tg-hint)",
+      trailingText: balText(s.balance),
+      trailingColor: balColor(s.balance),
+      showDivider: i < filtered.length - 1,
+      open: () => this.setState({ view: "detail", selectedId: s.id }),
+    }));
+
+    const debtors = students.filter((s) => !s.archived && s.balance < 0).length;
+    const segItems = [
+      { label: "Активні · " + activeCount, value: "active" },
+      { label: "Архів · " + archCount, value: "archived" },
+    ];
+    const selId = this.state.selectedId ?? 1;
+    const sel = students.find((s) => s.id === selId) || students[0];
+    const selAv = this.avatar(sel.name);
+    const selected = {
+      name: sel.name,
+      avBg: selAv.bg,
+      avInitials: selAv.initials,
+      subjectText: sel.subject || "Не вказано",
+      subjectColor: sel.subject ? "var(--tg-subtitle)" : "var(--tg-hint)",
+      rateText: sel.rate ? this.fmt(sel.rate) + " ₴/заняття" : "Не вказано",
+      rateColor: sel.rate ? "var(--tg-subtitle)" : "var(--tg-hint)",
+      contact: sel.contact,
+      added: sel.added,
+      lessonCount: sel.lessons,
+      paidText: this.fmt(sel.paid) + " ₴",
+      balanceText: balText(sel.balance),
+      balanceColor: balColor(sel.balance),
+      balanceLabel: sel.balance < 0 ? "Борг" : "Баланс",
+      statusText: "Активний",
+      badgeMode: "success",
+    };
+    const editing = !!this.state.editing;
+    const form = editing
+      ? { name: sel.name, subject: sel.subject, rate: String(sel.rate), contact: sel.contact }
+      : { name: "", subject: "", rate: "", contact: "" };
+
+    const tabFor = { students: "students", empty: "students", detail: "students", add: "students", profile: "profile", schedule: "schedule", reports: "reports" };
+    const activeTab = tabFor[view] || "students";
+
+    const flags = {
+      isStudents: view === "students",
+      isEmpty: view === "empty",
+      isDetail: view === "detail",
+      isAdd: view === "add",
+      isProfile: view === "profile",
+      isSchedule: view === "schedule",
+      isReports: view === "reports",
+    };
+
+    const navTitle = flags.isDetail ? sel.name.split(" ")[0]
+      : flags.isAdd ? (editing ? "Редагувати" : "Новий студент")
+      : flags.isProfile ? "Профіль"
+      : flags.isSchedule ? "Розклад"
+      : flags.isReports ? "Звіти"
+      : "Студенти";
+
+    const goList = () => this.setState({ view: "students", editing: false });
+
+    let showMain = true, mainLabel = "Додати студента", mainAction = () => this.setState({ view: "add", editing: false });
+    if (flags.isDetail) { mainLabel = "Редагувати"; mainAction = () => this.setState({ view: "add", editing: true }); }
+    else if (flags.isAdd) { mainLabel = editing ? "Зберегти зміни" : "Зберегти"; mainAction = goList; }
+    else if (flags.isProfile || flags.isSchedule || flags.isReports) { showMain = false; }
+
+    const iconStroke = (d) => React.createElement("path", { d });
+    const tabItems = [
+      { value: "schedule", label: "Розклад", icon: this.icon([
+          React.createElement("rect", { key: "r", x: 3.5, y: 5, width: 17, height: 15, rx: 2.5 }),
+          React.createElement("path", { key: "p", d: "M3.5 9.5h17M8 3v4M16 3v4" }),
+        ]) },
+      { value: "students", label: "Студенти", icon: this.icon([
+          React.createElement("circle", { key: "h1", cx: 9, cy: 8, r: 3.2 }),
+          React.createElement("path", { key: "b1", d: "M3 20c0-3.2 2.7-5 6-5s6 1.8 6 5" }),
+          React.createElement("path", { key: "h2", d: "M16 5.2a3 3 0 010 5.6" }),
+          React.createElement("path", { key: "b2", d: "M17.5 15c2.4.3 3.8 1.9 3.8 4.6" }),
+        ]) },
+      { value: "reports", label: "Звіти", icon: this.icon([
+          React.createElement("path", { key: "a", d: "M4 20V11M10 20V5M16 20v-7" }),
+          React.createElement("path", { key: "b", d: "M3 20h18" }),
+        ]) },
+      { value: "profile", label: "Профіль", icon: this.icon([
+          React.createElement("circle", { key: "h", cx: 12, cy: 8, r: 3.6 }),
+          React.createElement("path", { key: "b", d: "M4.5 20c0-3.6 3.3-6 7.5-6s7.5 2.4 7.5 6" }),
+        ]) },
+    ];
+
+    const profAv = this.avatar("Олена Гриценко");
+    return {
+      dark,
+      profAvBg: profAv.bg,
+      profAvInitials: profAv.initials,
+      themeClass: dark ? "tg-dark" : "",
+      ...flags,
+      navTitle,
+      showBack: flags.isDetail || flags.isAdd,
+      back: goList,
+      query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      rows,
+      segItems,
+      filter,
+      onSeg: (v) => this.setState({ filter: v }),
+      noResults: flags.isStudents && rows.length === 0,
+      noResultsText: q ? "Нікого не знайдено" : archView ? "Архів порожній" : "Ще немає студентів",
+      listHeader: q ? "Результати"
+        : archView ? archCount + " в архіві"
+        : activeCount + " студентів · " + debtors + " з боргом",
+      listFooter: archView
+        ? "Заархівовані студенти приховані зі списку та звітів."
+        : "Торкніться картки, щоб відкрити профіль і фінанси.",
+      selected,
+      form,
+      showMain,
+      mainLabel,
+      mainAction,
+      tabItems,
+      activeTab,
+      onTab: (v) => {
+        if (v === "students") this.setState({ view: "students", editing: false });
+        else this.setState({ view: v, editing: false });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

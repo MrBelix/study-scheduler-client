@@ -10,6 +10,6 @@
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-top: var(--tg-content-safe-area-inset-top, 0px);
+    // The safe-area top inset is owned by the sticky NavHeader on each page.
   }
 }

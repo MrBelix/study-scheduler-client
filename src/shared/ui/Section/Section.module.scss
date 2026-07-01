@@ -1,27 +1,27 @@
 @use '../../../app/styles/variables' as *;
 
 .section {
-  margin-bottom: $space-lg;
+  margin-bottom: 20px;
 
   &__header {
-    padding: 0 $space-2xl $space-sm;
+    padding: 0 $space-2xl 7px;
     font-size: $font-caption;
     font-weight: 400;
-    color: $color-hint;
+    color: $color-subtitle;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     line-height: 1.3;
   }
 
   &__body {
-    background-color: $color-bg;
+    background: $color-bg;
     border-radius: $radius-md;
     overflow: hidden;
     margin: 0 $space-lg;
   }
 
   &__footer {
-    padding: $space-sm $space-2xl 0;
+    padding: 7px $space-2xl 0;
     font-size: $font-caption;
     color: $color-hint;
     line-height: 1.4;

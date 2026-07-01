@@ -1,0 +1,30 @@
+@use '../../../app/styles/variables' as *;
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60vh;
+  padding: $space-3xl $space-2xl;
+
+  &__glyph {
+    font-size: 72px;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    font-size: $font-headline;
+    font-weight: 600;
+    margin-bottom: $space-sm;
+  }
+
+  &__description {
+    max-width: 250px;
+    font-size: $font-body;
+    line-height: 1.45;
+    color: $color-subtitle;
+  }
+}

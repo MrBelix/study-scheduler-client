@@ -10,12 +10,13 @@ export function SearchInput({ value, onChange, placeholder = 'Пошук' }: Sea
   return (
     <div className={styles['search-input']}>
       <div className={styles['search-input__bar']}>
-        <svg className={styles['search-input__icon']} width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M11.74 10.33a6.5 6.5 0 10-1.41 1.41l3.47 3.46 1.41-1.41-3.47-3.46zm-5.24.67a4.5 4.5 0 110-9 4.5 4.5 0 010 9z" />
+        <svg className={styles['search-input__icon']} width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="1.9" />
+          <path d="M20 20l-4.5-4.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
         </svg>
         <input
           className={styles['search-input__field']}
-          type="search"
+          type="text"
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}

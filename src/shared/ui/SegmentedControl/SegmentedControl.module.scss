@@ -1,0 +1,40 @@
+@use '../../../app/styles/variables' as *;
+
+.segmented {
+  position: relative;
+  display: flex;
+  height: 34px;
+  padding: 2px;
+  border-radius: 9px;
+  background: $color-secondary-fill;
+
+  &__pill {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    border-radius: 7px;
+    background: $color-bg;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__btn {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 $space-sm;
+    color: $color-text;
+    font-size: $font-body;
+    font-weight: 400;
+    white-space: nowrap;
+    transition: font-weight 0.15s ease;
+
+    &--active {
+      font-weight: 600;
+    }
+  }
+}

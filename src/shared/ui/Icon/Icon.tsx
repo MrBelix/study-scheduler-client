@@ -13,10 +13,14 @@ export function Icon({ name, size = 24, className }: IconProps) {
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="currentColor"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.9}
+      strokeLinecap="round"
+      strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d={icons[name]} />
+      {icons[name]}
     </svg>
   );
 }

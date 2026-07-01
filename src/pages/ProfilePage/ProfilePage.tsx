@@ -1,63 +1,82 @@
-import { Section, Cell, Icon } from '@/shared/ui';
+import { type ReactNode } from 'react';
+import { NavHeader, Section, Cell, Avatar } from '@/shared/ui';
 import styles from './ProfilePage.module.scss';
 
-function ChevronRight() {
+function Tile({ color, children }: { color: string; children: ReactNode }) {
   return (
-    <svg width="7" height="12" viewBox="0 0 7 12" fill="none">
-      <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <span className={styles['profile__tile']} style={{ background: color }}>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        {children}
+      </svg>
+    </span>
   );
 }
 
 export function ProfilePage() {
   return (
-    <div className={styles['profile-page']}>
-      <div className={styles['profile-page__avatar-section']}>
-        <div className={styles['profile-page__avatar']}>ОК</div>
-        <div className={styles['profile-page__name']}>Олена Коваленко</div>
-        <div className={styles['profile-page__role']}>Репетитор · Математика та фізика</div>
-      </div>
+    <div className={styles['profile']}>
+      <NavHeader title="Профіль" />
 
-      <Section>
-        <Cell title="Telegram" subtitle="@tutor_olena" />
-        <Cell title="Телефон" subtitle="+380 93 123-45-67" />
-        <Cell title="Email" subtitle="o.kovalenko@gmail.com" />
-      </Section>
+      <div className={styles['profile__header']}>
+        <Avatar name="Олена Гриценко" size={88} />
+        <div className={styles['profile__name']}>Олена Гриценко</div>
+        <div className={styles['profile__username']}>@olena_tutor</div>
+      </div>
 
       <Section header="Налаштування">
         <Cell
-          before={<Icon name="bell" size={22} className={styles['profile-page__cell-icon']} />}
-          title="Сповіщення"
-          after={<ChevronRight />}
-          onClick={() => {}}
-        />
-        <Cell
-          before={<Icon name="moon" size={22} className={styles['profile-page__cell-icon']} />}
+          inset={56}
+          leading={
+            <Tile color="#8e8e93">
+              <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.9" />
+              <path d="M12 3.5v17" stroke="currentColor" strokeWidth="1.9" />
+              <path d="M12 3.5a8.5 8.5 0 010 17" fill="currentColor" />
+            </Tile>
+          }
           title="Тема"
-          after={
-            <span className={styles['profile-page__value-hint']}>
-              Автоматично <ChevronRight />
-            </span>
-          }
-          onClick={() => {}}
+          value="Авто"
+          chevron
         />
         <Cell
-          before={<Icon name="globe" size={22} className={styles['profile-page__cell-icon']} />}
+          inset={56}
+          leading={
+            <Tile color="#34c759">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.9" />
+              <path
+                d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+            </Tile>
+          }
           title="Мова"
-          after={
-            <span className={styles['profile-page__value-hint']}>
-              Українська <ChevronRight />
-            </span>
-          }
-          onClick={() => {}}
+          value="Українська"
+          chevron
         />
         <Cell
-          before={<Icon name="info" size={22} className={styles['profile-page__cell-icon']} />}
-          title="Про застосунок"
-          after={<ChevronRight />}
-          onClick={() => {}}
+          inset={56}
+          leading={
+            <Tile color="#ff9500">
+              <path
+                d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinejoin="round"
+              />
+            </Tile>
+          }
+          title="Політика скасування"
+          chevron
         />
       </Section>
+
+      <Section header="Про застосунок">
+        <Cell title="Версія" value="1.0.0" />
+      </Section>
+
+      <div className={styles['profile__footer']}>
+        Тема й мова визначаються Telegram. StudyScheduler · Mini App у Telegram
+      </div>
     </div>
   );
 }

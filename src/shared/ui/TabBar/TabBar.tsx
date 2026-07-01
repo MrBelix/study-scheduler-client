@@ -6,9 +6,9 @@ import styles from './TabBar.module.scss';
 
 const tabs: { to: string; label: string; icon: IconName; end?: boolean }[] = [
   { to: '/', label: 'Розклад', icon: 'calendar', end: true },
-  { to: '/students', label: 'Студенти', icon: 'people' },
-  { to: '/reports', label: 'Звіти', icon: 'chart' },
-  { to: '/profile', label: 'Профіль', icon: 'person' },
+  { to: '/students', label: 'Студенти', icon: 'users' },
+  { to: '/reports', label: 'Звіти', icon: 'barChart' },
+  { to: '/profile', label: 'Профіль', icon: 'user' },
 ];
 
 export function TabBar() {
@@ -24,7 +24,7 @@ export function TabBar() {
           }
         >
           <span className={styles['tab-bar__icon']}>
-            <Icon name={tab.icon} />
+            <Icon name={tab.icon} size={26} />
           </span>
           <span className={styles['tab-bar__label']}>{tab.label}</span>
         </NavLink>

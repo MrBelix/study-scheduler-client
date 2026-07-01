@@ -1,0 +1,22 @@
+@use '../../../app/styles/variables' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 $space-sm;
+  border-radius: 999px;
+  font-size: $font-caption;
+  font-weight: 600;
+  line-height: 1;
+
+  &--success {
+    color: $color-success;
+    background: color-mix(in srgb, #{$color-success} 15%, transparent);
+  }
+
+  &--muted {
+    color: $color-hint;
+    background: color-mix(in srgb, #{$color-hint} 15%, transparent);
+  }
+}

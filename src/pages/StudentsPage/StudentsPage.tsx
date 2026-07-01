@@ -1,82 +1,117 @@
-import { useState, type FormEvent } from 'react';
-import { Section, Cell, SearchInput, avatarColor } from '@/shared/ui';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { NavHeader, Section, Cell, Avatar, SearchInput, SegmentedControl } from '@/shared/ui';
+import type { SegmentItem } from '@/shared/ui';
 import { ApiError } from '@/shared/api';
-import { useStudents, useCreateStudent } from '@/features/students/queries';
+import { useMainButton } from '@/shared/tg';
+import { useStudents } from '@/features/students/queries';
+import { balanceText, balanceColor, studentSubtitle, deriveFinance } from '@/features/students/model';
 import styles from './StudentsPage.module.scss';
 
-function Avatar({ name }: { name: string }) {
+type Filter = 'active' | 'archived';
+
+function SkeletonList() {
   return (
-    <div className={styles['students-page__avatar']} style={{ backgroundColor: avatarColor(name) }}>
-      {name[0]}
-    </div>
+    <Section>
+      {Array.from({ length: 6 }, (_, i) => (
+        <Cell
+          key={i}
+          inset={70}
+          minHeight={60}
+          leading={<span className={styles['students-page__skeleton-avatar']} />}
+          title={<span className={styles['students-page__skeleton-line']} />}
+          subtitle={<span className={styles['students-page__skeleton-line']} data-short />}
+        />
+      ))}
+    </Section>
   );
 }
 
 export function StudentsPage() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
-  const [name, setName] = useState('');
+  const [filter, setFilter] = useState<Filter>('active');
 
   const { data, isPending, isError, error } = useStudents();
-  const createStudent = useCreateStudent();
+
+  useMainButton({ text: 'Додати студента', onClick: () => navigate('/students/new') });
 
   const students = data ?? [];
-  const filtered = students.filter((s) => s.name.toLowerCase().includes(query.toLowerCase()));
+  const activeCount = students.filter((s) => s.status !== 'Archived').length;
+  const archCount = students.filter((s) => s.status === 'Archived').length;
+  const debtors = students.filter((s) => s.status !== 'Archived' && deriveFinance(s).balance < 0).length;
 
-  const handleAdd = (e: FormEvent) => {
-    e.preventDefault();
-    const trimmed = name.trim();
-    if (!trimmed) return;
-    createStudent.mutate({ name: trimmed }, { onSuccess: () => setName('') });
-  };
+  const q = query.trim().toLowerCase();
+  const base = students.filter((s) => (filter === 'archived' ? s.status === 'Archived' : s.status !== 'Archived'));
+  const filtered = q ? base.filter((s) => s.name.toLowerCase().includes(q)) : base;
+
+  const segItems: SegmentItem<Filter>[] = [
+    { label: `Активні · ${activeCount}`, value: 'active' },
+    { label: `Архів · ${archCount}`, value: 'archived' },
+  ];
+
+  const listHeader = q
+    ? 'Результати'
+    : filter === 'archived'
+      ? `${archCount} в архіві`
+      : `${activeCount} студентів · ${debtors} з боргом`;
+  const listFooter =
+    filter === 'archived'
+      ? 'Заархівовані студенти приховані зі списку та звітів.'
+      : 'Торкніться картки, щоб відкрити профіль і фінанси.';
+  const noResultsText = q ? 'Нікого не знайдено' : filter === 'archived' ? 'Архів порожній' : 'Ще немає студентів';
 
   return (
     <div className={styles['students-page']}>
-      <div className={styles['students-page__header']}>
-        <h1 className={styles['students-page__title']}>Студенти</h1>
+      <NavHeader title="Студенти" />
+
+      <div className={styles['students-page__body']}>
+        <SearchInput value={query} onChange={setQuery} />
+        <div className={styles['students-page__segment']}>
+          <SegmentedControl items={segItems} value={filter} onChange={setFilter} />
+        </div>
+
+        {isError ? (
+          <div className={styles['students-page__status']}>
+            {error instanceof ApiError && error.isAuthExpired
+              ? 'Сесія застаріла — відкрийте застосунок знову'
+              : 'Не вдалося завантажити'}
+          </div>
+        ) : isPending ? (
+          <SkeletonList />
+        ) : (
+          <>
+            <div className={styles['students-page__list-header']}>{listHeader}</div>
+            {filtered.length === 0 ? (
+              <div className={styles['students-page__status']}>{noResultsText}</div>
+            ) : (
+              <Section>
+                {filtered.map((student) => {
+                  const sub = studentSubtitle(student);
+                  const { balance } = deriveFinance(student);
+                  return (
+                    <Cell
+                      key={student.id}
+                      leading={<Avatar name={student.name} size={42} />}
+                      title={student.name}
+                      subtitle={sub.text}
+                      subtitleMuted={sub.muted}
+                      value={balanceText(balance)}
+                      valueColor={balanceColor(balance)}
+                      chevron
+                      inset={70}
+                      minHeight={60}
+                      dimmed={filter === 'archived'}
+                      onClick={() => navigate(`/students/${student.id}`)}
+                    />
+                  );
+                })}
+              </Section>
+            )}
+            <div className={styles['students-page__footer']}>{listFooter}</div>
+          </>
+        )}
       </div>
-
-      <form className={styles['students-page__add']} onSubmit={handleAdd}>
-        <input
-          className={styles['students-page__add-field']}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Імʼя нового студента"
-        />
-        <button
-          type="submit"
-          className={styles['students-page__add-btn']}
-          disabled={createStudent.isPending || name.trim() === ''}
-        >
-          Додати
-        </button>
-      </form>
-
-      <SearchInput value={query} onChange={setQuery} />
-
-      {isPending ? (
-        <div className={styles['students-page__status']}>Завантаження…</div>
-      ) : isError ? (
-        <div className={styles['students-page__status']}>
-          {error instanceof ApiError && error.isAuthExpired
-            ? 'Сесія застаріла. Відкрийте застосунок знову.'
-            : 'Не вдалося завантажити студентів'}
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className={styles['students-page__empty']}>
-          {students.length === 0 ? 'Ще немає студентів' : 'Студентів не знайдено'}
-        </div>
-      ) : (
-        <Section>
-          {filtered.map((student) => (
-            <Cell
-              key={student.id}
-              before={<Avatar name={student.name} />}
-              title={student.name}
-              onClick={() => {}}
-            />
-          ))}
-        </Section>
-      )}
     </div>
   );
 }

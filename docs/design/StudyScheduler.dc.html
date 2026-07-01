@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/tokens/colors.css">
+<script src="_ds/tg-ds-fb83c470-0ca4-414b-898f-6d3898183665/_ds_bundle.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e7e8ec; }
+  .board { font-family: var(--tg-font-family); color: #1a1a1a; padding: 44px 48px 64px; }
+  .b-title { font-size: 30px; font-weight: 700; letter-spacing: -.02em; margin: 0; }
+  .b-sub { font-size: 15px; color: #6a6d75; margin: 6px 0 0; max-width: 640px; line-height: 1.5; }
+  .grp-hd { display: flex; align-items: baseline; gap: 10px; margin: 44px 0 20px; }
+  .grp-name { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+  .grp-note { font-size: 13px; color: #8a8d95; }
+  .row { display: flex; flex-wrap: wrap; gap: 34px; align-items: flex-start; }
+  .art { display: flex; flex-direction: column; gap: 11px; }
+  .cap { display: flex; align-items: center; gap: 8px; }
+  .cid { font: 600 11px ui-monospace, Menlo, monospace; padding: 2px 7px; background: rgba(0,0,0,.07); color: #33363d; border-radius: 5px; }
+  .cid.dk { background: #232e3c; color: #cfe0f0; }
+  .cname { font-size: 13px; font-weight: 500; color: #33363d; }
+  .chint { font-size: 12px; color: #9a9da4; }
+  .frame { border-radius: 30px; box-shadow: 0 12px 30px rgba(20,24,34,.14), 0 2px 6px rgba(20,24,34,.08); padding: 5px; background: #d6d8de; }
+  .frame.dk { background: #1a2330; box-shadow: 0 12px 34px rgba(0,0,0,.4); }
+</style>
+</helmet>
+<div class="board">
+  <p class="b-title">StudyScheduler</p>
+  <p class="b-sub">Кишеньковий CRM для приватних репетиторів у Telegram. Студенти, картка студента, додавання та профіль — рідний вигляд Telegram Mini App, світла й темна теми. Торкайтесь карток, вкладок і кнопок — екрани навігуються.</p>
+
+  <!-- LIGHT -->
+  <div class="grp-hd">
+    <span class="grp-name">Основний потік · світла тема</span>
+    <span class="grp-note">інтерактивно · натискайте картки, вкладки, MainButton</span>
+  </div>
+  <div class="row">
+    <div class="art">
+      <div class="cap"><span class="cid">L1</span><span class="cname">Студенти</span><span class="chint">пошук + список</span></div>
+      <div class="frame"><dc-import name="TutorApp" dark="{{ false }}" start="students" hint-size="390px,820px"></dc-import></div>
+    </div>
+    <div class="art">
+      <div class="cap"><span class="cid">L2</span><span class="cname">Студент — картка</span><span class="chint">профіль + фінанси</span></div>
+      <div class="frame"><dc-import name="TutorApp" dark="{{ false }}" start="detail" hint-size="390px,820px"></dc-import></div>
+    </div>
+    <div class="art">
+      <div class="cap"><span class="cid">L3</span><span class="cname">Новий студент</span><span class="chint">форма + MainButton</span></div>
+      <div class="frame"><dc-import name="TutorApp" dark="{{ false }}" start="add" hint-size="390px,820px"></dc-import></div>
+    </div>
+    <div class="art">
+      <div class="cap"><span class="cid">L4</span><span class="cname">Профіль</span><span class="chint">репетитор + налаштування</span></div>
+      <div class="frame"><dc-import name="TutorApp" dark="{{ false }}" start="profile" hint-size="390px,820px"></dc-import></div>
+    </div>
+  </div>
+
+  <!-- DARK -->
+  <div class="grp-hd">
+    <span class="grp-name">Темна тема · Telegram Night</span>
+    <span class="grp-note">ті самі екрани, кольори з тем-параметрів</span>
+  </div>
+  <div class="row">
+    <div class="art">
+      <div class="cap"><span class="cid dk">D1</span><span class="cname">Студенти</span></div>
+      <div class="frame dk"><dc-import name="TutorApp" dark="{{ true }}" start="students" hint-size="390px,820px"></dc-import></div>
+    </div>
+    <div class="art">
+      <div class="cap"><span class="cid dk">D2</span><span class="cname">Студент — картка</span></div>
+      <div class="frame dk"><dc-import name="TutorApp" dark="{{ true }}" start="detail" hint-size="390px,820px"></dc-import></div>
+    </div>
+    <div class="art">
+      <div class="cap"><span class="cid dk">D3</span><span class="cname">Новий студент</span></div>
+      <div class="frame dk"><dc-import name="TutorApp" dark="{{ true }}" start="add" hint-size="390px,820px"></dc-import></div>
+    </div>
+    <div class="art">
+      <div class="cap"><span class="cid dk">D4</span><span class="cname">Профіль</span></div>
+      <div class="frame dk"><dc-import name="TutorApp" dark="{{ true }}" start="profile" hint-size="390px,820px"></dc-import></div>
+    </div>
+  </div>
+
+  <!-- STATES -->
+  <div class="grp-hd">
+    <span class="grp-name">Порожній стан</span>
+    <span class="grp-note">перший запуск, ще немає студентів</span>
+  </div>
+  <div class="row">
+    <div class="art">
+      <div class="cap"><span class="cid">S1</span><span class="cname">Порожній список · світла</span></div>
+      <div class="frame"><dc-import name="TutorApp" dark="{{ false }}" start="empty" hint-size="390px,820px"></dc-import></div>
+    </div>
+    <div class="art">
+      <div class="cap"><span class="cid dk">S2</span><span class="cname">Порожній список · темна</span></div>
+      <div class="frame dk"><dc-import name="TutorApp" dark="{{ true }}" start="empty" hint-size="390px,820px"></dc-import></div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

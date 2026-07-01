@@ -14,6 +14,15 @@ export function useStudents() {
   });
 }
 
+/** A single student, selected from the shared students cache by id. */
+export function useStudent(id: string | undefined) {
+  return useQuery({
+    queryKey: studentKeys.all,
+    queryFn: ({ signal }) => getStudents(signal),
+    select: (list) => list.find((s) => s.id === id),
+  });
+}
+
 export function useCreateStudent() {
   const queryClient = useQueryClient();
   return useMutation({

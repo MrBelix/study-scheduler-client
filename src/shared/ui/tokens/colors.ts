@@ -8,12 +8,27 @@ export function statusColor(value: number): string {
   return 'var(--ds-color-danger)';
 }
 
-/** Deterministic avatar background palette. */
-export const AVATAR_PALETTE = [
-  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#DDA0DD', '#F7B731', '#78C8C8',
-] as const;
+/** Number of avatar gradients defined as `--ds-avatar-1..N` (see global.scss). */
+const AVATAR_RAMP_SIZE = 7;
 
-/** Pick a stable avatar color from a seed (e.g. a name). */
-export function avatarColor(seed: string): string {
-  return AVATAR_PALETTE[seed.charCodeAt(0) % AVATAR_PALETTE.length];
+/**
+ * Deterministic avatar background — a `--ds-avatar-N` CSS gradient picked from
+ * the name. Same hash as the design prototype so colors are stable per student.
+ */
+export function avatarGradient(name: string): string {
+  const str = String(name ?? '');
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % AVATAR_RAMP_SIZE;
+  return `var(--ds-avatar-${h + 1})`;
+}
+
+/** 1–2 uppercase initials from a name, e.g. "Марія Коваленко" → "МК". */
+export function avatarInitials(name: string): string {
+  return String(name ?? '')
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0] ?? '')
+    .join('')
+    .toUpperCase();
 }

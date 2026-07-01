@@ -1,15 +1,15 @@
 @use '../../../../app/styles/variables' as *;
 
 .search-input {
-  padding: $space-sm $space-lg $space-md;
+  margin: 0 $space-lg 14px;
 
   &__bar {
     display: flex;
     align-items: center;
     gap: $space-sm;
-    background-color: $color-bg;
+    background: $color-secondary-fill;
     border-radius: $radius-sm;
-    padding: $space-sm $space-md;
+    padding: 9px $space-md;
   }
 
   &__icon {
@@ -19,6 +19,7 @@
 
   &__field {
     flex: 1;
+    min-width: 0;
     border: none;
     background: transparent;
     font-family: inherit;

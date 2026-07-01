@@ -1,41 +1,77 @@
+// Host theme → design-system contract.
+//
+// Telegram injects `--tg-theme-*` custom properties at runtime (via
+// `themeParams.bindCssVars()`). We keep light/dark literals here so the kit also
+// renders correctly in a plain browser / dev; inside Telegram those literals are
+// overridden by the client. Components NEVER read `--tg-theme-*` directly — they
+// read the `--ds-*` tokens mapped below. To reuse the kit elsewhere, only this
+// mapping block changes.
+
 :root {
+  color-scheme: light dark;
+
+  // --- Base Telegram theme params (every client provides these; light
+  // defaults for browser/dev — overridden in-app and by the dark block). ---
   --tg-theme-bg-color: #ffffff;
   --tg-theme-secondary-bg-color: #efeff4;
   --tg-theme-text-color: #000000;
-  --tg-theme-hint-color: #8e8e93;
-  --tg-theme-link-color: #2678b6;
-  --tg-theme-button-color: #2678b6;
+  --tg-theme-subtitle-text-color: #707579;
+  --tg-theme-hint-color: #8a8a8e;
+  --tg-theme-link-color: #007aff;
+  --tg-theme-button-color: #007aff;
   --tg-theme-button-text-color: #ffffff;
   --tg-theme-destructive-text-color: #ff3b30;
 
   --tg-content-safe-area-inset-top: 0px;
   --tg-safe-area-inset-bottom: 0px;
 
-  // Design-system contract: map the host theme (Telegram) onto the `--ds-*`
-  // tokens the UI kit consumes. To reuse the kit elsewhere, only this block
-  // changes — the components stay untouched.
-  --ds-color-bg: var(--tg-theme-bg-color);
-  --ds-color-secondary-bg: var(--tg-theme-secondary-bg-color);
+  // --- Design-system tokens (Telegram-driven) ---
+  // Optional params (section/header/separator) are NOT given their own
+  // light/dark literals — they fall back to always-present base vars, so a
+  // client that omits them can never disagree with the active theme mode.
+  --ds-color-bg: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color)); // card / section surface
+  --ds-color-secondary-bg: var(--tg-theme-secondary-bg-color); // screen backdrop
+  --ds-color-header-bg: var(--tg-theme-header-bg-color, var(--tg-theme-bg-color)); // nav header + tab bar
   --ds-color-text: var(--tg-theme-text-color);
+  --ds-color-subtitle: var(--tg-theme-subtitle-text-color, var(--tg-theme-hint-color));
   --ds-color-hint: var(--tg-theme-hint-color);
   --ds-color-link: var(--tg-theme-link-color);
   --ds-color-accent: var(--tg-theme-button-color);
   --ds-color-accent-text: var(--tg-theme-button-text-color);
   --ds-color-danger: var(--tg-theme-destructive-text-color);
+  --ds-color-separator: var(--tg-theme-section-separator-color, rgba(128, 128, 128, 0.28));
+  --ds-color-section-separator: var(--tg-theme-section-separator-color, rgba(128, 128, 128, 0.22));
+
+  // Kit-only tokens Telegram does not expose. Theme-agnostic values (translucent
+  // grays / chromatic) so they stay consistent in any theme mode.
+  --ds-color-secondary-fill: rgba(128, 128, 128, 0.14); // search / segmented track
+  --ds-color-tertiary-fill: rgba(128, 128, 128, 0.2); // pressed row flood
   --ds-color-success: #34c759;
   --ds-color-warning: #ff9500;
+
+  // Avatar gradient ramp — deterministic per name (see tokens/colors.ts).
+  --ds-avatar-1: linear-gradient(180deg, #ff885e, #ff516a);
+  --ds-avatar-2: linear-gradient(180deg, #ffcd6a, #ffa85c);
+  --ds-avatar-3: linear-gradient(180deg, #82b1ff, #665fff);
+  --ds-avatar-4: linear-gradient(180deg, #a0de7e, #54cb68);
+  --ds-avatar-5: linear-gradient(180deg, #53edd6, #28c9b7);
+  --ds-avatar-6: linear-gradient(180deg, #72d5fd, #2a9ef1);
+  --ds-avatar-7: linear-gradient(180deg, #e0a2f3, #d669ed);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --tg-theme-bg-color: #212121;
-    --tg-theme-secondary-bg-color: #181818;
+    --tg-theme-bg-color: #17212b;
+    --tg-theme-secondary-bg-color: #0e1621;
     --tg-theme-text-color: #ffffff;
-    --tg-theme-hint-color: #aaaaaa;
-    --tg-theme-link-color: #71bafa;
-    --tg-theme-button-color: #2b5278;
+    --tg-theme-subtitle-text-color: #708499;
+    --tg-theme-hint-color: #6d7e8f;
+    --tg-theme-link-color: #6ab2f2;
+    --tg-theme-button-color: #2ea6ff;
     --tg-theme-button-text-color: #ffffff;
-    --tg-theme-destructive-text-color: #ff453a;
+    --tg-theme-destructive-text-color: #ff5c52;
+
+    --ds-color-success: #32d74b;
   }
 }
 
@@ -56,8 +92,8 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 17px;
   line-height: 1.4;
-  color: var(--tg-theme-text-color);
-  background-color: var(--tg-theme-secondary-bg-color);
+  color: var(--ds-color-text);
+  background-color: var(--ds-color-secondary-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -79,6 +115,6 @@ button {
 }
 
 a {
-  color: var(--tg-theme-link-color);
+  color: var(--ds-color-link);
   text-decoration: none;
 }

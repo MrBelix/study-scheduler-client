@@ -3,10 +3,13 @@
 .tab-bar {
   display: flex;
   position: relative;
-  background-color: $color-bg;
-  padding-bottom: var(--tg-safe-area-inset-bottom, 0px);
   flex-shrink: 0;
   z-index: $z-tabbar;
+  padding-top: 6px;
+  padding-bottom: calc(6px + var(--tg-safe-area-inset-bottom, 0px));
+  background: $color-header-bg;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 
   &::before {
     content: '';
@@ -15,8 +18,8 @@
     left: 0;
     right: 0;
     height: $separator-h;
-    background-color: $color-hint;
-    opacity: $separator-opacity;
+    transform: scaleY(0.5);
+    background: $color-separator;
   }
 
   &__tab {
@@ -25,7 +28,7 @@
     flex-direction: column;
     align-items: center;
     gap: 3px;
-    padding: $space-sm $space-xs $space-xs;
+    padding: 2px $space-xs;
     color: $color-hint;
     text-decoration: none;
     transition: color 0.15s ease;
@@ -39,8 +42,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
   }
 
   &__label {

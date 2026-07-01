@@ -3,15 +3,24 @@ import { emitEvent, isTMA, mockTelegramEnv } from '@tma.js/sdk-react';
 // Only compiled into the dev bundle — tree-shaken in production.
 if (import.meta.env.DEV) {
   if (!await isTMA('complete')) {
+    // Real Telegram dark theme (captured from the client) — so dev/test matches
+    // what the app looks like in-app. Full set: no missing keys, no theme mix.
     const themeParams = {
-      bg_color: '#ffffff',
-      secondary_bg_color: '#efeff4',
-      text_color: '#000000',
-      hint_color: '#8e8e93',
-      link_color: '#2678b6',
-      button_color: '#2678b6',
+      accent_text_color: '#6ab2f2',
+      bg_color: '#17212b',
+      bottom_bar_bg_color: '#17212b',
+      button_color: '#5288c1',
       button_text_color: '#ffffff',
-      destructive_text_color: '#ff3b30',
+      destructive_text_color: '#ec3942',
+      header_bg_color: '#17212b',
+      hint_color: '#708499',
+      link_color: '#6ab3f3',
+      secondary_bg_color: '#232e3c',
+      section_bg_color: '#17212b',
+      section_header_text_color: '#6ab3f3',
+      section_separator_color: '#111921',
+      subtitle_text_color: '#708499',
+      text_color: '#f5f5f5',
     } as const;
     const noInsets = { left: 0, top: 0, bottom: 0, right: 0 } as const;
 

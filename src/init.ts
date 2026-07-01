@@ -20,6 +20,25 @@ export async function init(options: { debug: boolean }): Promise<void> {
     themeParams.mount();
     miniApp.mount();
     themeParams.bindCssVars();
+
+    // Blend the native Telegram header/chrome with the app: bind them to the
+    // same theme params the UI kit uses, so the native bar and our NavHeader
+    // read as one continuous header (and stay theme-aware automatically).
+    // Wrapped: a client that doesn't supply a given theme param throws
+    // UnknownThemeParamsKeyError — that must not break boot.
+    try {
+      if (miniApp.setHeaderColor.isAvailable()) {
+        miniApp.setHeaderColor('header_bg_color');
+      }
+      if (miniApp.setBottomBarColor.isAvailable()) {
+        miniApp.setBottomBarColor('header_bg_color');
+      }
+      if (miniApp.setBgColor.isAvailable()) {
+        miniApp.setBgColor('secondary_bg_color');
+      }
+    } catch {
+      /* theme param not provided by this client — leave native chrome as-is */
+    }
   }
 
   if (viewport.mount.isAvailable()) {

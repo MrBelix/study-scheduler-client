@@ -1,0 +1,20 @@
+@use '../../app/styles/variables' as *;
+
+.detail {
+  padding-bottom: 24px;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-md;
+    padding: $space-xl $space-lg 22px;
+  }
+
+  &__name {
+    font-size: $font-large-title;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+}

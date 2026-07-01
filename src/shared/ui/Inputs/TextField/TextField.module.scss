@@ -1,0 +1,38 @@
+@use '../../../../app/styles/variables' as *;
+
+.text-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__header {
+    padding: 0 $space-lg;
+    font-size: $font-caption;
+    color: $color-subtitle;
+  }
+
+  &__input {
+    width: 100%;
+    border: none;
+    background: $color-bg;
+    border-radius: $radius-md;
+    padding: $space-md $space-lg;
+    font-family: inherit;
+    font-size: $font-callout;
+    color: $color-text;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+
+    &::placeholder {
+      color: $color-hint;
+    }
+  }
+
+  &__helper {
+    padding: 0 $space-lg;
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-hint;
+  }
+}

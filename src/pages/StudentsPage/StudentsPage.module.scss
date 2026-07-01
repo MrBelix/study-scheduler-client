@@ -1,74 +1,66 @@
 @use '../../app/styles/variables' as *;
 
 .students-page {
-  padding-bottom: $space-lg;
-
-  &__header {
-    padding: $space-lg $space-lg $space-sm;
+  &__body {
+    padding: 12px 0 24px;
   }
 
-  &__title {
-    font-size: $font-title;
-    font-weight: 700;
-    color: $color-text;
-    letter-spacing: -0.02em;
+  &__segment {
+    margin: 0 $space-lg 14px;
   }
 
-  &__avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: $font-body;
-    font-weight: 600;
-    flex-shrink: 0;
+  &__list-header {
+    padding: 0 $space-2xl 7px;
+    font-size: $font-caption;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: $color-subtitle;
   }
 
-  &__add {
-    display: flex;
-    gap: $space-sm;
-    padding: 0 $space-lg $space-sm;
+  &__footer {
+    padding: 0 $space-2xl;
+    color: $color-hint;
+    font-size: $font-caption;
+    line-height: 1.4;
   }
 
-  &__add-field {
-    flex: 1;
-    min-width: 0;
-    border: none;
-    background-color: $color-bg;
-    border-radius: $radius-sm;
-    padding: $space-sm $space-md;
-    font-family: inherit;
-    font-size: $font-callout;
-    color: $color-text;
-    outline: none;
-
-    &::placeholder {
-      color: $color-hint;
-    }
-  }
-
-  &__add-btn {
-    flex-shrink: 0;
-    padding: 0 $space-lg;
-    border-radius: $radius-sm;
-    background-color: $color-button;
-    color: $color-button-text;
-    font-size: $font-body;
-    font-weight: 600;
-
-    &:disabled {
-      opacity: 0.5;
-    }
-  }
-
-  &__status,
-  &__empty {
-    padding: $space-3xl $space-lg;
+  &__status {
     text-align: center;
     color: $color-hint;
     font-size: $font-body;
+    padding: $space-xl $space-2xl;
+  }
+
+  // --- loading skeleton ---
+  &__skeleton-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: $color-secondary-fill;
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+  }
+
+  &__skeleton-line {
+    display: block;
+    width: 60%;
+    height: 12px;
+    border-radius: 6px;
+    background: $color-secondary-fill;
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+
+    &[data-short] {
+      width: 40%;
+      height: 10px;
+    }
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
   }
 }

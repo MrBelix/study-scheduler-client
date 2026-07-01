@@ -1,86 +1,91 @@
 @use '../../../app/styles/variables' as *;
 
 .cell {
+  position: relative;
   display: flex;
   align-items: center;
-  min-height: 50px;
-  padding-left: $space-lg;
-  background: transparent;
+  gap: $space-md;
   width: 100%;
+  padding: $space-sm $space-lg;
   text-align: left;
   color: $color-text;
   font-size: $font-callout;
-  -webkit-tap-highlight-color: transparent;
+  background: transparent;
+
+  // Inset hairline divider — hidden on the last row.
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: var(--cell-inset, #{$space-lg});
+    right: 0;
+    bottom: 0;
+    height: $separator-h;
+    transform: scaleY(0.5);
+    background: $color-section-separator;
+  }
 
   &--clickable {
     cursor: pointer;
 
     &:active {
-      background-color: rgba(0, 0, 0, 0.04);
+      background: $color-tertiary-fill;
     }
   }
 
-  &__before {
+  &--dimmed {
+    opacity: 0.5;
+  }
+
+  &__leading {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    margin-right: $space-md;
     flex-shrink: 0;
-  }
-
-  &__inner {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-height: 50px;
-    padding-right: $space-lg;
-    gap: $space-sm;
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: $separator-h;
-      background-color: $color-hint;
-      opacity: $separator-opacity;
-    }
-  }
-
-  &:last-child &__inner::after {
-    display: none;
   }
 
   &__content {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 2px;
-    padding: 10px 0;
   }
 
   &__title {
     font-size: $font-callout;
-    color: $color-text;
-    line-height: 1.3;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__subtitle {
     font-size: $font-footnote;
-    color: $color-hint;
-    line-height: 1.3;
+    line-height: 1.2;
+    color: $color-subtitle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--muted {
+      color: $color-hint;
+    }
   }
 
-  &__after {
-    display: flex;
-    align-items: center;
-    color: $color-hint;
+  &__value {
     flex-shrink: 0;
-    font-size: $font-body;
+    font-size: $font-callout;
+    color: $color-subtitle;
+    white-space: nowrap;
+
+    &--emphasis {
+      font-size: $font-balance;
+      font-weight: 700;
+    }
+  }
+
+  &__chevron {
+    flex-shrink: 0;
+    color: $color-hint;
   }
 }

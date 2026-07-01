@@ -1,0 +1,37 @@
+@use '../../../app/styles/variables' as *;
+
+.nav-header {
+  position: sticky;
+  top: 0;
+  z-index: $z-nav;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: $nav-height;
+  padding-top: var(--tg-content-safe-area-inset-top, 0px);
+  background: $color-header-bg;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: $separator-h;
+    transform: scaleY(0.5);
+    background: $color-separator;
+  }
+
+  &__title {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: $font-callout;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}

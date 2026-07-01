@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { ApiError } from '@/shared/api';
+import { LocaleProvider, useLocale } from '@/shared/i18n';
 import { router } from './router';
 
 const queryClient = new QueryClient({
@@ -17,10 +18,20 @@ const queryClient = new QueryClient({
   },
 });
 
+// Keyed by locale so switching language re-renders the whole route tree
+// (incl. the tab bar) — components that don't read the locale context otherwise
+// wouldn't update. The `router` singleton keeps the current URL across remount.
+function AppRoutes() {
+  const { locale } = useLocale();
+  return <RouterProvider key={locale} router={router} />;
+}
+
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <LocaleProvider>
+        <AppRoutes />
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }

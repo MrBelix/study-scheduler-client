@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { NavHeader, TextField } from '@/shared/ui';
-import { useBackButton, useMainButton } from '@/shared/tg';
+import { m } from '@/paraglide/messages';
+import { TextField, useMainButton } from '@/shared/ui';
+import { useBackButton } from '@/shared/tg';
 import { useStudent, useCreateStudent } from '@/features/students/queries';
 import styles from './StudentFormPage.module.scss';
 
@@ -41,24 +42,22 @@ export function StudentFormPage() {
 
   useBackButton(() => navigate(-1));
   useMainButton({
-    text: isEdit ? 'Зберегти зміни' : 'Зберегти',
+    text: isEdit ? m.form_save_changes() : m.form_save(),
     onClick: save,
     enabled: trimmed !== '' && !createStudent.isPending,
   });
 
   return (
     <div className={styles['form']}>
-      <NavHeader title={isEdit ? 'Редагувати' : 'Новий студент'} />
-
       <div className={styles['form__fields']}>
-        <TextField header="Ім'я" placeholder="Напр., Марія Коваленко" value={name} onChange={setName} />
+        <TextField header={m.form_name()} placeholder={m.form_name_placeholder()} value={name} onChange={setName} />
         <TextField
-          header="Ставка за заняття, ₴"
-          placeholder="300"
+          header={m.form_rate()}
+          placeholder={m.form_rate_placeholder()}
           value={rate}
           onChange={setRate}
           inputMode="numeric"
-          helper="Ціна за замовчуванням — підставлятиметься в нові заняття цього студента."
+          helper={m.form_rate_helper()}
         />
       </div>
     </div>

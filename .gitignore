@@ -18,6 +18,9 @@ dist-ssr
 build
 *.local
 
+# Paraglide (generated from messages/*.json on build/dev)
+src/paraglide
+
 # Env files
 .env
 .env.local

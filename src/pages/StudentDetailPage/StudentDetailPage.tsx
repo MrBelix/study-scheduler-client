@@ -1,8 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { NavHeader, Section, Cell, Avatar, Badge, Placeholder } from '@/shared/ui';
-import { useBackButton, useMainButton, haptic } from '@/shared/tg';
+import { m } from '@/paraglide/messages';
+import { Section, Cell, Avatar, Badge, Placeholder, useMainButton } from '@/shared/ui';
+import { useBackButton, haptic } from '@/shared/tg';
 import { useStudent } from '@/features/students/queries';
-import { balanceText, balanceColor, money, formatDate, deriveFinance } from '@/features/students/model';
+import { balanceText, balanceColor, money, fmt, formatDate, deriveFinance } from '@/features/students/model';
 import styles from './StudentDetailPage.module.scss';
 
 export function StudentDetailPage() {
@@ -11,76 +12,63 @@ export function StudentDetailPage() {
   const { data: student, isPending } = useStudent(id);
 
   useBackButton(() => navigate(-1));
-  useMainButton({ text: 'Редагувати', onClick: () => navigate(`/students/${id}/edit`) });
+  useMainButton({ text: m.edit(), onClick: () => navigate(`/students/${id}/edit`) });
 
   if (isPending) {
-    return (
-      <div>
-        <NavHeader title="" />
-      </div>
-    );
+    return <div />;
   }
 
   if (!student) {
-    return (
-      <div>
-        <NavHeader title="Студент" />
-        <Placeholder glyph="🔍" title="Студента не знайдено" />
-      </div>
-    );
+    return <Placeholder glyph="🔍" title={m.student_not_found()} />;
   }
 
-  const firstName = student.name.split(' ')[0];
   const { paid, lessons, balance } = deriveFinance(student);
   const archived = student.status === 'Archived';
 
   return (
     <div className={styles['detail']}>
-      <NavHeader title={firstName} />
-
       <div className={styles['detail__header']}>
         <Avatar name={student.name} size={88} />
         <div className={styles['detail__name']}>{student.name}</div>
-        <Badge mode={archived ? 'muted' : 'success'}>{archived ? 'Архів' : 'Активний'}</Badge>
+        <Badge mode={archived ? 'muted' : 'success'}>
+          {archived ? m.status_archived() : m.status_active()}
+        </Badge>
       </div>
 
-      <Section header="Профіль">
+      <Section header={m.detail_section_profile()}>
         <Cell
-          title="Предмет"
-          value={student.subject || 'Не вказано'}
+          title={m.detail_subject()}
+          value={student.subject || m.value_none()}
           valueColor={student.subject ? undefined : 'var(--ds-color-hint)'}
         />
         <Cell
-          title="Ставка"
-          value={student.rate ? `${money(student.rate)}/заняття` : 'Не вказано'}
+          title={m.detail_rate()}
+          value={student.rate ? m.rate_per_lesson({ rate: fmt(student.rate) }) : m.value_none()}
           valueColor={student.rate ? undefined : 'var(--ds-color-hint)'}
         />
-        <Cell title="Контакт" value={student.contact || '—'} valueColor="var(--ds-color-link)" />
-        <Cell title="Додано" value={formatDate(student.createdAtUtc)} />
+        <Cell title={m.detail_contact()} value={student.contact || '—'} valueColor="var(--ds-color-link)" />
+        <Cell title={m.detail_added()} value={formatDate(student.createdAtUtc)} />
       </Section>
 
-      <Section
-        header="Фінанси"
-        footer="Баланс = сума оплат − проведені заняття × ставка"
-      >
+      <Section header={m.detail_section_finances()} footer={m.detail_finance_formula()}>
         <Cell
-          title={balance < 0 ? 'Борг' : 'Баланс'}
+          title={balance < 0 ? m.detail_debt() : m.detail_balance()}
           minHeight={56}
           emphasis
           value={balanceText(balance)}
           valueColor={balanceColor(balance)}
         />
-        <Cell title="Оплачено загалом" value={money(paid)} />
-        <Cell title="Проведено занять" value={String(lessons)} />
+        <Cell title={m.detail_paid_total()} value={money(paid)} />
+        <Cell title={m.detail_lessons_count()} value={String(lessons)} />
       </Section>
 
       <Section>
         <Cell
-          title={<span style={{ color: 'var(--ds-color-accent)' }}>Додати оплату</span>}
+          title={<span style={{ color: 'var(--ds-color-accent)' }}>{m.detail_add_payment()}</span>}
           onClick={() => haptic('light')}
         />
         <Cell
-          title={<span style={{ color: 'var(--ds-color-danger)' }}>Архівувати студента</span>}
+          title={<span style={{ color: 'var(--ds-color-danger)' }}>{m.detail_archive()}</span>}
           onClick={() => haptic('medium')}
         />
       </Section>

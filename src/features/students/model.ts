@@ -1,4 +1,6 @@
 import type { Student } from '@/shared/api';
+import { m } from '@/paraglide/messages';
+import { getAppLocale } from '@/shared/i18n';
 
 const NBSP = ' ';
 
@@ -27,16 +29,18 @@ export function balanceColor(balance: number): string {
 
 /** List-row subtitle: "{subject} · {rate} ₴/год", or a muted placeholder. */
 export function studentSubtitle(student: Student): { text: string; muted: boolean } {
-  if (!student.subject) return { text: 'Предмет не вказано', muted: true };
-  const rate = student.rate ? ` · ${fmt(student.rate)} ₴/год` : '';
-  return { text: `${student.subject}${rate}`, muted: false };
+  if (!student.subject) return { text: m.subject_none(), muted: true };
+  if (student.rate) {
+    return { text: m.subtitle_subject_rate({ subject: student.subject, rate: fmt(student.rate) }), muted: false };
+  }
+  return { text: student.subject, muted: false };
 }
 
-/** Short Ukrainian date, e.g. "12 січ 2026". Falls back to the raw string. */
+/** Short localized date, e.g. "12 січ 2026" / "12 Jan 2026". Falls back to raw. */
 export function formatDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
+  return new Intl.DateTimeFormat(getAppLocale(), { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
 }
 
 /**

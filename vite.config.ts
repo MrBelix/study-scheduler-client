@@ -1,10 +1,19 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { paraglideVitePlugin } from '@inlang/paraglide-js'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Compiles messages/*.json → src/paraglide/ (typed message functions).
+    paraglideVitePlugin({
+      project: './project.inlang',
+      outdir: './src/paraglide',
+      strategy: ['localStorage', 'preferredLanguage', 'baseLocale'],
+    }),
+  ],
   base: './',
   resolve: {
     alias: {

@@ -101,7 +101,9 @@ body {
 }
 
 #root {
-  height: 100%;
+  // Pin to Telegram's stable viewport so the tab bar / action stay on-screen
+  // even when opened compact. Falls back to full height outside Telegram.
+  height: var(--tg-viewport-stable-height, 100%);
   display: flex;
   flex-direction: column;
 }

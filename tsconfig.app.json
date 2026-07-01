@@ -6,6 +6,7 @@
     "module": "esnext",
     "types": ["vite/client"],
     "skipLibCheck": true,
+    "allowJs": true, // Paraglide emits JSDoc-typed .js into src/paraglide
 
     /* Bundler mode */
     "moduleResolution": "bundler",

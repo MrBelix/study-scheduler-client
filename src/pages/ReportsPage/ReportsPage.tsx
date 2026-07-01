@@ -1,10 +1,6 @@
-import { NavHeader, Placeholder } from '@/shared/ui';
+import { m } from '@/paraglide/messages';
+import { Placeholder } from '@/shared/ui';
 
 export function ReportsPage() {
-  return (
-    <div>
-      <NavHeader title="Звіти" />
-      <Placeholder glyph="📊" title="Звіти" description="Заробіток за місяць і список боржників." />
-    </div>
-  );
+  return <Placeholder glyph="📊" title={m.reports()} description={m.reports_empty_desc()} />;
 }

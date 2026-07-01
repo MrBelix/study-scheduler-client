@@ -10,6 +10,7 @@
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    // The safe-area top inset is owned by the sticky NavHeader on each page.
+    // Keep content clear of any Telegram overlay at the top of the webview.
+    padding-top: var(--tg-content-safe-area-inset-top, 0px);
   }
 }

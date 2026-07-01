@@ -1,5 +1,5 @@
 // Public API of the UI kit. Import primitives from here: `@/shared/ui`.
-export { NavHeader } from './NavHeader/NavHeader';
+export { useMainButton } from './MainButton/MainButton';
 export { Section } from './Section/Section';
 export { Cell } from './Cell/Cell';
 export { Avatar } from './Avatar/Avatar';

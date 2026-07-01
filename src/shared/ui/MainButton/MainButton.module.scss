@@ -1,0 +1,26 @@
+@use '../../../app/styles/variables' as *;
+
+.main-button-bar {
+  flex-shrink: 0;
+  padding: $space-sm 14px 10px;
+  background: $color-secondary-bg;
+}
+
+.main-button {
+  width: 100%;
+  height: 50px;
+  border-radius: $radius-md;
+  background: $color-button;
+  color: $color-button-text;
+  font-size: $font-callout;
+  font-weight: 600;
+  transition: opacity 0.15s ease;
+
+  &:active:not(:disabled) {
+    opacity: 0.85;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}

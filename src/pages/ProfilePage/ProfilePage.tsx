@@ -1,5 +1,8 @@
 import { type ReactNode } from 'react';
-import { NavHeader, Section, Cell, Avatar } from '@/shared/ui';
+import { m } from '@/paraglide/messages';
+import { Section, Cell, Avatar } from '@/shared/ui';
+import { useLocale, LOCALE_NAMES } from '@/shared/i18n';
+import { haptic } from '@/shared/tg';
 import styles from './ProfilePage.module.scss';
 
 function Tile({ color, children }: { color: string; children: ReactNode }) {
@@ -13,17 +16,22 @@ function Tile({ color, children }: { color: string; children: ReactNode }) {
 }
 
 export function ProfilePage() {
+  const { locale, setLocale } = useLocale();
+
+  const toggleLanguage = () => {
+    haptic('light');
+    setLocale(locale === 'uk' ? 'en' : 'uk');
+  };
+
   return (
     <div className={styles['profile']}>
-      <NavHeader title="Профіль" />
-
       <div className={styles['profile__header']}>
         <Avatar name="Олена Гриценко" size={88} />
         <div className={styles['profile__name']}>Олена Гриценко</div>
         <div className={styles['profile__username']}>@olena_tutor</div>
       </div>
 
-      <Section header="Налаштування">
+      <Section header={m.profile_settings()}>
         <Cell
           inset={56}
           leading={
@@ -33,8 +41,8 @@ export function ProfilePage() {
               <path d="M12 3.5a8.5 8.5 0 010 17" fill="currentColor" />
             </Tile>
           }
-          title="Тема"
-          value="Авто"
+          title={m.profile_theme()}
+          value={m.profile_theme_auto()}
           chevron
         />
         <Cell
@@ -49,9 +57,10 @@ export function ProfilePage() {
               />
             </Tile>
           }
-          title="Мова"
-          value="Українська"
+          title={m.profile_language()}
+          value={LOCALE_NAMES[locale]}
           chevron
+          onClick={toggleLanguage}
         />
         <Cell
           inset={56}
@@ -65,18 +74,16 @@ export function ProfilePage() {
               />
             </Tile>
           }
-          title="Політика скасування"
+          title={m.profile_cancellation_policy()}
           chevron
         />
       </Section>
 
-      <Section header="Про застосунок">
-        <Cell title="Версія" value="1.0.0" />
+      <Section header={m.profile_about()}>
+        <Cell title={m.profile_version()} value="1.0.0" />
       </Section>
 
-      <div className={styles['profile__footer']}>
-        Тема й мова визначаються Telegram. StudyScheduler · Mini App у Telegram
-      </div>
+      <div className={styles['profile__footer']}>{m.profile_footer()}</div>
     </div>
   );
 }

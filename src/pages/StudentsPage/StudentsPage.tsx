@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NavHeader, Section, Cell, Avatar, SearchInput, SegmentedControl } from '@/shared/ui';
+import { m } from '@/paraglide/messages';
+import { Section, Cell, Avatar, SearchInput, SegmentedControl, useMainButton } from '@/shared/ui';
 import type { SegmentItem } from '@/shared/ui';
 import { ApiError } from '@/shared/api';
-import { useMainButton } from '@/shared/tg';
 import { useStudents } from '@/features/students/queries';
 import { balanceText, balanceColor, studentSubtitle, deriveFinance } from '@/features/students/model';
 import styles from './StudentsPage.module.scss';
@@ -34,7 +34,7 @@ export function StudentsPage() {
 
   const { data, isPending, isError, error } = useStudents();
 
-  useMainButton({ text: 'Додати студента', onClick: () => navigate('/students/new') });
+  useMainButton({ text: m.students_add(), onClick: () => navigate('/students/new') });
 
   const students = data ?? [];
   const activeCount = students.filter((s) => s.status !== 'Archived').length;
@@ -46,27 +46,27 @@ export function StudentsPage() {
   const filtered = q ? base.filter((s) => s.name.toLowerCase().includes(q)) : base;
 
   const segItems: SegmentItem<Filter>[] = [
-    { label: `Активні · ${activeCount}`, value: 'active' },
-    { label: `Архів · ${archCount}`, value: 'archived' },
+    { label: m.students_filter_active({ count: activeCount }), value: 'active' },
+    { label: m.students_filter_archived({ count: archCount }), value: 'archived' },
   ];
 
   const listHeader = q
-    ? 'Результати'
+    ? m.students_header_search()
     : filter === 'archived'
-      ? `${archCount} в архіві`
-      : `${activeCount} студентів · ${debtors} з боргом`;
+      ? m.students_header_archived({ count: archCount })
+      : m.students_header_active({ count: activeCount, debtors });
   const listFooter =
-    filter === 'archived'
-      ? 'Заархівовані студенти приховані зі списку та звітів.'
-      : 'Торкніться картки, щоб відкрити профіль і фінанси.';
-  const noResultsText = q ? 'Нікого не знайдено' : filter === 'archived' ? 'Архів порожній' : 'Ще немає студентів';
+    filter === 'archived' ? m.students_footer_archived() : m.students_footer_active();
+  const noResultsText = q
+    ? m.students_empty_search()
+    : filter === 'archived'
+      ? m.students_empty_archived()
+      : m.students_empty();
 
   return (
     <div className={styles['students-page']}>
-      <NavHeader title="Студенти" />
-
       <div className={styles['students-page__body']}>
-        <SearchInput value={query} onChange={setQuery} />
+        <SearchInput value={query} onChange={setQuery} placeholder={m.search_placeholder()} />
         <div className={styles['students-page__segment']}>
           <SegmentedControl items={segItems} value={filter} onChange={setFilter} />
         </div>
@@ -74,8 +74,8 @@ export function StudentsPage() {
         {isError ? (
           <div className={styles['students-page__status']}>
             {error instanceof ApiError && error.isAuthExpired
-              ? 'Сесія застаріла — відкрийте застосунок знову'
-              : 'Не вдалося завантажити'}
+              ? m.error_auth_expired()
+              : m.error_generic()}
           </div>
         ) : isPending ? (
           <SkeletonList />

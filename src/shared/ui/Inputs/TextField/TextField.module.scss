@@ -33,4 +33,10 @@
     line-height: 1.4;
     color: $color-hint;
   }
+
+  &__error {
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-error;
+  }
 }

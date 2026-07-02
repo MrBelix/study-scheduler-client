@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, Badge, Placeholder, useMainButton } from '@/shared/ui';
+import { Section, Cell, Avatar, Badge, Placeholder } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
 import { useStudent } from '@/features/students/queries';
 import { balanceText, balanceColor, money, fmt, formatDate, deriveFinance } from '@/features/students/model';
@@ -12,7 +12,8 @@ export function StudentDetailPage() {
   const { data: student, isPending } = useStudent(id);
 
   useBackButton(() => navigate(-1));
-  useMainButton({ text: m.edit(), onClick: () => navigate(`/students/${id}/edit`) });
+  // No Edit action: the backend has no update endpoint yet, so the edit form
+  // couldn't save. Re-add the MainButton once PUT /students/{id} exists.
 
   if (isPending) {
     return <div />;

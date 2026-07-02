@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { TextField, useMainButton } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
+import { ApiError } from '@/shared/api';
 import { useStudent, useCreateStudent } from '@/features/students/queries';
 import styles from './StudentFormPage.module.scss';
 
@@ -25,6 +26,19 @@ export function StudentFormPage() {
   }, [isEdit, existing]);
 
   const trimmed = name.trim();
+
+  // Server-side failure of the last save attempt. 400 validation messages map
+  // to their fields (backend keys are PascalCase DTO properties); anything
+  // else surfaces as one generic line under the form.
+  const error = createStudent.error;
+  const fieldErrors = error instanceof ApiError ? error.fields : undefined;
+  const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
+  const formError =
+    !error || fieldErrors
+      ? undefined
+      : error instanceof ApiError && error.isAuthExpired
+        ? m.error_auth_expired()
+        : m.form_error_save();
 
   const save = () => {
     if (!trimmed) return;
@@ -50,7 +64,13 @@ export function StudentFormPage() {
   return (
     <div className={styles['form']}>
       <div className={styles['form__fields']}>
-        <TextField header={m.form_name()} placeholder={m.form_name_placeholder()} value={name} onChange={setName} />
+        <TextField
+          header={m.form_name()}
+          placeholder={m.form_name_placeholder()}
+          value={name}
+          onChange={setName}
+          error={fieldError('Name')}
+        />
         <TextField
           header={m.form_rate()}
           placeholder={m.form_rate_placeholder()}
@@ -58,7 +78,9 @@ export function StudentFormPage() {
           onChange={setRate}
           inputMode="numeric"
           helper={m.form_rate_helper()}
+          error={fieldError('Rate')}
         />
+        {formError && <div className={styles['form__error']}>{formError}</div>}
       </div>
     </div>
   );

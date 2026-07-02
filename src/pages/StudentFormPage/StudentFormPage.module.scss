@@ -8,4 +8,11 @@
     // Vertical page padding only — TextField self-gutters horizontally.
     padding: $page-pad-top 0 $page-pad-bottom;
   }
+
+  &__error {
+    text-align: center;
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-error;
+  }
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, SearchInput, SegmentedControl, useMainButton } from '@/shared/ui';
+import { Section, Cell, Avatar, Placeholder, SearchInput, SegmentedControl, useMainButton } from '@/shared/ui';
 import type { SegmentItem } from '@/shared/ui';
 import { ApiError } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
@@ -37,6 +37,15 @@ export function StudentsPage() {
   useMainButton({ text: m.students_add(), onClick: () => navigate('/students/new') });
 
   const students = data ?? [];
+
+  // First run — no students at all: a search input and filter over an empty
+  // list only add noise, so show a single full-height placeholder instead.
+  if (!isPending && !isError && students.length === 0) {
+    return (
+      <Placeholder glyph="🎓" title={m.students_empty()} description={m.students_empty_desc()} />
+    );
+  }
+
   const activeCount = students.filter((s) => s.status !== 'Archived').length;
   const archCount = students.filter((s) => s.status === 'Archived').length;
   const debtors = students.filter((s) => s.status !== 'Archived' && deriveFinance(s).balance < 0).length;

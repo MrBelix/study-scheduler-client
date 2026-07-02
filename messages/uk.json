@@ -20,6 +20,7 @@
   "students_empty_search": "Нікого не знайдено",
   "students_empty_archived": "Архів порожній",
   "students_empty": "Ще немає студентів",
+  "students_empty_desc": "Додайте першого студента кнопкою внизу.",
   "students_add": "Додати студента",
 
   "error_generic": "Не вдалося завантажити",
@@ -52,6 +53,7 @@
   "form_rate": "Ставка за заняття, ₴",
   "form_rate_placeholder": "300",
   "form_rate_helper": "Ціна за замовчуванням — підставлятиметься в нові заняття цього студента.",
+  "form_error_save": "Не вдалося зберегти. Спробуйте ще раз.",
   "form_save": "Зберегти",
   "form_save_changes": "Зберегти зміни",
 

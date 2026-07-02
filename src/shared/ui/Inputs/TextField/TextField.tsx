@@ -6,11 +6,13 @@ interface TextFieldProps {
   onChange: (value: string) => void;
   placeholder?: string;
   helper?: string;
+  /** Validation message — replaces the helper and renders in the danger color. */
+  error?: string;
   inputMode?: 'text' | 'numeric';
 }
 
 /** Labeled input on a section surface, with optional helper text below. */
-export function TextField({ header, value, onChange, placeholder, helper, inputMode = 'text' }: TextFieldProps) {
+export function TextField({ header, value, onChange, placeholder, helper, error, inputMode = 'text' }: TextFieldProps) {
   return (
     <label className={styles['text-field']}>
       <span className={styles['text-field__header']}>{header}</span>
@@ -21,7 +23,11 @@ export function TextField({ header, value, onChange, placeholder, helper, inputM
         placeholder={placeholder}
         inputMode={inputMode}
       />
-      {helper && <span className={styles['text-field__helper']}>{helper}</span>}
+      {error ? (
+        <span className={styles['text-field__error']}>{error}</span>
+      ) : (
+        helper && <span className={styles['text-field__helper']}>{helper}</span>
+      )}
     </label>
   );
 }

@@ -1,0 +1,32 @@
+@use '../../app/styles/variables' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-xl;
+  padding: $page-pad-top 0 $page-pad-bottom;
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: $space-lg;
+  }
+
+  &__danger {
+    color: var(--ds-color-danger);
+  }
+
+  &__error {
+    text-align: center;
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-error;
+  }
+
+  &__status {
+    text-align: center;
+    color: $color-hint;
+    font-size: $font-body;
+    padding: $space-xl $space-lg;
+  }
+}

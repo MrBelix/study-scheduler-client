@@ -1,0 +1,49 @@
+@use '../../app/styles/variables' as *;
+
+.lesson {
+  display: flex;
+  flex-direction: column;
+  gap: $space-xl;
+  padding: $space-xl 0 $page-pad-bottom;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-sm;
+  }
+
+  &__time {
+    font-size: $font-title;
+    font-weight: 700;
+    color: $color-text;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__date {
+    font-size: $font-body;
+    color: $color-subtitle;
+  }
+
+  &__accent {
+    color: var(--ds-color-accent);
+  }
+
+  &__danger {
+    color: var(--ds-color-danger);
+  }
+
+  &__status {
+    text-align: center;
+    color: $color-hint;
+    font-size: $font-body;
+    padding: $space-xl $space-lg;
+  }
+
+  &__error {
+    text-align: center;
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-error;
+  }
+}

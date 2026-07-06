@@ -1,0 +1,20 @@
+@use '../../app/styles/variables' as *;
+
+.conflicts {
+  background: $color-bg;
+  border-radius: $radius-md;
+  padding: $space-md $space-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-xs;
+
+  &__title {
+    font-size: $font-caption;
+    color: $color-error;
+  }
+
+  &__item {
+    font-size: $font-footnote;
+    color: $color-text;
+  }
+}

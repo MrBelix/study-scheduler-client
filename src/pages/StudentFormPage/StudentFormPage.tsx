@@ -1,36 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { TextField, useMainButton } from '@/shared/ui';
+import { TextField, Placeholder, useMainButton } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
-import { useStudent, useCreateStudent } from '@/features/students/queries';
+import type { Student } from '@/shared/api';
+import { useStudent, useCreateStudent, useUpdateStudent } from '@/features/students/queries';
 import styles from './StudentFormPage.module.scss';
 
+/**
+ * Waits for the student when editing, then mounts the form with seeded state —
+ * a later cache refetch must not overwrite what the user is typing, so the
+ * fields read `existing` only in their initializers.
+ */
 export function StudentFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
 
-  const { data: existing } = useStudent(id);
-  const createStudent = useCreateStudent();
+  const { data: existing, isPending } = useStudent(id);
 
-  const [name, setName] = useState('');
-  const [rate, setRate] = useState('');
-  // Seed the fields once the student to edit has loaded from cache.
-  useEffect(() => {
-    if (isEdit && existing) {
-      setName(existing.name);
-      setRate(existing.rate ? String(existing.rate) : '');
-    }
-  }, [isEdit, existing]);
+  useBackButton(() => navigate(-1));
+
+  if (isEdit && isPending) {
+    return <div className={styles['form__status']}>{m.loading()}</div>;
+  }
+
+  if (isEdit && !existing) {
+    return <Placeholder glyph="🔍" title={m.student_not_found()} />;
+  }
+
+  return <StudentForm existing={isEdit ? existing : undefined} />;
+}
+
+function StudentForm({ existing }: { existing?: Student }) {
+  const navigate = useNavigate();
+  const isEdit = Boolean(existing);
+
+  const createStudent = useCreateStudent();
+  const updateStudent = useUpdateStudent();
+  const mutation = isEdit ? updateStudent : createStudent;
+
+  const [name, setName] = useState(existing?.name ?? '');
+  const [rate, setRate] = useState(existing?.rate ? String(existing.rate) : '');
 
   const trimmed = name.trim();
 
   // Server-side failure of the last save attempt. 400 validation messages map
   // to their fields (backend keys are PascalCase DTO properties); anything
   // else surfaces as one generic line under the form.
-  const error = createStudent.error;
+  const error = mutation.error;
   const fieldErrors = error instanceof ApiError ? error.fields : undefined;
   const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
   const formError =
@@ -42,10 +61,12 @@ export function StudentFormPage() {
 
   const save = () => {
     if (!trimmed) return;
-    const rateValue = Number(rate.replace(/\s/g, '')) || 0;
-    if (isEdit) {
-      // TODO: no update endpoint on the backend yet — just return to the list.
-      navigate(-1);
+    const rateValue = Number(rate.replace(/\s/g, '').replace(',', '.')) || 0;
+    if (existing) {
+      updateStudent.mutate(
+        { id: existing.id, body: { name: trimmed, rate: rateValue } },
+        { onSuccess: () => navigate(-1) },
+      );
       return;
     }
     createStudent.mutate(
@@ -54,11 +75,10 @@ export function StudentFormPage() {
     );
   };
 
-  useBackButton(() => navigate(-1));
   useMainButton({
     text: isEdit ? m.form_save_changes() : m.form_save(),
     onClick: save,
-    enabled: trimmed !== '' && !createStudent.isPending,
+    enabled: trimmed !== '' && !mutation.isPending,
   });
 
   return (

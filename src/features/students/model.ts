@@ -27,13 +27,17 @@ export function balanceColor(balance: number): string {
   return 'var(--ds-color-hint)';
 }
 
-/** List-row subtitle: "{subject} · {rate} ₴/год", or a muted placeholder. */
-export function studentSubtitle(student: Student): { text: string; muted: boolean } {
-  if (!student.subject) return { text: m.subject_none(), muted: true };
+/**
+ * List-row subtitle: "{subject} · {rate} ₴/год", or a muted placeholder.
+ * `subject` defaults to the student's own field; pass a derived value (e.g.
+ * subjects from active series) to override it.
+ */
+export function studentSubtitle(student: Student, subject = student.subject): { text: string; muted: boolean } {
+  if (!subject) return { text: m.subject_none(), muted: true };
   if (student.rate) {
-    return { text: m.subtitle_subject_rate({ subject: student.subject, rate: fmt(student.rate) }), muted: false };
+    return { text: m.subtitle_subject_rate({ subject, rate: fmt(student.rate) }), muted: false };
   }
-  return { text: student.subject, muted: false };
+  return { text: subject, muted: false };
 }
 
 /** Short localized date, e.g. "12 січ 2026" / "12 Jan 2026". Falls back to raw. */

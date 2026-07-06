@@ -5,6 +5,8 @@ import { Section, Cell, Avatar, Placeholder, SearchInput, SegmentedControl, useM
 import type { SegmentItem } from '@/shared/ui';
 import { ApiError } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
+import { useSeriesList } from '@/features/lessons/queries';
+import { studentSubjects } from '@/features/lessons/model';
 import { balanceText, balanceColor, studentSubtitle, deriveFinance } from '@/features/students/model';
 import styles from './StudentsPage.module.scss';
 
@@ -33,6 +35,7 @@ export function StudentsPage() {
   const [filter, setFilter] = useState<Filter>('active');
 
   const { data, isPending, isError, error } = useStudents();
+  const { data: seriesList } = useSeriesList();
 
   useMainButton({ text: m.students_add(), onClick: () => navigate('/students/new') });
 
@@ -96,7 +99,8 @@ export function StudentsPage() {
             ) : (
               <Section>
                 {filtered.map((student) => {
-                  const sub = studentSubtitle(student);
+                  const derived = studentSubjects(seriesList ?? [], student.id).join(', ');
+                  const sub = studentSubtitle(student, derived || student.subject);
                   const { balance } = deriveFinance(student);
                   return (
                     <Cell

@@ -1,12 +1,12 @@
 @use '../../app/styles/variables' as *;
 
 .form {
+  padding: $page-pad-top 0 $page-pad-bottom;
+
   &__fields {
     display: flex;
     flex-direction: column;
     gap: $space-lg;
-    // Vertical page padding only — TextField self-gutters horizontally.
-    padding: $page-pad-top 0 $page-pad-bottom;
   }
 
   &__error {
@@ -14,12 +14,5 @@
     font-size: $font-caption;
     line-height: 1.4;
     color: $color-error;
-  }
-
-  &__status {
-    text-align: center;
-    color: $color-hint;
-    font-size: $font-body;
-    padding: $space-xl $space-lg;
   }
 }

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CreateStudentRequest } from '@/shared/api';
-import { getStudents, createStudent } from './api';
+import type { CreateStudentRequest, UpdateStudentRequest } from '@/shared/api';
+import { getStudents, createStudent, updateStudent } from './api';
 
 /** Query-key factory — the single source for cache keys in this feature. */
 export const studentKeys = {
@@ -27,6 +27,14 @@ export function useCreateStudent() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: CreateStudentRequest) => createStudent(body),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: studentKeys.all }),
+  });
+}
+
+export function useUpdateStudent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: UpdateStudentRequest }) => updateStudent(id, body),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: studentKeys.all }),
   });
 }

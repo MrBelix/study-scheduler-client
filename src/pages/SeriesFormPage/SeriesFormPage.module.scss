@@ -1,0 +1,59 @@
+@use '../../app/styles/variables' as *;
+
+.form {
+  padding: $page-pad-top 0 $page-pad-bottom;
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: $space-lg;
+  }
+
+  // Weekday chips follow the TextField anatomy: caption label above, control
+  // on the section surface, message below.
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__label {
+    font-size: $font-caption;
+    color: $color-subtitle;
+  }
+
+  &__weekdays {
+    display: flex;
+    gap: $space-xs;
+  }
+
+  &__weekday {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    border: none;
+    border-radius: $radius-sm;
+    background: $color-bg;
+    color: $color-text;
+    font-family: inherit;
+    font-size: $font-caption;
+    cursor: pointer;
+
+    &[data-selected] {
+      background: $color-button;
+      color: $color-button-text;
+      font-weight: 600;
+    }
+  }
+
+  &__field-error,
+  &__error {
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-error;
+  }
+
+  &__error {
+    text-align: center;
+  }
+}

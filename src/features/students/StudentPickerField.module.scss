@@ -1,0 +1,74 @@
+@use '../../app/styles/variables' as *;
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__label {
+    font-size: $font-caption;
+    color: $color-subtitle;
+  }
+
+  // The Cell provides its own surface; we only round the corners.
+  &__trigger {
+    background: $color-bg;
+    border-radius: $radius-md;
+    overflow: hidden;
+  }
+
+  &__placeholder {
+    color: $color-hint;
+  }
+
+  &__error {
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-error;
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: $z-nav + 1;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  &__sheet {
+    background: $color-secondary-bg;
+    border-radius: $radius-md $radius-md 0 0;
+    padding: $space-lg $page-gutter calc(#{$space-xl} + var(--tg-content-safe-area-inset-bottom, 0px));
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    animation: picker-sheet-up 0.22s ease-out;
+  }
+
+  &__sheet-title {
+    text-align: center;
+    font-size: $font-body;
+    font-weight: 600;
+    color: $color-text;
+    padding-bottom: $space-md;
+  }
+
+  &__sheet-list {
+    overflow-y: auto;
+    background: $color-bg;
+    border-radius: $radius-md;
+  }
+}
+
+@keyframes picker-sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

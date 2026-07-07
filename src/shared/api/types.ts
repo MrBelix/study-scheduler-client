@@ -45,22 +45,32 @@ export interface UpdateStudentRequest {
   status?: StudentStatus;
 }
 
-/** Tutor profile — `GET /profile`, `PUT /profile` (upsert). */
+/**
+ * Tutor (member) settings — `GET /profile`, `PUT /profile` (upsert).
+ * `languageCode` is the preferred UI language ("uk" | "en"), null until chosen.
+ */
 export interface Profile {
   timeZoneId: string;
+  languageCode: string | null;
   createdAtUtc: string;
 }
 
 export interface UpdateProfileRequest {
   timeZoneId: string;
+  languageCode?: string;
 }
 
 /** Lifecycle status of a lesson. */
 export type LessonStatus = 'Scheduled' | 'Completed' | 'Cancelled';
 
-/** Lesson projection — `GET /lessons`. `seriesId`/`occurrenceDate` are set for series lessons. */
+/**
+ * Lesson projection — `GET /lessons`. `seriesId`/`occurrenceDate` are set for
+ * series lessons. `isVirtual` true means the slot was expanded on the fly from
+ * its series and has no database row (`id` is null) — mutate it via
+ * `PATCH /lessons/series/{seriesId}/occurrences/{occurrenceDate}`.
+ */
 export interface Lesson {
-  id: string;
+  id: string | null;
   studentId: string;
   seriesId: string | null;
   occurrenceDate: string | null;
@@ -71,6 +81,8 @@ export interface Lesson {
   price: number;
   isPaid: boolean;
   topic: string | null;
+  description: string | null;
+  isVirtual: boolean;
   createdAtUtc: string;
 }
 
@@ -81,9 +93,13 @@ export interface CreateLessonRequest {
   durationMinutes: number;
   price?: number;
   topic?: string;
+  description?: string;
 }
 
-/** Body for `PATCH /lessons/{id}` — only provided fields are applied. */
+/**
+ * Body for `PATCH /lessons/{id}` and the occurrence-mutation endpoint —
+ * only provided fields are applied.
+ */
 export interface UpdateLessonRequest {
   startUtc?: string;
   durationMinutes?: number;
@@ -91,6 +107,7 @@ export interface UpdateLessonRequest {
   price?: number;
   isPaid?: boolean;
   topic?: string;
+  description?: string;
 }
 
 /**
@@ -127,15 +144,11 @@ export interface CreateLessonSeriesRequest {
 /**
  * Body for `PATCH /lessons/series/{id}` — only provided fields are applied;
  * days/time cannot change (cancel + recreate instead). Shrinking `endDate`
- * cancels already-generated Scheduled lessons beyond the new boundary.
+ * just stops virtual slots beyond it from expanding; touched (physical)
+ * lessons are left as-is.
  */
 export interface UpdateLessonSeriesRequest {
   title?: string;
   endDate?: string;
   price?: number;
-}
-
-/** `POST /lessons/series/{id}/cancel` result. */
-export interface CancelSeriesResponse {
-  cancelledCount: number;
 }

@@ -5,6 +5,7 @@ import { TextField, useMainButton } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
+import { useProfile } from '@/features/profile/queries';
 import { StudentPickerField } from '@/features/students/StudentPickerField';
 import { useCreateSeries } from '@/features/lessons/queries';
 import { ConflictList } from '@/features/lessons/ConflictList';
@@ -29,6 +30,10 @@ export function SeriesFormPage() {
 
   const { data: students } = useStudents();
   const selectedStudent = students?.find((s) => s.id === studentId);
+
+  // Series times are wall clock in the tutor's profile time zone — without a
+  // saved profile the backend rejects creation, so guide to settings instead.
+  const profile = useProfile();
 
   const createSeries = useCreateSeries();
 
@@ -64,7 +69,7 @@ export function SeriesFormPage() {
   useMainButton({
     text: m.lesson_form_save_series(),
     onClick: save,
-    enabled: valid && !createSeries.isPending,
+    enabled: valid && !createSeries.isPending && !profile.isNotFound,
   });
 
   const toggleWeekday = (flag: string) => {
@@ -168,6 +173,7 @@ export function SeriesFormPage() {
           error={fieldError('Price')}
         />
 
+        {profile.isNotFound && <div className={styles['form__error']}>{m.series_form_no_profile()}</div>}
         {conflicts && <ConflictList conflicts={conflicts} />}
         {unmappedMessages.map((message, i) => (
           <div key={i} className={styles['form__error']}>

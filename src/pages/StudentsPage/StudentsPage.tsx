@@ -7,7 +7,7 @@ import { ApiError } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
 import { useSeriesList } from '@/features/lessons/queries';
 import { studentSubjects } from '@/features/lessons/model';
-import { balanceText, balanceColor, studentSubtitle, deriveFinance } from '@/features/students/model';
+import { studentSubtitle } from '@/features/students/model';
 import styles from './StudentsPage.module.scss';
 
 type Filter = 'active' | 'archived';
@@ -51,7 +51,6 @@ export function StudentsPage() {
 
   const activeCount = students.filter((s) => s.status !== 'Archived').length;
   const archCount = students.filter((s) => s.status === 'Archived').length;
-  const debtors = students.filter((s) => s.status !== 'Archived' && deriveFinance(s).balance < 0).length;
 
   const q = query.trim().toLowerCase();
   const base = students.filter((s) => (filter === 'archived' ? s.status === 'Archived' : s.status !== 'Archived'));
@@ -66,7 +65,7 @@ export function StudentsPage() {
     ? m.students_header_search()
     : filter === 'archived'
       ? m.students_header_archived({ count: archCount })
-      : m.students_header_active({ count: activeCount, debtors });
+      : m.students_header_active({ count: activeCount });
   const listFooter =
     filter === 'archived' ? m.students_footer_archived() : m.students_footer_active();
   const noResultsText = q
@@ -101,7 +100,6 @@ export function StudentsPage() {
                 {filtered.map((student) => {
                   const derived = studentSubjects(seriesList ?? [], student.id).join(', ');
                   const sub = studentSubtitle(student, derived || student.subject);
-                  const { balance } = deriveFinance(student);
                   return (
                     <Cell
                       key={student.id}
@@ -109,8 +107,6 @@ export function StudentsPage() {
                       title={student.name}
                       subtitle={sub.text}
                       subtitleMuted={sub.muted}
-                      value={balanceText(balance)}
-                      valueColor={balanceColor(balance)}
                       chevron
                       inset={70}
                       minHeight={60}

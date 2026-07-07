@@ -4,32 +4,11 @@ import { m } from '@/paraglide/messages';
 import { Section, Cell, Placeholder, useMainButton } from '@/shared/ui';
 import { ApiError } from '@/shared/api';
 import type { Lesson, Student } from '@/shared/api';
-import { useProfile, useSaveProfile } from '@/features/profile/queries';
 import { useLessons } from '@/features/lessons/queries';
 import { useStudents } from '@/features/students/queries';
 import { money } from '@/features/students/model';
-import { startOfWeek, addDays, dateKey, fmtTime, fmtDayHeader, fmtWeekRange, groupByDay } from '@/features/lessons/model';
+import { startOfWeek, addDays, dateKey, fmtTime, fmtDayHeader, fmtWeekRange, groupByDay, lessonPath } from '@/features/lessons/model';
 import styles from './SchedulePage.module.scss';
-
-/** First-open flow: no profile yet → offer the detected IANA time zone. */
-function TimezoneOnboarding() {
-  const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const saveProfile = useSaveProfile();
-
-  useMainButton({
-    text: m.tz_onboarding_save(),
-    onClick: () => saveProfile.mutate({ timeZoneId: detected }),
-    enabled: !saveProfile.isPending,
-  });
-
-  return (
-    <div className={styles['schedule__onboarding']}>
-      <Placeholder glyph="🌍" title={m.tz_onboarding_title()} description={m.tz_onboarding_desc()} />
-      <div className={styles['schedule__tz']}>{detected}</div>
-      {saveProfile.isError && <div className={styles['schedule__error']}>{m.form_error_save()}</div>}
-    </div>
-  );
-}
 
 function LessonCell({ lesson, student, onClick }: { lesson: Lesson; student?: Student; onClick: () => void }) {
   const cancelled = lesson.status === 'Cancelled';
@@ -59,7 +38,7 @@ function LessonCell({ lesson, student, onClick }: { lesson: Lesson; student?: St
   );
 }
 
-function WeekCalendar() {
+export function SchedulePage() {
   const navigate = useNavigate();
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
 
@@ -128,10 +107,10 @@ function WeekCalendar() {
             >
               {lessons.map((lesson) => (
                 <LessonCell
-                  key={lesson.id}
+                  key={lesson.id ?? `${lesson.seriesId}:${lesson.occurrenceDate}`}
                   lesson={lesson}
                   student={studentById.get(lesson.studentId)}
-                  onClick={() => navigate(`/lessons/${lesson.id}`)}
+                  onClick={() => navigate(lessonPath(lesson))}
                 />
               ))}
             </Section>
@@ -140,26 +119,4 @@ function WeekCalendar() {
       )}
     </div>
   );
-}
-
-export function SchedulePage() {
-  const profile = useProfile();
-
-  if (profile.isNotFound) return <TimezoneOnboarding />;
-
-  if (profile.isPending) {
-    return <div className={styles['schedule__status']}>{m.loading()}</div>;
-  }
-
-  if (profile.isError) {
-    return (
-      <div className={styles['schedule__status']}>
-        {profile.error instanceof ApiError && profile.error.isAuthExpired
-          ? m.error_auth_expired()
-          : m.error_generic()}
-      </div>
-    );
-  }
-
-  return <WeekCalendar />;
 }

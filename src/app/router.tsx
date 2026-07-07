@@ -8,7 +8,7 @@ import { StudentFormPage } from '@/pages/StudentFormPage/StudentFormPage';
 import { LessonFormPage } from '@/pages/LessonFormPage/LessonFormPage';
 import { SeriesFormPage } from '@/pages/SeriesFormPage/SeriesFormPage';
 import { SeriesEditPage } from '@/pages/SeriesEditPage/SeriesEditPage';
-import { LessonDetailPage } from '@/pages/LessonDetailPage/LessonDetailPage';
+import { LessonDetailPage, OccurrenceDetailPage } from '@/pages/LessonDetailPage/LessonDetailPage';
 import { ReportsPage } from '@/pages/ReportsPage/ReportsPage';
 import { ProfilePage } from '@/pages/ProfilePage/ProfilePage';
 
@@ -26,6 +26,7 @@ export const router = createBrowserRouter([
       { path: 'lessons/new', element: <LessonFormPage /> },
       { path: 'lessons/series/new', element: <SeriesFormPage /> },
       { path: 'lessons/series/:id/edit', element: <SeriesEditPage /> },
+      { path: 'lessons/occurrence/:seriesId/:date', element: <OccurrenceDetailPage /> },
       { path: 'lessons/:id', element: <LessonDetailPage /> },
       { path: 'reports', element: <ReportsPage /> },
       { path: 'profile', element: <ProfilePage /> },

@@ -1,4 +1,4 @@
-import { retrieveRawInitData } from '@tma.js/sdk-react';
+import { retrieveRawInitData, initData as initDataSdk } from '@tma.js/sdk-react';
 
 export {
   useSignal,
@@ -25,6 +25,15 @@ export { haptic } from './haptics';
 export function getRawInitData(): string | undefined {
   try {
     return retrieveRawInitData();
+  } catch {
+    return undefined;
+  }
+}
+
+/** Telegram user from init data — undefined outside a Mini App context. */
+export function getTelegramUser() {
+  try {
+    return initDataSdk.user();
   } catch {
     return undefined;
   }

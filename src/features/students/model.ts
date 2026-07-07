@@ -14,19 +14,6 @@ export function money(n: number): string {
   return `${fmt(n)} ₴`;
 }
 
-/** Signed balance label + color token: +green / −red / 0 hint. */
-export function balanceText(balance: number): string {
-  if (balance > 0) return `+${fmt(balance)} ₴`;
-  if (balance < 0) return `−${fmt(balance)} ₴`;
-  return '0 ₴';
-}
-
-export function balanceColor(balance: number): string {
-  if (balance > 0) return 'var(--ds-color-success)';
-  if (balance < 0) return 'var(--ds-color-danger)';
-  return 'var(--ds-color-hint)';
-}
-
 /**
  * List-row subtitle: "{subject} · {rate} ₴/год", or a muted placeholder.
  * `subject` defaults to the student's own field; pass a derived value (e.g.
@@ -45,21 +32,4 @@ export function formatDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
   return new Intl.DateTimeFormat(getAppLocale(), { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
-}
-
-/**
- * Per-student finances. The backend Student DTO does not yet expose payments or
- * lessons, so these derive to zero for now. When `GET /students` returns paid /
- * lessons, read them here and the UI (balances, debtors) lights up unchanged.
- */
-export interface Finance {
-  paid: number;
-  lessons: number;
-  balance: number;
-}
-
-export function deriveFinance(student: Student): Finance {
-  const paid = 0;
-  const lessons = 0;
-  return { paid, lessons, balance: paid - lessons * student.rate };
 }

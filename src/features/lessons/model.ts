@@ -95,12 +95,30 @@ export function weekdaysLabel(flags: string): string {
 }
 
 /**
- * A student's subjects, derived from their active series titles (a student
+ * Detail-page route for a schedule entry: physical lessons go by id, virtual
+ * slots (no id) by their series occurrence.
+ */
+export function lessonPath(lesson: Lesson): string {
+  return lesson.id ? `/lessons/${lesson.id}` : `/lessons/occurrence/${lesson.seriesId}/${lesson.occurrenceDate}`;
+}
+
+/**
+ * Whether the series still produces future occurrences. `isActive` false only
+ * means "ended before it ever started"; a series cancelled mid-life stays
+ * active with `endDate` tightened to the cancellation day — so "current" is
+ * active AND not ended before today.
+ */
+export function isSeriesCurrent(series: LessonSeries): boolean {
+  return series.isActive && (!series.endDate || series.endDate >= dateKey(new Date()));
+}
+
+/**
+ * A student's subjects, derived from their current series titles (a student
  * with several subjects simply has several series). Unique, in series order.
  */
 export function studentSubjects(series: LessonSeries[], studentId: string): string[] {
   const titles = series
-    .filter((s) => s.studentId === studentId && s.isActive && s.title)
+    .filter((s) => s.studentId === studentId && isSeriesCurrent(s) && s.title)
     .map((s) => s.title as string);
   return [...new Set(titles)];
 }

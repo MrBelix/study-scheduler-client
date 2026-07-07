@@ -17,5 +17,4 @@ export type {
   LessonSeries,
   CreateLessonSeriesRequest,
   UpdateLessonSeriesRequest,
-  CancelSeriesResponse,
 } from './types';

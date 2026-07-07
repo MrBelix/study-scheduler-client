@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateLessonRequest, CreateLessonSeriesRequest, UpdateLessonRequest, UpdateLessonSeriesRequest } from '@/shared/api';
-import { getLessons, getLesson, createLesson, updateLesson, getSeriesList, getSeries, createSeries, updateSeries, cancelSeries } from './api';
+import { getLessons, getLesson, createLesson, updateLesson, updateOccurrence, getSeriesList, getSeries, createSeries, updateSeries, cancelSeries } from './api';
 
 /**
  * Query-key factory. Everything nests under `all`, so a single invalidation
@@ -54,10 +54,17 @@ export function useCreateLesson() {
   });
 }
 
+/** Physical lesson (`lessonId`) or a series slot (`seriesId`+`occurrenceDate`, materialized on demand). */
+export type LessonTarget = { lessonId: string } | { seriesId: string; occurrenceDate: string };
+
+/** Partial update routed by target — one hook for both physical lessons and virtual slots. */
 export function useUpdateLesson() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, body }: { id: string; body: UpdateLessonRequest }) => updateLesson(id, body),
+    mutationFn: ({ target, body }: { target: LessonTarget; body: UpdateLessonRequest }) =>
+      'lessonId' in target
+        ? updateLesson(target.lessonId, body)
+        : updateOccurrence(target.seriesId, target.occurrenceDate, body),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: lessonKeys.all }),
   });
 }

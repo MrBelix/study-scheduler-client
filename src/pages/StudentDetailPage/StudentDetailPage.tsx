@@ -4,8 +4,8 @@ import { Section, Cell, Avatar, Badge, Placeholder, useMainButton } from '@/shar
 import { useBackButton, haptic } from '@/shared/tg';
 import { useStudent } from '@/features/students/queries';
 import { useSeriesList } from '@/features/lessons/queries';
-import { weekdaysLabel } from '@/features/lessons/model';
-import { balanceText, balanceColor, money, fmt, formatDate, deriveFinance } from '@/features/students/model';
+import { weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
+import { money, fmt, formatDate } from '@/features/students/model';
 import styles from './StudentDetailPage.module.scss';
 
 export function StudentDetailPage() {
@@ -25,12 +25,11 @@ export function StudentDetailPage() {
     return <Placeholder glyph="🔍" title={m.student_not_found()} />;
   }
 
-  const { paid, lessons, balance } = deriveFinance(student);
   const archived = student.status === 'Archived';
 
-  // A student's subjects are their active series ("Математика" пн/чт +
+  // A student's subjects are their current series ("Математика" пн/чт +
   // "Фізика" ср, each with its own price) — shown in the schedule section.
-  const activeSeries = (seriesList ?? []).filter((s) => s.studentId === student.id && s.isActive);
+  const activeSeries = (seriesList ?? []).filter((s) => s.studentId === student.id && isSeriesCurrent(s));
 
   return (
     <div className={styles['detail']}>
@@ -77,23 +76,7 @@ export function StudentDetailPage() {
         />
       </Section>
 
-      <Section header={m.detail_section_finances()} footer={m.detail_finance_formula()}>
-        <Cell
-          title={balance < 0 ? m.detail_debt() : m.detail_balance()}
-          minHeight={56}
-          emphasis
-          value={balanceText(balance)}
-          valueColor={balanceColor(balance)}
-        />
-        <Cell title={m.detail_paid_total()} value={money(paid)} />
-        <Cell title={m.detail_lessons_count()} value={String(lessons)} />
-      </Section>
-
       <Section>
-        <Cell
-          title={<span style={{ color: 'var(--ds-color-accent)' }}>{m.detail_add_payment()}</span>}
-          onClick={() => haptic('light')}
-        />
         <Cell
           title={<span style={{ color: 'var(--ds-color-danger)' }}>{m.detail_archive()}</span>}
           onClick={() => haptic('medium')}

@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/shared/api';
 import type { UpdateProfileRequest } from '@/shared/api';
-import { getProfile, putProfile } from './api';
+import { getProfile, putProfile, getTimeZones } from './api';
 
 /** Query-key factory — the single source for cache keys in this feature. */
 export const profileKeys = {
   all: ['profile'] as const,
+  timezones: ['profile', 'timezones'] as const,
 };
 
 /**
@@ -19,6 +20,15 @@ export function useProfile() {
   });
   const isNotFound = query.error instanceof ApiError && query.error.status === 404;
   return { ...query, isNotFound };
+}
+
+/** Server-accepted IANA zone ids — static per deployment, so cache forever. */
+export function useTimeZones() {
+  return useQuery({
+    queryKey: profileKeys.timezones,
+    queryFn: ({ signal }) => getTimeZones(signal),
+    staleTime: Infinity,
+  });
 }
 
 export function useSaveProfile() {

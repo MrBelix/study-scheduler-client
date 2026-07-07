@@ -3,11 +3,12 @@ import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Badge, Placeholder } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
-import type { LessonStatus } from '@/shared/api';
+import type { Lesson, LessonStatus } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
 import { money, formatDate } from '@/features/students/model';
-import { useLesson, useLessonSeries, useUpdateLesson, useCancelSeries } from '@/features/lessons/queries';
-import { fmtTime, fmtDayHeader, weekdaysLabel } from '@/features/lessons/model';
+import { useLesson, useLessons, useLessonSeries, useUpdateLesson, useCancelSeries } from '@/features/lessons/queries';
+import type { LessonTarget } from '@/features/lessons/queries';
+import { fmtTime, fmtDayHeader, weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
 import styles from './LessonDetailPage.module.scss';
 
 const STATUS_BADGE: Record<LessonStatus, { mode: 'success' | 'muted'; label: () => string }> = {
@@ -16,11 +17,39 @@ const STATUS_BADGE: Record<LessonStatus, { mode: 'success' | 'muted'; label: () 
   Cancelled: { mode: 'muted', label: () => m.status_cancelled() },
 };
 
+/** Physical lesson — `/lessons/:id`. */
 export function LessonDetailPage() {
   const { id } = useParams();
+  const { data: lesson, isPending, error } = useLesson(id);
+  return <LessonDetailView lesson={lesson} isPending={isPending} error={error} />;
+}
+
+/**
+ * Series slot — `/lessons/occurrence/:seriesId/:date`. Virtual slots have no
+ * id and no single-item endpoint, so the slot is picked out of its day range;
+ * once a mutation materializes it, the same route keeps resolving to the
+ * physical row (same seriesId + occurrenceDate).
+ */
+export function OccurrenceDetailPage() {
+  const { seriesId, date } = useParams();
+  const dayStart = new Date(`${date}T00:00`);
+  const dayEnd = new Date(dayStart.getTime() + 86_400_000);
+  const { data, isPending, error } = useLessons(dayStart.toISOString(), dayEnd.toISOString());
+  const lesson = data?.find((l) => l.seriesId === seriesId && l.occurrenceDate === date);
+  return <LessonDetailView lesson={lesson} isPending={isPending} error={error} />;
+}
+
+function LessonDetailView({
+  lesson,
+  isPending,
+  error,
+}: {
+  lesson: Lesson | undefined;
+  isPending: boolean;
+  error: unknown;
+}) {
   const navigate = useNavigate();
 
-  const { data: lesson, isPending, error } = useLesson(id);
   const { data: students } = useStudents();
   const { data: series } = useLessonSeries(lesson?.seriesId);
   const updateLesson = useUpdateLesson();
@@ -48,10 +77,16 @@ export function LessonDetailPage() {
   const cancelled = lesson.status === 'Cancelled';
   const mutating = updateLesson.isPending || cancelSeries.isPending;
 
+  // Virtual slots are patched via their series occurrence — the backend
+  // materializes the row on first mutation.
+  const target: LessonTarget = lesson.id
+    ? { lessonId: lesson.id }
+    : { seriesId: lesson.seriesId!, occurrenceDate: lesson.occurrenceDate! };
+
   const patch = (body: Parameters<typeof updateLesson.mutate>[0]['body']) => {
     if (mutating) return;
     haptic('light');
-    updateLesson.mutate({ id: lesson.id, body });
+    updateLesson.mutate({ target, body });
   };
 
   return (
@@ -93,6 +128,7 @@ export function LessonDetailPage() {
           onClick={cancelled ? undefined : () => patch({ isPaid: !lesson.isPaid })}
         />
         {lesson.topic && <Cell title={m.lesson_topic()} value={lesson.topic} />}
+        {lesson.description && <Cell title={m.lesson_description()} value={lesson.description} />}
       </Section>
 
       {series && (
@@ -101,12 +137,14 @@ export function LessonDetailPage() {
           <Cell
             title={m.lesson_series_schedule()}
             value={`${weekdaysLabel(series.weekdays)} · ${series.startTimeLocal.slice(0, 5)}`}
+            chevron
+            onClick={() => navigate(`/lessons/series/${series.id}/edit`)}
           />
           <Cell
             title={m.lesson_series_until()}
             value={series.endDate ? formatDate(series.endDate) : m.lesson_series_open_ended()}
           />
-          {series.isActive && (
+          {isSeriesCurrent(series) && (
             <Cell
               title={<span className={styles['lesson__danger']}>{m.lesson_series_cancel()}</span>}
               onClick={() => {

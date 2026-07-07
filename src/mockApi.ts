@@ -11,7 +11,7 @@ import type {
   LessonStatus,
 } from '@/shared/api';
 
-const STORAGE_KEY = 'mock-api-v1';
+const STORAGE_KEY = 'mock-api-v2'; // v2: virtual recurrence + lesson description
 const LATENCY_MS = 250;
 const BASE = import.meta.env.VITE_API_URL ?? '';
 
@@ -64,10 +64,12 @@ function seed(): MockState {
     price: 300,
     isPaid,
     topic,
+    description: null,
+    isVirtual: false,
     createdAtUtc: day(offset - 7, 12).toISOString(),
   });
   return {
-    profile: { timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone, createdAtUtc: day(-30, 0).toISOString() },
+    profile: { timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone, languageCode: null, createdAtUtc: day(-30, 0).toISOString() },
     students,
     series,
     lessons: [
@@ -98,10 +100,57 @@ export function installMockApi() {
   const validation = (field: string, message: string) => json({ errors: { [field]: [message] } }, 400);
   const notFound = () => json({}, 404);
 
-  const overlaps = (startUtc: string, endUtc: string, ignoreLessonId?: string) =>
-    state.lessons.filter(
-      (l) => l.status !== 'Cancelled' && l.id !== ignoreLessonId && l.startUtc < endUtc && startUtc < l.endUtc,
+  /** Virtual slots of active series inside [from, to), skipping materialized dates. Read-only. */
+  const virtualSlots = (from: Date, to: Date): Lesson[] => {
+    const slots: Lesson[] = [];
+    for (const s of state.series) {
+      if (!s.isActive) continue;
+      const [h, min] = s.startTimeLocal.split(':').map(Number);
+      const wanted = new Set(s.weekdays.split(',').map((w) => w.trim()));
+      for (let d = new Date(from.getFullYear(), from.getMonth(), from.getDate()); d < to; d.setDate(d.getDate() + 1)) {
+        const key = localDateKey(d);
+        if (key < s.startDate || (s.endDate && key > s.endDate)) continue;
+        if (!wanted.has(WEEKDAY_FLAGS[(d.getDay() + 6) % 7])) continue;
+        if (state.lessons.some((l) => l.seriesId === s.id && l.occurrenceDate === key)) continue;
+        const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, min);
+        slots.push({
+          id: null,
+          studentId: s.studentId,
+          seriesId: s.id,
+          occurrenceDate: key,
+          startUtc: start.toISOString(),
+          endUtc: new Date(start.getTime() + s.durationMinutes * 60_000).toISOString(),
+          durationMinutes: s.durationMinutes,
+          status: 'Scheduled',
+          price: s.price ?? state.students.find((st) => st.id === s.studentId)?.rate ?? 0,
+          isPaid: false,
+          topic: null,
+          description: null,
+          isVirtual: true,
+          createdAtUtc: s.createdAtUtc,
+        });
+      }
+    }
+    return slots;
+  };
+
+  // Overlap check mirrors the backend: physical lessons AND unmaterialized series slots collide.
+  const overlaps = (
+    startIso: string,
+    endIso: string,
+    ignore?: { lessonId?: string | null; seriesId?: string | null; occurrenceDate?: string | null },
+  ) => {
+    const windowFrom = new Date(new Date(startIso).getTime() - 86_400_000);
+    const windowTo = new Date(new Date(endIso).getTime() + 86_400_000);
+    return [...state.lessons, ...virtualSlots(windowFrom, windowTo)].filter(
+      (l) =>
+        l.status !== 'Cancelled' &&
+        !(ignore?.lessonId != null && l.id === ignore.lessonId) &&
+        !(ignore?.seriesId != null && l.seriesId === ignore.seriesId && l.occurrenceDate === ignore.occurrenceDate) &&
+        l.startUtc < endIso &&
+        startIso < l.endUtc,
     );
+  };
   const conflict409 = (found: Lesson[]) =>
     json(
       {
@@ -114,44 +163,48 @@ export function installMockApi() {
       409,
     );
 
-  /** Lazily create series lessons inside [from, to) — mirrors the backend. */
-  const materialize = (from: Date, to: Date) => {
-    for (const s of state.series) {
-      if (!s.isActive) continue;
-      const [h, min] = s.startTimeLocal.split(':').map(Number);
-      const wanted = new Set(s.weekdays.split(',').map((w) => w.trim()));
-      for (let d = new Date(from.getFullYear(), from.getMonth(), from.getDate()); d < to; d.setDate(d.getDate() + 1)) {
-        const key = localDateKey(d);
-        if (key < s.startDate || (s.endDate && key > s.endDate)) continue;
-        if (!wanted.has(WEEKDAY_FLAGS[(d.getDay() + 6) % 7])) continue;
-        if (state.lessons.some((l) => l.seriesId === s.id && l.occurrenceDate === key)) continue;
-        const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, min);
-        state.lessons.push({
-          id: crypto.randomUUID(),
-          studentId: s.studentId,
-          seriesId: s.id,
-          occurrenceDate: key,
-          startUtc: start.toISOString(),
-          endUtc: new Date(start.getTime() + s.durationMinutes * 60_000).toISOString(),
-          durationMinutes: s.durationMinutes,
-          status: 'Scheduled',
-          price: s.price ?? state.students.find((st) => st.id === s.studentId)?.rate ?? 0,
-          isPaid: false,
-          topic: null,
-          createdAtUtc: new Date().toISOString(),
-        });
-      }
+  // Shared patch pipeline — same partial-update semantics for physical lessons
+  // and freshly materialized slots; re-checks overlaps when the time changes.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- parsed request JSON, shape enforced by the client's typed api layer
+  const applyPatch = (lesson: Lesson, body: any): Response => {
+    if (body.startUtc !== undefined || body.durationMinutes !== undefined) {
+      const start = new Date(body.startUtc ?? lesson.startUtc);
+      const duration = body.durationMinutes ?? lesson.durationMinutes;
+      const startUtc = start.toISOString();
+      const endUtc = new Date(start.getTime() + duration * 60_000).toISOString();
+      const found = overlaps(startUtc, endUtc, {
+        lessonId: lesson.id,
+        seriesId: lesson.seriesId,
+        occurrenceDate: lesson.occurrenceDate,
+      });
+      if (found.length) return conflict409(found);
+      lesson.startUtc = startUtc;
+      lesson.endUtc = endUtc;
+      lesson.durationMinutes = duration;
     }
+    if (body.status !== undefined) lesson.status = body.status;
+    if (body.price !== undefined) lesson.price = body.price;
+    if (body.isPaid !== undefined) lesson.isPaid = body.isPaid;
+    if (body.topic !== undefined) lesson.topic = body.topic;
+    if (body.description !== undefined) lesson.description = body.description;
     persist();
+    return json(lesson);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- parsed request JSON, shape enforced by the client's typed api layer
   const handle = (method: string, path: string, query: URLSearchParams, body: any): Response => {
     // --- profile ---
+    if (path === '/profile/timezones') {
+      return json(Intl.supportedValuesOf('timeZone'));
+    }
     if (path === '/profile') {
       if (method === 'PUT') {
         if (!body?.timeZoneId) return validation('TimeZoneId', 'Time zone is required.');
-        state.profile = { timeZoneId: body.timeZoneId, createdAtUtc: state.profile?.createdAtUtc ?? new Date().toISOString() };
+        state.profile = {
+          timeZoneId: body.timeZoneId,
+          languageCode: body.languageCode ?? state.profile?.languageCode ?? null,
+          createdAtUtc: state.profile?.createdAtUtc ?? new Date().toISOString(),
+        };
         persist();
         return json(state.profile);
       }
@@ -215,24 +268,39 @@ export function installMockApi() {
       }
       return json(state.series);
     }
+    // Mutates one slot by its original date, materializing it on demand.
+    const occurrenceMatch = path.match(/^\/lessons\/series\/([^/]+)\/occurrences\/([^/]+)$/);
+    if (occurrenceMatch && method === 'PATCH') {
+      const series = state.series.find((s) => s.id === occurrenceMatch[1]);
+      if (!series) return notFound();
+      const date = occurrenceMatch[2];
+      const existing = state.lessons.find((l) => l.seriesId === series.id && l.occurrenceDate === date);
+      if (existing) return applyPatch(existing, body);
+      const dayStart = new Date(`${date}T00:00`);
+      const slot = virtualSlots(dayStart, new Date(dayStart.getTime() + 86_400_000)).find(
+        (l) => l.seriesId === series.id && l.occurrenceDate === date,
+      );
+      if (!slot) return notFound();
+      const lesson: Lesson = { ...slot, id: crypto.randomUUID(), isVirtual: false, createdAtUtc: new Date().toISOString() };
+      state.lessons.push(lesson);
+      return applyPatch(lesson, body);
+    }
+
     const seriesMatch = path.match(/^\/lessons\/series\/([^/]+)(\/cancel)?$/);
     if (seriesMatch) {
       const series = state.series.find((s) => s.id === seriesMatch[1]);
       if (!series) return notFound();
       if (seriesMatch[2] && method === 'POST') {
-        series.isActive = false;
-        const nowIso = new Date().toISOString();
-        let cancelledCount = 0;
-        for (const l of state.lessons) {
-          if (l.seriesId === series.id && l.status === 'Scheduled' && l.startUtc > nowIso) {
-            l.status = 'Cancelled';
-            cancelledCount++;
-          }
-        }
+        // End(today): tighten endDate; deactivate only a series that never started.
+        const today = localDateKey(new Date());
+        if (today < series.startDate) series.isActive = false;
+        else if (!series.endDate || series.endDate > today) series.endDate = today;
         persist();
-        return json({ cancelledCount });
+        return json(series);
       }
       if (method === 'PATCH') {
+        if (body.endDate && body.endDate < series.startDate)
+          return validation('EndDate', 'End date must not precede start date.');
         if (body.title !== undefined) series.title = body.title;
         if (body.endDate !== undefined) series.endDate = body.endDate;
         if (body.price !== undefined) series.price = body.price;
@@ -263,43 +331,30 @@ export function installMockApi() {
           price: body.price ?? state.students.find((s) => s.id === body.studentId)?.rate ?? 0,
           isPaid: false,
           topic: body.topic ?? null,
+          description: body.description ?? null,
+          isVirtual: false,
           createdAtUtc: new Date().toISOString(),
         };
         state.lessons.push(lesson);
         persist();
         return json(lesson, 201);
       }
+      // Read-only: physical lessons merged with virtual slots, clipped to the range.
       const from = new Date(query.get('from') ?? '');
       const to = new Date(query.get('to') ?? '');
       if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime()) || to <= from)
         return validation('from', 'Invalid range.');
-      materialize(from, to);
       const fromIso = from.toISOString();
       const toIso = to.toISOString();
-      return json(state.lessons.filter((l) => l.startUtc < toIso && fromIso < l.endUtc));
+      return json(
+        [...state.lessons, ...virtualSlots(from, to)].filter((l) => l.startUtc < toIso && fromIso < l.endUtc),
+      );
     }
     const lessonMatch = path.match(/^\/lessons\/([^/]+)$/);
     if (lessonMatch) {
       const lesson = state.lessons.find((l) => l.id === lessonMatch[1]);
       if (!lesson) return notFound();
-      if (method === 'PATCH') {
-        if (body.startUtc !== undefined || body.durationMinutes !== undefined) {
-          const start = new Date(body.startUtc ?? lesson.startUtc);
-          const duration = body.durationMinutes ?? lesson.durationMinutes;
-          const startUtc = start.toISOString();
-          const endUtc = new Date(start.getTime() + duration * 60_000).toISOString();
-          const found = overlaps(startUtc, endUtc, lesson.id);
-          if (found.length) return conflict409(found);
-          lesson.startUtc = startUtc;
-          lesson.endUtc = endUtc;
-          lesson.durationMinutes = duration;
-        }
-        if (body.status !== undefined) lesson.status = body.status;
-        if (body.price !== undefined) lesson.price = body.price;
-        if (body.isPaid !== undefined) lesson.isPaid = body.isPaid;
-        if (body.topic !== undefined) lesson.topic = body.topic;
-        persist();
-      }
+      if (method === 'PATCH') return applyPatch(lesson, body);
       return json(lesson);
     }
 

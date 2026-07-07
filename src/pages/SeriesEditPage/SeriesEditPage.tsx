@@ -8,7 +8,7 @@ import type { LessonSeries, Student, UpdateLessonSeriesRequest } from '@/shared/
 import { useStudents } from '@/features/students/queries';
 import { formatDate } from '@/features/students/model';
 import { useLessonSeries, useUpdateSeries, useCancelSeries } from '@/features/lessons/queries';
-import { weekdaysLabel, parsePrice } from '@/features/lessons/model';
+import { weekdaysLabel, parsePrice, isSeriesCurrent } from '@/features/lessons/model';
 import styles from './SeriesEditPage.module.scss';
 
 /** Waits for the series, then mounts the form with seeded state (see StudentFormPage). */
@@ -113,7 +113,7 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
         />
       </div>
 
-      {series.isActive && (
+      {isSeriesCurrent(series) && (
         <Section footer={m.lesson_series_footer()}>
           <Cell
             title={<span className={styles['form__danger']}>{m.lesson_series_cancel()}</span>}

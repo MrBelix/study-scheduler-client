@@ -8,3 +8,7 @@ export const getProfile = (signal?: AbortSignal) =>
 /** `PUT /profile` — upsert the tutor's time zone. */
 export const putProfile = (body: UpdateProfileRequest) =>
   apiRequest<Profile>('/profile', { method: 'PUT', body: JSON.stringify(body) });
+
+/** `GET /profile/timezones` — IANA time zone ids the server accepts. */
+export const getTimeZones = (signal?: AbortSignal) =>
+  apiRequest<string[]>('/profile/timezones', { signal });

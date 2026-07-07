@@ -23,6 +23,7 @@ export function LessonFormPage() {
   const [duration, setDuration] = useState('60');
   const [price, setPrice] = useState('');
   const [topic, setTopic] = useState('');
+  const [description, setDescription] = useState('');
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const { data: students } = useStudents();
@@ -43,6 +44,7 @@ export function LessonFormPage() {
         durationMinutes: durationValue,
         price: parsePrice(price),
         topic: topic.trim() || undefined,
+        description: description.trim() || undefined,
       },
       { onSuccess: () => navigate(-1) },
     );
@@ -64,7 +66,7 @@ export function LessonFormPage() {
   const conflicts = error instanceof ApiError ? error.conflicts : undefined;
   const fieldErrors = error instanceof ApiError ? error.fields : undefined;
   const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
-  const mappedKeys = ['StudentId', 'StartUtc', 'DurationMinutes', 'Price'];
+  const mappedKeys = ['StudentId', 'StartUtc', 'DurationMinutes', 'Price', 'Topic', 'Description'];
   const unmappedMessages = fieldErrors
     ? Object.entries(fieldErrors)
         .filter(([key]) => !mappedKeys.some((k) => k.toLowerCase() === key.toLowerCase()))
@@ -119,6 +121,14 @@ export function LessonFormPage() {
           placeholder={m.lesson_form_topic_placeholder()}
           value={topic}
           onChange={setTopic}
+          error={fieldError('Topic')}
+        />
+        <TextField
+          header={m.lesson_form_description()}
+          placeholder={m.lesson_form_description_placeholder()}
+          value={description}
+          onChange={setDescription}
+          error={fieldError('Description')}
         />
 
         {conflicts && <ConflictList conflicts={conflicts} />}

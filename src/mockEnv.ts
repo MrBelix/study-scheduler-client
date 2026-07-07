@@ -50,7 +50,7 @@ if (import.meta.env.DEV) {
           ['auth_date', (new Date().getTime() / 1000 | 0).toString()],
           ['hash', 'mock-hash'],
           ['signature', 'mock-signature'],
-          ['user', JSON.stringify({ id: 1, first_name: 'Олена', last_name: 'Коваленко' })],
+          ['user', JSON.stringify({ id: 1, first_name: 'Олена', last_name: 'Коваленко', username: 'olena_tutor' })],
         ]).toString()],
         ['tgWebAppVersion', '8.4'],
         ['tgWebAppPlatform', 'tdesktop'],

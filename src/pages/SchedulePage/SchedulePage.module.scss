@@ -42,25 +42,4 @@
     font-size: $font-body;
     padding: $space-xl $space-lg;
   }
-
-  &__onboarding {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__tz {
-    text-align: center;
-    color: $color-text;
-    font-size: $font-callout;
-    font-weight: 600;
-    padding: $space-md $space-lg 0;
-  }
-
-  &__error {
-    text-align: center;
-    font-size: $font-caption;
-    line-height: 1.4;
-    color: $color-error;
-    padding: $space-md $space-lg 0;
-  }
 }

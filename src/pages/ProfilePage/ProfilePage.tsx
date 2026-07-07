@@ -45,9 +45,15 @@ export function ProfilePage() {
     setTzQuery('');
   };
 
-  // Server-provided IANA ids (the source of truth for what PUT accepts),
-  // with the device-detected zone pinned first.
-  const options = timeZones ? [detected, ...timeZones.filter((z) => z !== detected)] : [];
+  // Server-provided IANA ids (the source of truth for what PUT accepts), with
+  // the device-detected zone pinned first — but only when the server actually
+  // advertises it: offering an id the backend can't resolve turns the top pick
+  // into a guaranteed 400.
+  const options = timeZones
+    ? timeZones.includes(detected)
+      ? [detected, ...timeZones.filter((z) => z !== detected)]
+      : timeZones
+    : [];
   const q = tzQuery.trim().toLowerCase();
   const zones = options.filter((z) => !q || z.toLowerCase().includes(q));
 

@@ -129,7 +129,10 @@ export interface LessonSeries {
   createdAtUtc: string;
 }
 
-/** Body for `POST /lessons/series`. Times are the tutor's local wall clock. */
+/**
+ * Body for `POST /lessons/series`. `startTimeLocal` is wall clock in the anchor
+ * zone: `timeZoneId` when set (e.g. the student's zone), else the profile zone.
+ */
 export interface CreateLessonSeriesRequest {
   studentId: string;
   title?: string;
@@ -139,6 +142,7 @@ export interface CreateLessonSeriesRequest {
   durationMinutes: number;
   endDate?: string | null;
   price?: number | null;
+  timeZoneId?: string;
 }
 
 /**

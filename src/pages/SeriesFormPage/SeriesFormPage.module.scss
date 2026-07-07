@@ -46,6 +46,37 @@
     }
   }
 
+  // Anchor-zone chips reuse the weekday chip look but size to their label.
+  &__zones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-xs;
+  }
+
+  &__zone {
+    height: 40px;
+    padding: 0 12px;
+    border: none;
+    border-radius: $radius-sm;
+    background: $color-bg;
+    color: $color-text;
+    font-family: inherit;
+    font-size: $font-caption;
+    cursor: pointer;
+
+    &[data-selected] {
+      background: $color-button;
+      color: $color-button-text;
+      font-weight: 600;
+    }
+  }
+
+  &__helper {
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-subtitle;
+  }
+
   &__field-error,
   &__error {
     font-size: $font-caption;

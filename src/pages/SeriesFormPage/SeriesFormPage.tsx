@@ -27,6 +27,7 @@ export function SeriesFormPage() {
   const [duration, setDuration] = useState('60');
   const [price, setPrice] = useState('');
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [anchor, setAnchor] = useState<'tutor' | 'student'>('tutor');
 
   const { data: students } = useStudents();
   const selectedStudent = students?.find((s) => s.id === studentId);
@@ -34,6 +35,13 @@ export function SeriesFormPage() {
   // Series times are wall clock in the tutor's profile time zone — without a
   // saved profile the backend rejects creation, so guide to settings instead.
   const profile = useProfile();
+
+  // The series can be anchored to the student's zone instead — their wall
+  // clock then stays fixed across mismatched DST transitions, not the tutor's.
+  const studentZone = selectedStudent?.timeZoneId;
+  const zoneChoice =
+    Boolean(studentZone) && Boolean(profile.data) && studentZone !== profile.data!.timeZoneId;
+  const anchoredToStudent = zoneChoice && anchor === 'student';
 
   const createSeries = useCreateSeries();
 
@@ -56,6 +64,7 @@ export function SeriesFormPage() {
         durationMinutes: durationValue,
         endDate: endDate || undefined,
         price: parsePrice(price),
+        timeZoneId: anchoredToStudent ? studentZone! : undefined,
       },
       { onSuccess: () => navigate(-1) },
     );
@@ -86,7 +95,7 @@ export function SeriesFormPage() {
   const conflicts = error instanceof ApiError ? error.conflicts : undefined;
   const fieldErrors = error instanceof ApiError ? error.fields : undefined;
   const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
-  const mappedKeys = ['StudentId', 'StartDate', 'Weekdays', 'StartTimeLocal', 'DurationMinutes', 'Price'];
+  const mappedKeys = ['StudentId', 'StartDate', 'Weekdays', 'StartTimeLocal', 'DurationMinutes', 'Price', 'TimeZoneId'];
   const unmappedMessages = fieldErrors
     ? Object.entries(fieldErrors)
         .filter(([key]) => !mappedKeys.some((k) => k.toLowerCase() === key.toLowerCase()))
@@ -136,6 +145,33 @@ export function SeriesFormPage() {
           type="time"
           error={fieldError('StartTimeLocal')}
         />
+        {zoneChoice && (
+          <div className={styles['form__field']}>
+            <span className={styles['form__label']}>{m.series_form_zone()}</span>
+            <div className={styles['form__zones']}>
+              <button
+                type="button"
+                className={styles['form__zone']}
+                data-selected={!anchoredToStudent || undefined}
+                onClick={() => setAnchor('tutor')}
+              >
+                {m.series_form_zone_tutor({ zone: profile.data!.timeZoneId })}
+              </button>
+              <button
+                type="button"
+                className={styles['form__zone']}
+                data-selected={anchoredToStudent || undefined}
+                onClick={() => setAnchor('student')}
+              >
+                {m.series_form_zone_student({ zone: studentZone! })}
+              </button>
+            </div>
+            <span className={styles['form__helper']}>{m.series_form_zone_helper()}</span>
+            {fieldError('TimeZoneId') && (
+              <span className={styles['form__field-error']}>{fieldError('TimeZoneId')}</span>
+            )}
+          </div>
+        )}
         <TextField
           header={m.lesson_form_start_date()}
           value={startDate}

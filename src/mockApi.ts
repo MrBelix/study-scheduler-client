@@ -200,6 +200,13 @@ export function installMockApi() {
     if (path === '/profile') {
       if (method === 'PUT') {
         if (!body?.timeZoneId) return validation('TimeZoneId', 'Time zone is required.');
+        // Series anchored to the old profile zone follow it (backend parity).
+        const previousZone = state.profile?.timeZoneId;
+        if (previousZone && previousZone !== body.timeZoneId) {
+          for (const series of state.series) {
+            if (series.isActive && series.timeZoneId === previousZone) series.timeZoneId = body.timeZoneId;
+          }
+        }
         state.profile = {
           timeZoneId: body.timeZoneId,
           languageCode: body.languageCode ?? state.profile?.languageCode ?? null,
@@ -257,7 +264,7 @@ export function installMockApi() {
           weekdays: body.weekdays,
           startTimeLocal: body.startTimeLocal,
           durationMinutes: body.durationMinutes,
-          timeZoneId: state.profile.timeZoneId,
+          timeZoneId: body.timeZoneId ?? state.profile.timeZoneId,
           price: body.price ?? null,
           isActive: true,
           createdAtUtc: new Date().toISOString(),

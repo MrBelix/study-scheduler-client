@@ -115,5 +115,9 @@
   "lesson_description": "Notes",
   "series_form_no_profile": "To create a schedule, set your time zone in Profile first.",
   "detail_unarchive": "Restore from archive",
-  "lesson_form_tz_mismatch": "Times here use your device time zone ({device}), which differs from your profile time zone ({profile})."
+  "lesson_form_tz_mismatch": "Times here use your device time zone ({device}), which differs from your profile time zone ({profile}).",
+  "series_form_zone": "Series time zone",
+  "series_form_zone_tutor": "My time · {zone}",
+  "series_form_zone_student": "Student's time · {zone}",
+  "series_form_zone_helper": "Whose clock the lessons keep: when DST switch dates differ, the time shifts for the other side."
 }

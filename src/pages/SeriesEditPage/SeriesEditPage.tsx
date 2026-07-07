@@ -68,11 +68,7 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
   const fieldErrors = error instanceof ApiError ? error.fields : undefined;
   const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
   const genericError =
-    (error && !fieldErrors) || cancelSeries.isError
-      ? error instanceof ApiError && error.isAuthExpired
-        ? m.error_auth_expired()
-        : m.form_error_save()
-      : undefined;
+    (error && !fieldErrors) || cancelSeries.isError ? m.form_error_save() : undefined;
 
   return (
     <div className={styles['form']}>

@@ -1,0 +1,45 @@
+@use '../../../app/styles/variables' as *;
+
+.bottom-sheet {
+  background: $color-secondary-bg;
+  border-radius: $radius-md $radius-md 0 0;
+  padding: $space-lg $page-gutter calc(#{$space-xl} + var(--tg-content-safe-area-inset-bottom, 0px));
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+  outline: none;
+  animation: bottom-sheet-up 0.22s ease-out;
+
+  &--full {
+    height: 70vh;
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: $z-nav + 1;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  &__title {
+    text-align: center;
+    font-size: $font-body;
+    font-weight: 600;
+    color: $color-text;
+  }
+}
+
+@keyframes bottom-sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

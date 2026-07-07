@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Placeholder, SearchInput, SegmentedControl, useMainButton } from '@/shared/ui';
 import type { SegmentItem } from '@/shared/ui';
-import { ApiError } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
 import { useSeriesList } from '@/features/lessons/queries';
 import { studentSubjects } from '@/features/lessons/model';
@@ -34,7 +33,7 @@ export function StudentsPage() {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('active');
 
-  const { data, isPending, isError, error } = useStudents();
+  const { data, isPending, isError } = useStudents();
   const { data: seriesList } = useSeriesList();
 
   useMainButton({ text: m.students_add(), onClick: () => navigate('/students/new') });
@@ -83,11 +82,7 @@ export function StudentsPage() {
         </div>
 
         {isError ? (
-          <div className={styles['students-page__status']}>
-            {error instanceof ApiError && error.isAuthExpired
-              ? m.error_auth_expired()
-              : m.error_generic()}
-          </div>
+          <div className={styles['students-page__status']}>{m.error_generic()}</div>
         ) : isPending ? (
           <SkeletonList />
         ) : (

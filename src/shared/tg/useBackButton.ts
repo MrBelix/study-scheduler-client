@@ -7,7 +7,10 @@ import { backButton } from '@tma.js/sdk-react';
  */
 export function useBackButton(onClick: () => void) {
   const onClickRef = useRef(onClick);
-  onClickRef.current = onClick;
+
+  useEffect(() => {
+    onClickRef.current = onClick;
+  });
 
   useEffect(() => {
     if (!backButton.mount.isAvailable()) return;

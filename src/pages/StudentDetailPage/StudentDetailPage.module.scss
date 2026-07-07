@@ -17,4 +17,12 @@
     letter-spacing: -0.02em;
     text-align: center;
   }
+
+  &__error {
+    text-align: center;
+    font-size: $font-caption;
+    line-height: 1.4;
+    color: $color-error;
+    padding-top: $space-md;
+  }
 }

@@ -1,5 +1,5 @@
 import { m } from '@/paraglide/messages';
-import { Cell, Avatar } from '@/shared/ui';
+import { Cell, Avatar, BottomSheet } from '@/shared/ui';
 import { haptic } from '@/shared/tg';
 import type { Student } from '@/shared/api';
 import styles from './StudentPickerField.module.scss';
@@ -51,30 +51,27 @@ export function StudentPickerField({ students, value, onChange, locked, error, o
       {error && <span className={styles['picker__error']}>{error}</span>}
 
       {open && !locked && (
-        <div className={styles['picker__backdrop']} onClick={() => onOpenChange(false)}>
-          <div className={styles['picker__sheet']} onClick={(e) => e.stopPropagation()}>
-            <div className={styles['picker__sheet-title']}>{m.lesson_form_student_placeholder()}</div>
-            <div className={styles['picker__sheet-list']}>
-              {options.map((s) => (
-                <Cell
-                  key={s.id}
-                  leading={<Avatar name={s.name} size={42} />}
-                  title={s.name}
-                  subtitle={s.subject || undefined}
-                  value={s.id === value ? '✓' : undefined}
-                  valueColor="var(--ds-color-accent)"
-                  inset={70}
-                  minHeight={56}
-                  onClick={() => {
-                    haptic('light');
-                    onChange(s.id);
-                    onOpenChange(false);
-                  }}
-                />
-              ))}
-            </div>
+        <BottomSheet title={m.lesson_form_student_placeholder()} onClose={() => onOpenChange(false)}>
+          <div className={styles['picker__sheet-list']}>
+            {options.map((s) => (
+              <Cell
+                key={s.id}
+                leading={<Avatar name={s.name} size={42} />}
+                title={s.name}
+                subtitle={s.subject || undefined}
+                value={s.id === value ? '✓' : undefined}
+                valueColor="var(--ds-color-accent)"
+                inset={70}
+                minHeight={56}
+                onClick={() => {
+                  haptic('light');
+                  onChange(s.id);
+                  onOpenChange(false);
+                }}
+              />
+            ))}
           </div>
-        </div>
+        </BottomSheet>
       )}
     </div>
   );

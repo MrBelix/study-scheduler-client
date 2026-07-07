@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateStudentRequest, UpdateStudentRequest } from '@/shared/api';
+import { lessonKeys } from '@/features/lessons/queries';
 import { getStudents, createStudent, updateStudent } from './api';
 
 /** Query-key factory — the single source for cache keys in this feature. */
@@ -35,6 +36,10 @@ export function useUpdateStudent() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, body }: { id: string; body: UpdateStudentRequest }) => updateStudent(id, body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: studentKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: studentKeys.all });
+      // Archiving auto-ends the student's series on the server — refresh lessons too.
+      queryClient.invalidateQueries({ queryKey: lessonKeys.all });
+    },
   });
 }

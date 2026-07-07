@@ -4,7 +4,6 @@
   "profile": "Profile",
   "schedule": "Schedule",
   "reports": "Reports",
-  "student_new": "New student",
   "edit": "Edit",
   "search_placeholder": "Search",
   "students_filter_active": "Active · {count}",
@@ -20,7 +19,6 @@
   "students_empty_desc": "Add your first student with the button below.",
   "students_add": "Add student",
   "error_generic": "Couldn't load",
-  "error_auth_expired": "Session expired — reopen the app",
   "subject_none": "No subject set",
   "subtitle_subject_rate": "{subject} · {rate} ₴/hr",
   "detail_section_profile": "Profile",
@@ -115,5 +113,7 @@
   "lesson_form_description": "Notes",
   "lesson_form_description_placeholder": "Details, links, homework…",
   "lesson_description": "Notes",
-  "series_form_no_profile": "To create a schedule, set your time zone in Profile first."
+  "series_form_no_profile": "To create a schedule, set your time zone in Profile first.",
+  "detail_unarchive": "Restore from archive",
+  "lesson_form_tz_mismatch": "Times here use your device time zone ({device}), which differs from your profile time zone ({profile})."
 }

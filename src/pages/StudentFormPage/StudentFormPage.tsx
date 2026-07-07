@@ -52,12 +52,7 @@ function StudentForm({ existing }: { existing?: Student }) {
   const error = mutation.error;
   const fieldErrors = error instanceof ApiError ? error.fields : undefined;
   const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
-  const formError =
-    !error || fieldErrors
-      ? undefined
-      : error instanceof ApiError && error.isAuthExpired
-        ? m.error_auth_expired()
-        : m.form_error_save();
+  const formError = !error || fieldErrors ? undefined : m.form_error_save();
 
   const save = () => {
     if (!trimmed) return;

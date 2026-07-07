@@ -92,12 +92,7 @@ export function SeriesFormPage() {
         .filter(([key]) => !mappedKeys.some((k) => k.toLowerCase() === key.toLowerCase()))
         .flatMap(([, messages]) => messages)
     : [];
-  const genericError =
-    error && !conflicts && !fieldErrors
-      ? error instanceof ApiError && error.isAuthExpired
-        ? m.error_auth_expired()
-        : m.form_error_save()
-      : undefined;
+  const genericError = error && !conflicts && !fieldErrors ? m.form_error_save() : undefined;
 
   return (
     <div className={styles['form']}>

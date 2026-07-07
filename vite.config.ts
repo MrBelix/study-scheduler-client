@@ -14,7 +14,9 @@ export default defineConfig({
       strategy: ['localStorage', 'preferredLanguage', 'baseLocale'],
     }),
   ],
-  base: './',
+  // Absolute base: with the SPA fallback, deep links (/students/123) must
+  // resolve assets from the root, not relative to the virtual path.
+  base: '/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

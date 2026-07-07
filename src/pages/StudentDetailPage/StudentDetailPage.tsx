@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Badge, Placeholder, useMainButton } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
-import { useStudent } from '@/features/students/queries';
+import { useStudent, useUpdateStudent } from '@/features/students/queries';
 import { useSeriesList } from '@/features/lessons/queries';
 import { weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
 import { money, fmt, formatDate } from '@/features/students/model';
@@ -13,6 +13,7 @@ export function StudentDetailPage() {
   const navigate = useNavigate();
   const { data: student, isPending } = useStudent(id);
   const { data: seriesList } = useSeriesList();
+  const updateStudent = useUpdateStudent();
 
   useBackButton(() => navigate(-1));
   useMainButton({ text: m.edit(), onClick: () => navigate(`/students/${id}/edit`) });
@@ -76,12 +77,21 @@ export function StudentDetailPage() {
         />
       </Section>
 
-      <Section>
+      <Section footer={archived ? undefined : m.students_footer_archived()}>
         <Cell
-          title={<span style={{ color: 'var(--ds-color-danger)' }}>{m.detail_archive()}</span>}
-          onClick={() => haptic('medium')}
+          title={
+            <span style={{ color: archived ? 'var(--ds-color-accent)' : 'var(--ds-color-danger)' }}>
+              {archived ? m.detail_unarchive() : m.detail_archive()}
+            </span>
+          }
+          onClick={() => {
+            if (updateStudent.isPending) return;
+            haptic('medium');
+            updateStudent.mutate({ id: student.id, body: { status: archived ? 'Active' : 'Archived' } });
+          }}
         />
       </Section>
+      {updateStudent.isError && <div className={styles['detail__error']}>{m.form_error_save()}</div>}
     </div>
   );
 }

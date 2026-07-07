@@ -2,7 +2,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Badge, Placeholder } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
-import { ApiError } from '@/shared/api';
 import type { Lesson, LessonStatus } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
 import { money, formatDate } from '@/features/students/model';
@@ -20,8 +19,8 @@ const STATUS_BADGE: Record<LessonStatus, { mode: 'success' | 'muted'; label: () 
 /** Physical lesson — `/lessons/:id`. */
 export function LessonDetailPage() {
   const { id } = useParams();
-  const { data: lesson, isPending, error } = useLesson(id);
-  return <LessonDetailView lesson={lesson} isPending={isPending} error={error} />;
+  const { data: lesson, isPending } = useLesson(id);
+  return <LessonDetailView lesson={lesson} isPending={isPending} />;
 }
 
 /**
@@ -34,19 +33,17 @@ export function OccurrenceDetailPage() {
   const { seriesId, date } = useParams();
   const dayStart = new Date(`${date}T00:00`);
   const dayEnd = new Date(dayStart.getTime() + 86_400_000);
-  const { data, isPending, error } = useLessons(dayStart.toISOString(), dayEnd.toISOString());
+  const { data, isPending } = useLessons(dayStart.toISOString(), dayEnd.toISOString());
   const lesson = data?.find((l) => l.seriesId === seriesId && l.occurrenceDate === date);
-  return <LessonDetailView lesson={lesson} isPending={isPending} error={error} />;
+  return <LessonDetailView lesson={lesson} isPending={isPending} />;
 }
 
 function LessonDetailView({
   lesson,
   isPending,
-  error,
 }: {
   lesson: Lesson | undefined;
   isPending: boolean;
-  error: unknown;
 }) {
   const navigate = useNavigate();
 
@@ -63,12 +60,7 @@ function LessonDetailView({
 
   if (!lesson) {
     return (
-      <Placeholder
-        glyph="🔍"
-        title={
-          error instanceof ApiError && error.isAuthExpired ? m.error_auth_expired() : m.lesson_not_found()
-        }
-      />
+      <Placeholder glyph="🔍" title={m.lesson_not_found()} />
     );
   }
 

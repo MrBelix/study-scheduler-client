@@ -4,6 +4,7 @@ import { m } from '@/paraglide/messages';
 import { TextField, useMainButton } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
+import { useProfile } from '@/features/profile/queries';
 import { useStudents } from '@/features/students/queries';
 import { StudentPickerField } from '@/features/students/StudentPickerField';
 import { useCreateLesson } from '@/features/lessons/queries';
@@ -28,6 +29,13 @@ export function LessonFormPage() {
 
   const { data: students } = useStudents();
   const selectedStudent = students?.find((s) => s.id === studentId);
+
+  // The picked date+time is interpreted in the DEVICE zone, while series run
+  // in the PROFILE zone — warn (non-blocking) when the two differ.
+  const { data: profile } = useProfile();
+  const deviceZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const profileZone = profile?.timeZoneId;
+  const tzMismatch = Boolean(profileZone) && profileZone !== deviceZone;
 
   const createLesson = useCreateLesson();
 
@@ -72,12 +80,7 @@ export function LessonFormPage() {
         .filter(([key]) => !mappedKeys.some((k) => k.toLowerCase() === key.toLowerCase()))
         .flatMap(([, messages]) => messages)
     : [];
-  const genericError =
-    error && !conflicts && !fieldErrors
-      ? error instanceof ApiError && error.isAuthExpired
-        ? m.error_auth_expired()
-        : m.form_error_save()
-      : undefined;
+  const genericError = error && !conflicts && !fieldErrors ? m.form_error_save() : undefined;
 
   return (
     <div className={styles['form']}>
@@ -99,6 +102,11 @@ export function LessonFormPage() {
           error={fieldError('StartUtc')}
         />
         <TextField header={m.lesson_form_time()} value={time} onChange={setTime} type="time" />
+        {tzMismatch && (
+          <div className={styles['form__hint']}>
+            {m.lesson_form_tz_mismatch({ device: deviceZone, profile: profileZone! })}
+          </div>
+        )}
         <TextField
           header={m.lesson_form_duration()}
           value={duration}

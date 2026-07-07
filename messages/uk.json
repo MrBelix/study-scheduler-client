@@ -4,7 +4,6 @@
   "profile": "Профіль",
   "schedule": "Розклад",
   "reports": "Звіти",
-  "student_new": "Новий студент",
   "edit": "Редагувати",
   "search_placeholder": "Пошук",
   "students_filter_active": "Активні · {count}",
@@ -20,7 +19,6 @@
   "students_empty_desc": "Додайте першого студента кнопкою внизу.",
   "students_add": "Додати студента",
   "error_generic": "Не вдалося завантажити",
-  "error_auth_expired": "Сесія застаріла — відкрийте застосунок знову",
   "subject_none": "Предмет не вказано",
   "subtitle_subject_rate": "{subject} · {rate} ₴/год",
   "detail_section_profile": "Профіль",
@@ -115,5 +113,7 @@
   "lesson_form_description": "Нотатки",
   "lesson_form_description_placeholder": "Деталі, посилання, домашнє завдання…",
   "lesson_description": "Нотатки",
-  "series_form_no_profile": "Щоб створити розклад, спершу вкажіть часовий пояс у Профілі."
+  "series_form_no_profile": "Щоб створити розклад, спершу вкажіть часовий пояс у Профілі.",
+  "detail_unarchive": "Відновити з архіву",
+  "lesson_form_tz_mismatch": "Час тут вводиться у часовому поясі пристрою ({device}), який відрізняється від пояса у вашому профілі ({profile})."
 }

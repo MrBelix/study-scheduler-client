@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Placeholder, useMainButton } from '@/shared/ui';
-import { ApiError } from '@/shared/api';
 import type { Lesson, Student } from '@/shared/api';
 import { useLessons } from '@/features/lessons/queries';
 import { useStudents } from '@/features/students/queries';
@@ -87,11 +86,7 @@ export function SchedulePage() {
       </div>
 
       {lessonsQuery.isError ? (
-        <div className={styles['schedule__status']}>
-          {lessonsQuery.error instanceof ApiError && lessonsQuery.error.isAuthExpired
-            ? m.error_auth_expired()
-            : m.error_generic()}
-        </div>
+        <div className={styles['schedule__status']}>{m.error_generic()}</div>
       ) : lessonsQuery.isPending ? (
         <div className={styles['schedule__status']}>{m.loading()}</div>
       ) : isEmptyWeek ? (

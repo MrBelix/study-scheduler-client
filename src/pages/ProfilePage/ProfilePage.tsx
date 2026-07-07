@@ -1,9 +1,10 @@
 import { useState, type ReactNode } from 'react';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, SearchInput } from '@/shared/ui';
+import { Section, Cell, Avatar, SearchInput, BottomSheet } from '@/shared/ui';
 import { useLocale, LOCALE_NAMES } from '@/shared/i18n';
 import { haptic, getTelegramUser } from '@/shared/tg';
 import { useProfile, useSaveProfile, useTimeZones } from '@/features/profile/queries';
+import { version as appVersion } from '../../../package.json';
 import styles from './ProfilePage.module.scss';
 
 function Tile({ color, children }: { color: string; children: ReactNode }) {
@@ -130,33 +131,30 @@ export function ProfilePage() {
       {saveProfile.isError && <div className={styles['profile__error']}>{m.form_error_save()}</div>}
 
       <Section header={m.profile_about()}>
-        <Cell title={m.profile_version()} value="1.0.0" />
+        <Cell title={m.profile_version()} value={appVersion} />
       </Section>
 
       <div className={styles['profile__footer']}>{m.profile_footer()}</div>
 
       {tzSheetOpen && (
-        <div className={styles['profile__sheet-backdrop']} onClick={() => setTzSheetOpen(false)}>
-          <div className={styles['profile__sheet']} onClick={(e) => e.stopPropagation()}>
-            <div className={styles['profile__sheet-title']}>{m.profile_timezone()}</div>
-            <SearchInput value={tzQuery} onChange={setTzQuery} placeholder={m.search_placeholder()} />
-            <div className={styles['profile__sheet-list']}>
-              {!timeZones ? (
-                <div className={styles['profile__sheet-status']}>{m.loading()}</div>
-              ) : (
-                zones.map((zone) => (
-                  <Cell
-                    key={zone}
-                    title={zone}
-                    value={zone === profile?.timeZoneId ? '✓' : undefined}
-                    valueColor="var(--ds-color-accent)"
-                    onClick={() => pickTimeZone(zone)}
-                  />
-                ))
-              )}
-            </div>
+        <BottomSheet title={m.profile_timezone()} onClose={() => setTzSheetOpen(false)} fullHeight>
+          <SearchInput value={tzQuery} onChange={setTzQuery} placeholder={m.search_placeholder()} />
+          <div className={styles['profile__sheet-list']}>
+            {!timeZones ? (
+              <div className={styles['profile__sheet-status']}>{m.loading()}</div>
+            ) : (
+              zones.map((zone) => (
+                <Cell
+                  key={zone}
+                  title={zone}
+                  value={zone === profile?.timeZoneId ? '✓' : undefined}
+                  valueColor="var(--ds-color-accent)"
+                  onClick={() => pickTimeZone(zone)}
+                />
+              ))
+            )}
           </div>
-        </div>
+        </BottomSheet>
       )}
     </div>
   );

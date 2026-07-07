@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/shared/api';
 import type { UpdateProfileRequest } from '@/shared/api';
+import { lessonKeys } from '@/features/lessons/queries';
 import { getProfile, putProfile, getTimeZones } from './api';
 
 /** Query-key factory — the single source for cache keys in this feature. */
@@ -35,6 +36,10 @@ export function useSaveProfile() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: UpdateProfileRequest) => putProfile(body),
-    onSuccess: (profile) => queryClient.setQueryData(profileKeys.all, profile),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(profileKeys.all, profile);
+      // Occurrence times are materialized in the profile time zone — refetch.
+      queryClient.invalidateQueries({ queryKey: lessonKeys.all });
+    },
   });
 }

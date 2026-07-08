@@ -48,16 +48,25 @@ export interface UpdateStudentRequest {
 /**
  * Tutor (member) settings — `GET /profile`, `PUT /profile` (upsert).
  * `languageCode` is the preferred UI language ("uk" | "en"), null until chosen.
+ * `remindMinutes` — bot reminder lead time; null means reminders are off.
  */
 export interface Profile {
   timeZoneId: string;
   languageCode: string | null;
+  remindMinutes: number | null;
+  notifyAfterLesson: boolean;
   createdAtUtc: string;
 }
 
+/**
+ * Omitted fields keep their stored values; `remindMinutes: 0` turns reminders
+ * off (an omitted field can't, or unrelated saves would disable them).
+ */
 export interface UpdateProfileRequest {
   timeZoneId: string;
   languageCode?: string;
+  remindMinutes?: number;
+  notifyAfterLesson?: boolean;
 }
 
 /** Lifecycle status of a lesson. */

@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
+import { MainButtonProvider, MainButtonBar } from '@/shared/ui/MainButton/MainButton';
 import { TabBar } from '../TabBar/TabBar';
-import { MainButtonProvider, MainButtonBar } from '../MainButton/MainButton';
 import styles from './AppLayout.module.scss';
 
 export function AppLayout() {

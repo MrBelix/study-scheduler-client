@@ -1,18 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateLessonRequest, CreateLessonSeriesRequest, UpdateLessonRequest, UpdateLessonSeriesRequest } from '@/shared/api';
+import { lessonKeys } from '@/shared/api';
 import { getLessons, getLesson, createLesson, updateLesson, updateOccurrence, getSeriesList, getSeries, createSeries, updateSeries, cancelSeries } from './api';
-
-/**
- * Query-key factory. Everything nests under `all`, so a single invalidation
- * after any mutation refreshes ranges, details and series alike.
- */
-export const lessonKeys = {
-  all: ['lessons'] as const,
-  range: (fromIso: string, toIso: string) => ['lessons', 'range', fromIso, toIso] as const,
-  detail: (id: string) => ['lessons', 'detail', id] as const,
-  seriesList: ['lessons', 'series'] as const,
-  series: (id: string) => ['lessons', 'series', id] as const,
-};
 
 /** Lessons overlapping [from, to). Fetching is what materializes series lessons. */
 export function useLessons(fromIso: string, toIso: string) {

@@ -5,8 +5,8 @@ import { Section, Cell, Placeholder, Skeleton, useMainButton } from '@/shared/ui
 import type { Lesson, Student } from '@/shared/api';
 import { useLessons } from '@/features/lessons/queries';
 import { useStudents } from '@/features/students/queries';
-import { money } from '@/features/students/model';
-import { startOfWeek, addDays, dateKey, fmtTime, fmtDayHeader, fmtWeekRange, groupByDay, lessonPath } from '@/features/lessons/model';
+import { money, startOfWeek, addDays, dateKey, fmtTime, fmtDayHeader } from '@/shared/lib';
+import { fmtWeekRange, groupByDay, lessonPath } from '@/features/lessons/model';
 import styles from './SchedulePage.module.scss';
 
 function LessonCell({ lesson, student, onClick }: { lesson: Lesson; student?: Student; onClick: () => void }) {

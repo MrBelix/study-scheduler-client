@@ -1,48 +1,10 @@
 import type { Lesson, LessonSeries } from '@/shared/api';
 import { getAppLocale } from '@/shared/i18n';
+import { addDays, dateKey } from '@/shared/lib';
 
 // All calendar math and formatting below is in the DEVICE time zone — for a
 // tutor it matches the profile time zone in the normal case (onboarding offers
 // exactly the detected one).
-
-/** "450" / "450,50" / "1 050" → number; empty/invalid → undefined. */
-export function parsePrice(raw: string): number | undefined {
-  const cleaned = raw.replace(/\s/g, '').replace(',', '.');
-  if (cleaned === '') return undefined;
-  const value = Number(cleaned);
-  return Number.isFinite(value) ? value : undefined;
-}
-
-/** Monday 00:00 of the week containing `d` (local time). */
-export function startOfWeek(d: Date): Date {
-  const result = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  const shift = (result.getDay() + 6) % 7; // Sun=0 → 6, Mon=1 → 0
-  result.setDate(result.getDate() - shift);
-  return result;
-}
-
-export function addDays(d: Date, days: number): Date {
-  const result = new Date(d);
-  result.setDate(result.getDate() + days);
-  return result;
-}
-
-/** Local calendar-day key, e.g. "2026-08-03". */
-export function dateKey(d: Date): string {
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  return `${d.getFullYear()}-${mm}-${dd}`;
-}
-
-/** "14:00" (locale-formatted time of an ISO instant). */
-export function fmtTime(iso: string): string {
-  return new Intl.DateTimeFormat(getAppLocale(), { hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
-}
-
-/** "пн, 3 серпня" — day section header. */
-export function fmtDayHeader(d: Date): string {
-  return new Intl.DateTimeFormat(getAppLocale(), { weekday: 'short', day: 'numeric', month: 'long' }).format(d);
-}
 
 /** "3 – 9 серпня" — week navigation label (start and inclusive end of week). */
 export function fmtWeekRange(weekStart: Date): string {

@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { AppLayout } from '@/shared/ui/AppLayout/AppLayout';
+import { AppLayout } from '@/app/AppLayout/AppLayout';
 import { ErrorScreen } from '@/app/ErrorScreen/ErrorScreen';
 import { SchedulePage } from '@/pages/SchedulePage/SchedulePage';
 import { StudentsPage } from '@/pages/StudentsPage/StudentsPage';

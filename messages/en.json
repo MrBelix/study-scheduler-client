@@ -119,5 +119,12 @@
   "series_form_zone": "Series time zone",
   "series_form_zone_tutor": "My time · {zone}",
   "series_form_zone_student": "Student's time · {zone}",
-  "series_form_zone_helper": "Whose clock the lessons keep: when DST switch dates differ, the time shifts for the other side."
+  "series_form_zone_helper": "Whose clock the lessons keep: when DST switch dates differ, the time shifts for the other side.",
+  "profile_reminders": "Reminders",
+  "profile_reminders_off": "Off",
+  "profile_reminders_before": "{minutes} min before",
+  "profile_after_lesson": "After-lesson follow-up",
+  "profile_notifications_footer": "The bot reminds you before a lesson and asks how it went after.",
+  "toggle_on": "On",
+  "toggle_off": "Off"
 }

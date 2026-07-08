@@ -5,17 +5,19 @@ import { Section, Cell, Avatar, Placeholder, Skeleton, TextField, useMainButton 
 import { useBackButton, haptic } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import type { LessonSeries, Student, UpdateLessonSeriesRequest } from '@/shared/api';
+import { formatDate, parsePrice, apiFormErrors } from '@/shared/lib';
 import { useStudents } from '@/features/students/queries';
-import { formatDate } from '@/features/students/model';
 import { useLessonSeries, useUpdateSeries, useCancelSeries } from '@/features/lessons/queries';
-import { weekdaysLabel, parsePrice, isSeriesCurrent } from '@/features/lessons/model';
+import { weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
 import styles from './SeriesEditPage.module.scss';
 
 /** Waits for the series, then mounts the form with seeded state (see StudentFormPage). */
 export function SeriesEditPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: series, isPending } = useLessonSeries(id);
+  const { data: series, isPending, error } = useLessonSeries(id);
+  // 404 = the series is genuinely gone; anything else is a transient failure.
+  const notFound = error instanceof ApiError && error.status === 404;
   const { data: students } = useStudents();
 
   useBackButton(() => navigate(-1));
@@ -42,6 +44,10 @@ export function SeriesEditPage() {
         </div>
       </div>
     );
+  }
+
+  if (error && !notFound) {
+    return <Placeholder glyph="⚠️" title={m.error_generic()} />;
   }
 
   if (!series) {
@@ -84,11 +90,10 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
   });
 
   // ---- error breakdown of the last save attempt ----
+  // Cancelling has no fields of its own — its failure folds into the generic line.
   const error = updateSeries.error;
-  const fieldErrors = error instanceof ApiError ? error.fields : undefined;
-  const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
-  const genericError =
-    (error && !fieldErrors) || cancelSeries.isError ? m.form_error_save() : undefined;
+  const { fields, fieldError } = apiFormErrors(error);
+  const genericError = (error && !fields) || cancelSeries.isError ? m.form_error_save() : undefined;
 
   return (
     <div className={styles['form']}>

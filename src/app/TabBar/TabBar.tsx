@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Icon } from '../Icon/Icon';
-import type { IconName } from '../Icon/icons';
-import { cx } from '../../lib/cx';
+import { Icon } from '@/shared/ui';
+import type { IconName } from '@/shared/ui';
+import { cx } from '@/shared/lib';
 import styles from './TabBar.module.scss';
 
 const tabs: { to: string; label: () => string; icon: IconName; end?: boolean }[] = [

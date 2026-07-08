@@ -1,7 +1,6 @@
 import { m } from '@/paraglide/messages';
 import type { LessonConflict } from '@/shared/api';
-import { formatDate } from '@/features/students/model';
-import { fmtTime } from './model';
+import { formatDate, fmtTime } from '@/shared/lib';
 import styles from './ConflictList.module.scss';
 
 /** The 409 payload rendered for the user: when exactly the time is taken. */

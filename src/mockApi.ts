@@ -11,7 +11,7 @@ import type {
   LessonStatus,
 } from '@/shared/api';
 
-const STORAGE_KEY = 'mock-api-v2'; // v2: virtual recurrence + lesson description
+const STORAGE_KEY = 'mock-api-v3'; // v3: profile notification settings
 const LATENCY_MS = 250;
 const BASE = import.meta.env.VITE_API_URL ?? '';
 
@@ -69,7 +69,7 @@ function seed(): MockState {
     createdAtUtc: day(offset - 7, 12).toISOString(),
   });
   return {
-    profile: { timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone, languageCode: null, createdAtUtc: day(-30, 0).toISOString() },
+    profile: { timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone, languageCode: null, remindMinutes: 30, notifyAfterLesson: true, createdAtUtc: day(-30, 0).toISOString() },
     students,
     series,
     lessons: [
@@ -210,6 +210,13 @@ export function installMockApi() {
         state.profile = {
           timeZoneId: body.timeZoneId,
           languageCode: body.languageCode ?? state.profile?.languageCode ?? null,
+          // 0 turns reminders off; an omitted field keeps the stored value (backend parity).
+          // Stored null means "off" and must survive unrelated saves — no ?? fallback here.
+          remindMinutes:
+            body.remindMinutes != null
+              ? body.remindMinutes === 0 ? null : body.remindMinutes
+              : state.profile ? state.profile.remindMinutes : 30,
+          notifyAfterLesson: body.notifyAfterLesson ?? state.profile?.notifyAfterLesson ?? true,
           createdAtUtc: state.profile?.createdAtUtc ?? new Date().toISOString(),
         };
         persist();

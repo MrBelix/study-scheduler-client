@@ -19,26 +19,56 @@ function Tile({ color, children }: { color: string; children: ReactNode }) {
 
 export function ProfilePage() {
   const { locale, setLocale } = useLocale();
-  const { data: profile } = useProfile();
+  const { data: profile, isNotFound } = useProfile();
   const { data: timeZones } = useTimeZones();
   const saveProfile = useSaveProfile();
 
+  // Every save PUTs the full profile, so acting before the stored profile is known
+  // (still loading, or failed to load) would silently overwrite the stored time
+  // zone with the device one. Only a confirmed 404 (onboarding) may proceed without it.
+  const profileReady = profile !== undefined || isNotFound;
+
   const [tzSheetOpen, setTzSheetOpen] = useState(false);
   const [tzQuery, setTzQuery] = useState('');
+  const [remindSheetOpen, setRemindSheetOpen] = useState(false);
 
   const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  // PUT always requires a time zone; before the profile exists, fall back to
+  // the device zone (same as toggleLanguage below).
+  const currentZone = () => profile?.timeZoneId ?? detected;
 
   // Language lives in the member settings on the server. The first save may
   // happen before a time zone was ever chosen — default it to the device zone
   // (PUT requires one; it is also what the onboarding would have suggested).
   const toggleLanguage = () => {
+    if (!profileReady) return;
     haptic('light');
     const next = locale === 'uk' ? 'en' : 'uk';
     setLocale(next);
-    saveProfile.mutate({ timeZoneId: profile?.timeZoneId ?? detected, languageCode: next });
+    saveProfile.mutate({ timeZoneId: currentZone(), languageCode: next });
+  };
+
+  // Bot reminder lead time: 0 = off (an omitted field keeps the stored value).
+  const REMIND_CHOICES = [0, 15, 30, 60];
+  const remindLabel = (minutes: number | null) =>
+    minutes ? m.profile_reminders_before({ minutes }) : m.profile_reminders_off();
+
+  const pickRemind = (minutes: number) => {
+    if (!profileReady) return;
+    haptic('light');
+    saveProfile.mutate({ timeZoneId: currentZone(), remindMinutes: minutes });
+    setRemindSheetOpen(false);
+  };
+
+  const toggleAfterLesson = () => {
+    if (!profileReady) return;
+    haptic('light');
+    saveProfile.mutate({ timeZoneId: currentZone(), notifyAfterLesson: !(profile?.notifyAfterLesson ?? true) });
   };
 
   const pickTimeZone = (zone: string) => {
+    if (!profileReady) return;
     haptic('light');
     saveProfile.mutate({ timeZoneId: zone, languageCode: profile?.languageCode ?? locale });
     setTzSheetOpen(false);
@@ -73,7 +103,7 @@ export function ProfilePage() {
 
       <Section
         header={m.profile_settings()}
-        footer={saveProfile.isError ? undefined : m.profile_timezone_footer()}
+        footer={saveProfile.isError ? undefined : `${m.profile_timezone_footer()} ${m.profile_notifications_footer()}`}
       >
         <Cell
           inset={56}
@@ -104,6 +134,42 @@ export function ProfilePage() {
           value={LOCALE_NAMES[locale]}
           chevron
           onClick={toggleLanguage}
+        />
+        <Cell
+          inset={56}
+          leading={
+            <Tile color="#af52de">
+              <path
+                d="M12 4a5.5 5.5 0 015.5 5.5c0 3.6 1 5 2 6H4.5c1-1 2-2.4 2-6A5.5 5.5 0 0112 4z"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinejoin="round"
+              />
+              <path d="M10 18.5a2 2 0 004 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </Tile>
+          }
+          title={m.profile_reminders()}
+          value={remindLabel(profile?.remindMinutes ?? null)}
+          chevron
+          onClick={() => setRemindSheetOpen(true)}
+        />
+        <Cell
+          inset={56}
+          leading={
+            <Tile color="#30b0c7">
+              <path
+                d="M5 6.5h9M5 12h9M5 17.5h5"
+                stroke="currentColor"
+                strokeWidth="1.9"
+                strokeLinecap="round"
+              />
+              <path d="M16 16.5l2 2 3.5-4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+            </Tile>
+          }
+          title={m.profile_after_lesson()}
+          value={(profile?.notifyAfterLesson ?? true) ? m.toggle_on() : m.toggle_off()}
+          chevron
+          onClick={toggleAfterLesson}
         />
         <Cell
           inset={56}
@@ -141,6 +207,22 @@ export function ProfilePage() {
       </Section>
 
       <div className={styles['profile__footer']}>{m.profile_footer()}</div>
+
+      {remindSheetOpen && (
+        <BottomSheet title={m.profile_reminders()} onClose={() => setRemindSheetOpen(false)}>
+          <div className={styles['profile__sheet-list']}>
+            {REMIND_CHOICES.map((minutes) => (
+              <Cell
+                key={minutes}
+                title={remindLabel(minutes || null)}
+                value={(profile?.remindMinutes ?? 0) === minutes ? '✓' : undefined}
+                valueColor="var(--ds-color-accent)"
+                onClick={() => pickRemind(minutes)}
+              />
+            ))}
+          </div>
+        </BottomSheet>
+      )}
 
       {tzSheetOpen && (
         <BottomSheet title={m.profile_timezone()} onClose={() => setTzSheetOpen(false)} fullHeight>

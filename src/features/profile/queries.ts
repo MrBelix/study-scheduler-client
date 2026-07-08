@@ -1,14 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ApiError } from '@/shared/api';
+import { ApiError, lessonKeys, profileKeys } from '@/shared/api';
 import type { UpdateProfileRequest } from '@/shared/api';
-import { lessonKeys } from '@/features/lessons/queries';
 import { getProfile, putProfile, getTimeZones } from './api';
-
-/** Query-key factory — the single source for cache keys in this feature. */
-export const profileKeys = {
-  all: ['profile'] as const,
-  timezones: ['profile', 'timezones'] as const,
-};
 
 /**
  * The tutor profile. 404 (profile not saved yet) is part of the flow, not a

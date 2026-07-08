@@ -5,13 +5,13 @@ import { useBackButton, haptic } from '@/shared/tg';
 import { useStudent, useUpdateStudent } from '@/features/students/queries';
 import { useSeriesList } from '@/features/lessons/queries';
 import { weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
-import { money, fmt, formatDate } from '@/features/students/model';
+import { money, fmt, formatDate } from '@/shared/lib';
 import styles from './StudentDetailPage.module.scss';
 
 export function StudentDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: student, isPending } = useStudent(id);
+  const { data: student, isPending, isError } = useStudent(id);
   const { data: seriesList } = useSeriesList();
   const updateStudent = useUpdateStudent();
 
@@ -32,6 +32,10 @@ export function StudentDetailPage() {
         </Section>
       </div>
     );
+  }
+
+  if (isError) {
+    return <Placeholder glyph="⚠️" title={m.error_generic()} />;
   }
 
   if (!student) {

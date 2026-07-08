@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { TextField, Placeholder, Skeleton, useMainButton } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
-import { ApiError } from '@/shared/api';
+import { parsePrice, apiFormErrors } from '@/shared/lib';
 import type { Student } from '@/shared/api';
 import { useStudent, useCreateStudent, useUpdateStudent } from '@/features/students/queries';
 import styles from './StudentFormPage.module.scss';
@@ -55,17 +55,12 @@ function StudentForm({ existing }: { existing?: Student }) {
 
   const trimmed = name.trim();
 
-  // Server-side failure of the last save attempt. 400 validation messages map
-  // to their fields (backend keys are PascalCase DTO properties); anything
-  // else surfaces as one generic line under the form.
-  const error = mutation.error;
-  const fieldErrors = error instanceof ApiError ? error.fields : undefined;
-  const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
-  const formError = !error || fieldErrors ? undefined : m.form_error_save();
+  // ---- error breakdown of the last save attempt ----
+  const { fieldError, genericError: formError } = apiFormErrors(mutation.error);
 
   const save = () => {
     if (!trimmed) return;
-    const rateValue = Number(rate.replace(/\s/g, '').replace(',', '.')) || 0;
+    const rateValue = parsePrice(rate) ?? 0;
     if (existing) {
       updateStudent.mutate(
         { id: existing.id, body: { name: trimmed, rate: rateValue } },

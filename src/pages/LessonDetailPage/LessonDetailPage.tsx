@@ -2,12 +2,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Badge, Placeholder, Skeleton } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
+import { ApiError } from '@/shared/api';
 import type { Lesson, LessonStatus } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
-import { money, formatDate } from '@/features/students/model';
+import { money, formatDate, fmtTime, fmtDayHeader } from '@/shared/lib';
 import { useLesson, useLessons, useLessonSeries, useUpdateLesson, useCancelSeries } from '@/features/lessons/queries';
 import type { LessonTarget } from '@/features/lessons/queries';
-import { fmtTime, fmtDayHeader, weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
+import { weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
 import styles from './LessonDetailPage.module.scss';
 
 const STATUS_BADGE: Record<LessonStatus, { mode: 'success' | 'muted'; label: () => string }> = {
@@ -19,8 +20,11 @@ const STATUS_BADGE: Record<LessonStatus, { mode: 'success' | 'muted'; label: () 
 /** Physical lesson — `/lessons/:id`. */
 export function LessonDetailPage() {
   const { id } = useParams();
-  const { data: lesson, isPending } = useLesson(id);
-  return <LessonDetailView lesson={lesson} isPending={isPending} />;
+  const { data: lesson, isPending, error } = useLesson(id);
+  // 404 = the lesson is genuinely gone — that's the "not found" placeholder,
+  // not the transient-failure treatment.
+  const notFound = error instanceof ApiError && error.status === 404;
+  return <LessonDetailView lesson={lesson} isPending={isPending} isError={!!error && !notFound} />;
 }
 
 /**
@@ -33,17 +37,19 @@ export function OccurrenceDetailPage() {
   const { seriesId, date } = useParams();
   const dayStart = new Date(`${date}T00:00`);
   const dayEnd = new Date(dayStart.getTime() + 86_400_000);
-  const { data, isPending } = useLessons(dayStart.toISOString(), dayEnd.toISOString());
+  const { data, isPending, isError } = useLessons(dayStart.toISOString(), dayEnd.toISOString());
   const lesson = data?.find((l) => l.seriesId === seriesId && l.occurrenceDate === date);
-  return <LessonDetailView lesson={lesson} isPending={isPending} />;
+  return <LessonDetailView lesson={lesson} isPending={isPending} isError={isError} />;
 }
 
 function LessonDetailView({
   lesson,
   isPending,
+  isError,
 }: {
   lesson: Lesson | undefined;
   isPending: boolean;
+  isError: boolean;
 }) {
   const navigate = useNavigate();
 
@@ -77,6 +83,10 @@ function LessonDetailView({
         </Section>
       </div>
     );
+  }
+
+  if (isError) {
+    return <Placeholder glyph="⚠️" title={m.error_generic()} />;
   }
 
   if (!lesson) {

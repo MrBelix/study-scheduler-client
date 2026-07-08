@@ -3,13 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { TextField, useMainButton } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
-import { ApiError } from '@/shared/api';
+import { dateKey, parsePrice, isValidDuration, apiFormErrors } from '@/shared/lib';
 import { useProfile } from '@/features/profile/queries';
 import { useStudents } from '@/features/students/queries';
 import { StudentPickerField } from '@/features/students/StudentPickerField';
 import { useCreateLesson } from '@/features/lessons/queries';
 import { ConflictList } from '@/features/lessons/ConflictList';
-import { dateKey, parsePrice } from '@/features/lessons/model';
 import styles from './LessonFormPage.module.scss';
 
 /** One-off lesson. `?studentId=` (from the student page) locks the student. */
@@ -40,7 +39,7 @@ export function LessonFormPage() {
   const createLesson = useCreateLesson();
 
   const durationValue = Number(duration);
-  const durationValid = Number.isInteger(durationValue) && durationValue >= 15 && durationValue <= 600;
+  const durationValid = isValidDuration(durationValue);
   const valid = studentId !== '' && date !== '' && time !== '' && durationValid;
 
   const save = () => {
@@ -70,17 +69,14 @@ export function LessonFormPage() {
   });
 
   // ---- error breakdown of the last save attempt ----
-  const error = createLesson.error;
-  const conflicts = error instanceof ApiError ? error.conflicts : undefined;
-  const fieldErrors = error instanceof ApiError ? error.fields : undefined;
-  const fieldError = (key: string) => (fieldErrors?.[key] ?? fieldErrors?.[key.toLowerCase()])?.[0];
-  const mappedKeys = ['StudentId', 'StartUtc', 'DurationMinutes', 'Price', 'Topic', 'Description'];
-  const unmappedMessages = fieldErrors
-    ? Object.entries(fieldErrors)
-        .filter(([key]) => !mappedKeys.some((k) => k.toLowerCase() === key.toLowerCase()))
-        .flatMap(([, messages]) => messages)
-    : [];
-  const genericError = error && !conflicts && !fieldErrors ? m.form_error_save() : undefined;
+  const { conflicts, fieldError, unmappedMessages, genericError } = apiFormErrors(createLesson.error, [
+    'StudentId',
+    'StartUtc',
+    'DurationMinutes',
+    'Price',
+    'Topic',
+    'Description',
+  ]);
 
   return (
     <div className={styles['form']}>

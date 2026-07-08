@@ -119,5 +119,12 @@
   "series_form_zone": "Часовий пояс серії",
   "series_form_zone_tutor": "Мій час · {zone}",
   "series_form_zone_student": "Час студента · {zone}",
-  "series_form_zone_helper": "Чий годинник тримає час занять: при різних датах переходу на літній час для іншої сторони час зсуватиметься."
+  "series_form_zone_helper": "Чий годинник тримає час занять: при різних датах переходу на літній час для іншої сторони час зсуватиметься.",
+  "profile_reminders": "Нагадування",
+  "profile_reminders_off": "Вимк.",
+  "profile_reminders_before": "За {minutes} хв",
+  "profile_after_lesson": "Підсумок після уроку",
+  "profile_notifications_footer": "Бот нагадає про урок і запитає підсумок після нього.",
+  "toggle_on": "Увімк.",
+  "toggle_off": "Вимк."
 }

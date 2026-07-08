@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, SearchInput, BottomSheet } from '@/shared/ui';
+import { Section, Cell, Avatar, SearchInput, BottomSheet, Skeleton } from '@/shared/ui';
 import { useLocale, LOCALE_NAMES } from '@/shared/i18n';
 import { haptic, getTelegramUser } from '@/shared/tg';
 import { useProfile, useSaveProfile, useTimeZones } from '@/features/profile/queries';
@@ -147,7 +147,9 @@ export function ProfilePage() {
           <SearchInput value={tzQuery} onChange={setTzQuery} placeholder={m.search_placeholder()} />
           <div className={styles['profile__sheet-list']}>
             {!timeZones ? (
-              <div className={styles['profile__sheet-status']}>{m.loading()}</div>
+              Array.from({ length: 8 }, (_, i) => (
+                <Cell key={i} title={<Skeleton width={i % 2 ? '45%' : '60%'} />} />
+              ))
             ) : (
               zones.map((zone) => (
                 <Cell

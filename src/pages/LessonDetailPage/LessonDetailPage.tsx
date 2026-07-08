@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, Badge, Placeholder } from '@/shared/ui';
+import { Section, Cell, Avatar, Badge, Placeholder, Skeleton } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
 import type { Lesson, LessonStatus } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
@@ -55,7 +55,28 @@ function LessonDetailView({
   useBackButton(() => navigate(-1));
 
   if (isPending) {
-    return <div className={styles['lesson__status']}>{m.loading()}</div>;
+    return (
+      <div className={styles['lesson']}>
+        <div className={styles['lesson__header']}>
+          <Skeleton width={140} height={24} />
+          <Skeleton width={190} height={12} />
+        </div>
+        <Section>
+          <Cell
+            inset={70}
+            minHeight={56}
+            leading={<Skeleton circle={42} />}
+            title={<Skeleton />}
+            subtitle={<Skeleton width="40%" height={10} />}
+          />
+        </Section>
+        <Section>
+          {Array.from({ length: 3 }, (_, i) => (
+            <Cell key={i} title={<Skeleton width="35%" />} value={<Skeleton width={56} />} />
+          ))}
+        </Section>
+      </div>
+    );
   }
 
   if (!lesson) {

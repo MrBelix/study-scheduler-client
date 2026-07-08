@@ -23,10 +23,11 @@
     color: $color-error;
   }
 
-  &__status {
-    text-align: center;
-    color: $color-hint;
-    font-size: $font-body;
-    padding: $space-xl $space-lg;
+  // Loading state: TextField self-gutters, so the skeleton field does too.
+  &__skeleton-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 $space-lg;
   }
 }

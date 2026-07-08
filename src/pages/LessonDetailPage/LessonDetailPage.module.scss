@@ -33,13 +33,6 @@
     color: var(--ds-color-danger);
   }
 
-  &__status {
-    text-align: center;
-    color: $color-hint;
-    font-size: $font-body;
-    padding: $space-xl $space-lg;
-  }
-
   &__error {
     text-align: center;
     font-size: $font-caption;

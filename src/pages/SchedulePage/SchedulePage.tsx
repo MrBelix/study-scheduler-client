@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Placeholder, useMainButton } from '@/shared/ui';
+import { Section, Cell, Placeholder, Skeleton, useMainButton } from '@/shared/ui';
 import type { Lesson, Student } from '@/shared/api';
 import { useLessons } from '@/features/lessons/queries';
 import { useStudents } from '@/features/students/queries';
@@ -88,7 +88,17 @@ export function SchedulePage() {
       {lessonsQuery.isError ? (
         <div className={styles['schedule__status']}>{m.error_generic()}</div>
       ) : lessonsQuery.isPending ? (
-        <div className={styles['schedule__status']}>{m.loading()}</div>
+        <Section>
+          {Array.from({ length: 4 }, (_, i) => (
+            <Cell
+              key={i}
+              minHeight={56}
+              title={<Skeleton width="55%" />}
+              subtitle={<Skeleton width="35%" height={10} />}
+              value={<Skeleton width={48} />}
+            />
+          ))}
+        </Section>
       ) : isEmptyWeek ? (
         <Placeholder glyph="🗓️" title={m.schedule_week_empty()} description={m.schedule_week_empty_desc()} />
       ) : (

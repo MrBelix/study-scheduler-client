@@ -7,6 +7,7 @@ export { Badge } from './Badge/Badge';
 export { SegmentedControl } from './SegmentedControl/SegmentedControl';
 export type { SegmentItem } from './SegmentedControl/SegmentedControl';
 export { Placeholder } from './Placeholder/Placeholder';
+export { Skeleton } from './Skeleton/Skeleton';
 export { BottomSheet } from './BottomSheet/BottomSheet';
 export { SearchInput } from './Inputs/SearchInput/SearchInput';
 export { TextField } from './Inputs/TextField/TextField';

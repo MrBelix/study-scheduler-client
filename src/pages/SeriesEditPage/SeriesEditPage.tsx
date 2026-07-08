@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, Placeholder, TextField, useMainButton } from '@/shared/ui';
+import { Section, Cell, Avatar, Placeholder, Skeleton, TextField, useMainButton } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import type { LessonSeries, Student, UpdateLessonSeriesRequest } from '@/shared/api';
@@ -21,7 +21,27 @@ export function SeriesEditPage() {
   useBackButton(() => navigate(-1));
 
   if (isPending) {
-    return <div className={styles['form__status']}>{m.loading()}</div>;
+    return (
+      <div className={styles['form']}>
+        <Section>
+          <Cell
+            inset={70}
+            minHeight={56}
+            leading={<Skeleton circle={42} />}
+            title={<Skeleton />}
+            subtitle={<Skeleton width="40%" height={10} />}
+          />
+        </Section>
+        <div className={styles['form__fields']}>
+          {Array.from({ length: 3 }, (_, i) => (
+            <div key={i} className={styles['form__skeleton-field']}>
+              <Skeleton width={90} height={10} />
+              <Skeleton width="100%" height={44} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (!series) {

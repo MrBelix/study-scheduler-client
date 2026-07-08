@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, Placeholder, SearchInput, SegmentedControl, useMainButton } from '@/shared/ui';
+import { Section, Cell, Avatar, Placeholder, SearchInput, SegmentedControl, Skeleton, useMainButton } from '@/shared/ui';
 import type { SegmentItem } from '@/shared/ui';
 import { useStudents } from '@/features/students/queries';
 import { useSeriesList } from '@/features/lessons/queries';
@@ -19,9 +19,9 @@ function SkeletonList() {
           key={i}
           inset={70}
           minHeight={60}
-          leading={<span className={styles['students-page__skeleton-avatar']} />}
-          title={<span className={styles['students-page__skeleton-line']} />}
-          subtitle={<span className={styles['students-page__skeleton-line']} data-short />}
+          leading={<Skeleton circle={42} />}
+          title={<Skeleton />}
+          subtitle={<Skeleton width="40%" height={10} />}
         />
       ))}
     </Section>

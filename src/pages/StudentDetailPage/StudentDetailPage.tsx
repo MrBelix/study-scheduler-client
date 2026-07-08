@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, Badge, Placeholder, useMainButton } from '@/shared/ui';
+import { Section, Cell, Avatar, Badge, Placeholder, Skeleton, useMainButton } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
 import { useStudent, useUpdateStudent } from '@/features/students/queries';
 import { useSeriesList } from '@/features/lessons/queries';
@@ -19,7 +19,19 @@ export function StudentDetailPage() {
   useMainButton({ text: m.edit(), onClick: () => navigate(`/students/${id}/edit`) });
 
   if (isPending) {
-    return <div />;
+    return (
+      <div className={styles['detail']}>
+        <div className={styles['detail__header']}>
+          <Skeleton circle={88} />
+          <Skeleton width={160} height={20} />
+        </div>
+        <Section>
+          {Array.from({ length: 3 }, (_, i) => (
+            <Cell key={i} title={<Skeleton width="40%" />} value={<Skeleton width={64} />} />
+          ))}
+        </Section>
+      </div>
+    );
   }
 
   if (!student) {

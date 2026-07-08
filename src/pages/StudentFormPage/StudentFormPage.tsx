@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { TextField, Placeholder, useMainButton } from '@/shared/ui';
+import { TextField, Placeholder, Skeleton, useMainButton } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import type { Student } from '@/shared/api';
@@ -23,7 +23,16 @@ export function StudentFormPage() {
   useBackButton(() => navigate(-1));
 
   if (isEdit && isPending) {
-    return <div className={styles['form__status']}>{m.loading()}</div>;
+    return (
+      <div className={styles['form__fields']}>
+        {Array.from({ length: 4 }, (_, i) => (
+          <div key={i} className={styles['form__skeleton-field']}>
+            <Skeleton width={90} height={10} />
+            <Skeleton width="100%" height={44} />
+          </div>
+        ))}
+      </div>
+    );
   }
 
   if (isEdit && !existing) {

@@ -94,7 +94,7 @@ export function StudentsPage() {
               <Section>
                 {filtered.map((student) => {
                   const derived = studentSubjects(seriesList ?? [], student.id).join(', ');
-                  const sub = studentSubtitle(student, derived || student.subject);
+                  const sub = studentSubtitle(student, derived);
                   return (
                     <Cell
                       key={student.id}

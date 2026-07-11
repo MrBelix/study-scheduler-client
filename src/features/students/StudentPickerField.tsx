@@ -33,7 +33,6 @@ export function StudentPickerField({ students, value, onChange, locked, error, o
           <Cell
             leading={<Avatar name={selected.name} size={32} />}
             title={selected.name}
-            subtitle={selected.subject || undefined}
             chevron={!locked}
             inset={60}
             minHeight={52}
@@ -58,7 +57,6 @@ export function StudentPickerField({ students, value, onChange, locked, error, o
                 key={s.id}
                 leading={<Avatar name={s.name} size={42} />}
                 title={s.name}
-                subtitle={s.subject || undefined}
                 value={s.id === value ? '✓' : undefined}
                 valueColor="var(--ds-color-accent)"
                 inset={70}

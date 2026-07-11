@@ -64,7 +64,6 @@ export function StudentDetailPage() {
           value={student.rate ? m.rate_per_lesson({ rate: fmt(student.rate) }) : m.value_none()}
           valueColor={student.rate ? undefined : 'var(--ds-color-hint)'}
         />
-        <Cell title={m.detail_contact()} value={student.contact || '—'} valueColor="var(--ds-color-link)" />
         <Cell title={m.detail_added()} value={formatDate(student.createdAtUtc)} />
       </Section>
 

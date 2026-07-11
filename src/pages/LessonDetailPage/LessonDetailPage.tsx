@@ -129,7 +129,6 @@ function LessonDetailView({
           <Cell
             leading={<Avatar name={student.name} size={42} />}
             title={student.name}
-            subtitle={student.subject || undefined}
             chevron
             inset={70}
             minHeight={56}

@@ -32,9 +32,9 @@ function seed(): MockState {
   const day = (offset: number, h: number, min = 0) =>
     new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset, h, min);
   const students: Student[] = [
-    { id: crypto.randomUUID(), name: 'Марія Коваленко', rate: 450, subject: 'Математика', contact: '@maria_k', timeZoneId: null, status: 'Active', createdAtUtc: day(-30, 12).toISOString() },
-    { id: crypto.randomUUID(), name: 'Іван Петренко', rate: 300, subject: 'Фізика', timeZoneId: null, status: 'Active', createdAtUtc: day(-20, 12).toISOString() },
-    { id: crypto.randomUUID(), name: 'Оля Шевчук', rate: 0, timeZoneId: null, status: 'Archived', createdAtUtc: day(-60, 12).toISOString() },
+    { id: crypto.randomUUID(), name: 'Марія Коваленко', rate: 450, status: 'Active', createdAtUtc: day(-30, 12).toISOString() },
+    { id: crypto.randomUUID(), name: 'Іван Петренко', rate: 300, status: 'Active', createdAtUtc: day(-20, 12).toISOString() },
+    { id: crypto.randomUUID(), name: 'Оля Шевчук', rate: 0, status: 'Archived', createdAtUtc: day(-60, 12).toISOString() },
   ];
   const series: LessonSeries[] = [
     {
@@ -233,9 +233,6 @@ export function installMockApi() {
           id: crypto.randomUUID(),
           name: body.name,
           rate: body.rate ?? 0,
-          subject: body.subject,
-          contact: body.contact,
-          timeZoneId: body.timeZoneId ?? null,
           status: 'Active',
           createdAtUtc: new Date().toISOString(),
         };
@@ -271,7 +268,7 @@ export function installMockApi() {
           weekdays: body.weekdays,
           startTimeLocal: body.startTimeLocal,
           durationMinutes: body.durationMinutes,
-          timeZoneId: body.timeZoneId ?? state.profile.timeZoneId,
+          timeZoneId: state.profile.timeZoneId,
           price: body.price ?? null,
           isActive: true,
           createdAtUtc: new Date().toISOString(),
@@ -371,8 +368,6 @@ export function installMockApi() {
       if (method === 'PATCH') return applyPatch(lesson, body);
       return json(lesson);
     }
-
-    if (path === '/me') return json({ id: '1', firstName: 'Олена' });
 
     return notFound();
   };

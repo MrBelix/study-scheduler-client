@@ -4,7 +4,6 @@ export { ApiError } from './errors';
 export { lessonKeys, studentKeys, profileKeys } from './queryKeys';
 export type { AuthErrorCode, LessonConflict } from './errors';
 export type {
-  Me,
   Student,
   StudentStatus,
   CreateStudentRequest,

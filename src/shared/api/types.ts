@@ -2,14 +2,6 @@
 // The server (.NET minimal API) serializes JSON as camelCase and returns
 // Guids as strings. Keep these in sync with the backend DTOs.
 
-/** Current Telegram user — `GET /me`. */
-export interface Me {
-  id: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-}
-
 /** Lifecycle status of a student. */
 export type StudentStatus = 'Active' | 'Archived';
 
@@ -18,10 +10,6 @@ export interface Student {
   id: string;
   name: string;
   rate: number;
-  subject?: string;
-  contact?: string;
-  /** Informational IANA time zone id of the student. */
-  timeZoneId?: string | null;
   status: StudentStatus;
   createdAtUtc: string;
 }
@@ -30,18 +18,12 @@ export interface Student {
 export interface CreateStudentRequest {
   name: string;
   rate?: number;
-  subject?: string;
-  contact?: string;
-  timeZoneId?: string;
 }
 
 /** Body for `PATCH /students/{id}` — only provided fields are applied. */
 export interface UpdateStudentRequest {
   name?: string;
   rate?: number;
-  subject?: string;
-  contact?: string;
-  timeZoneId?: string;
   status?: StudentStatus;
 }
 
@@ -139,8 +121,8 @@ export interface LessonSeries {
 }
 
 /**
- * Body for `POST /lessons/series`. `startTimeLocal` is wall clock in the anchor
- * zone: `timeZoneId` when set (e.g. the student's zone), else the profile zone.
+ * Body for `POST /lessons/series`. `startTimeLocal` is wall clock in the
+ * profile zone.
  */
 export interface CreateLessonSeriesRequest {
   studentId: string;
@@ -151,7 +133,6 @@ export interface CreateLessonSeriesRequest {
   durationMinutes: number;
   endDate?: string | null;
   price?: number | null;
-  timeZoneId?: string;
 }
 
 /**

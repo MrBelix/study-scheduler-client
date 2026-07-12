@@ -6,6 +6,7 @@ import type {
   LessonSeries,
   CreateLessonSeriesRequest,
   UpdateLessonSeriesRequest,
+  CancelSeriesResponse,
 } from '@/shared/api';
 
 /**
@@ -53,13 +54,14 @@ export const getSeries = (id: string, signal?: AbortSignal) =>
 export const createSeries = (body: CreateLessonSeriesRequest) =>
   apiRequest<LessonSeries>('/lessons/series', { method: 'POST', body: JSON.stringify(body) });
 
-/** `PATCH /lessons/series/{id}` — only title/endDate/price; days and time are immutable. */
+/** `PATCH /lessons/series/{id}` — metadata only (title, price); days, time and end date are immutable here. */
 export const updateSeries = (id: string, body: UpdateLessonSeriesRequest) =>
   apiRequest<LessonSeries>(`/lessons/series/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
 
 /**
  * `POST /lessons/series/{id}/cancel` — ends the series as of today: future
  * virtual slots stop expanding, past occurrences and physical lessons stay.
+ * Returns the ended series plus the future materialized overrides that were removed.
  */
 export const cancelSeries = (id: string) =>
-  apiRequest<LessonSeries>(`/lessons/series/${id}/cancel`, { method: 'POST' });
+  apiRequest<CancelSeriesResponse>(`/lessons/series/${id}/cancel`, { method: 'POST' });

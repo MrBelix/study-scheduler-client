@@ -105,7 +105,7 @@
   "series_until_short": "до {date}",
   "series_not_found": "Серію не знайдено",
   "series_edit_fixed_footer": "Дні й час серії змінити не можна — скасуйте її та створіть нову.",
-  "series_edit_end_date_helper": "Порожньо — без змін. Слоти поза новою межею зникнуть з розкладу.",
+  "series_cancel_removed": "Серію завершено. Видалено змінених уроків: {count}",
   "series_edit_price_helper": "Порожньо — без змін. Нова ціна діє на уроки, що генеруються далі.",
   "profile_timezone": "Часовий пояс",
   "profile_timezone_footer": "У цьому часовому поясі плануються серії уроків.",

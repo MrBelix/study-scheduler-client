@@ -65,13 +65,14 @@ export function lessonPath(lesson: Lesson): string {
 }
 
 /**
- * Whether the series still produces future occurrences. `isActive` false only
- * means "ended before it ever started"; a series cancelled mid-life stays
- * active with `endDate` tightened to the cancellation day — so "current" is
- * active AND not ended before today.
+ * Whether the series still produces occurrences today or later. Lifecycle is the
+ * `endDate` alone: open-ended (null) is current; otherwise it must end today-or-later
+ * AND not before it ever started (a series cancelled before its start day gets an
+ * `endDate` below `startDate` and produces nothing).
  */
 export function isSeriesCurrent(series: LessonSeries): boolean {
-  return series.isActive && (!series.endDate || series.endDate >= dateKey(new Date()));
+  const today = dateKey(new Date());
+  return series.endDate == null || (series.endDate >= today && series.endDate >= series.startDate);
 }
 
 /**

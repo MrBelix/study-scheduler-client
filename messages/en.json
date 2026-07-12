@@ -105,7 +105,7 @@
   "series_until_short": "until {date}",
   "series_not_found": "Series not found",
   "series_edit_fixed_footer": "A series' days and time can't be changed — cancel it and create a new one.",
-  "series_edit_end_date_helper": "Empty — unchanged. Slots beyond the new boundary disappear from the schedule.",
+  "series_cancel_removed": "Series ended. Edited lessons removed: {count}",
   "series_edit_price_helper": "Empty — unchanged. The new price applies to lessons generated from now on.",
   "profile_timezone": "Time zone",
   "profile_timezone_footer": "Lesson series are scheduled in this time zone.",

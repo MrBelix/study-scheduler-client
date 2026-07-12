@@ -17,6 +17,7 @@ export {
 
 export { useBackButton } from './useBackButton';
 export { haptic } from './haptics';
+export { notify } from './popup';
 
 /**
  * Raw init data string for the `Authorization: tma <…>` header.

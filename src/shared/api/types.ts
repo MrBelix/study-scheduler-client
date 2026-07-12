@@ -116,7 +116,6 @@ export interface LessonSeries {
   durationMinutes: number;
   timeZoneId: string;
   price: number | null;
-  isActive: boolean;
   createdAtUtc: string;
 }
 
@@ -136,13 +135,21 @@ export interface CreateLessonSeriesRequest {
 }
 
 /**
- * Body for `PATCH /lessons/series/{id}` — only provided fields are applied;
- * days/time cannot change (cancel + recreate instead). Shrinking `endDate`
- * just stops virtual slots beyond it from expanding; touched (physical)
- * lessons are left as-is.
+ * Body for `PATCH /lessons/series/{id}` — metadata only (title, price); only
+ * provided fields are applied. The schedule (days/time) and the end date can't
+ * change here — end a series via `POST .../cancel` (ends it as of today).
  */
 export interface UpdateLessonSeriesRequest {
   title?: string;
-  endDate?: string;
   price?: number;
+}
+
+/**
+ * Result of `POST /lessons/series/{id}/cancel` — the ended series plus the
+ * future materialized overrides that were removed (individually-edited lessons
+ * beyond today), so the client can tell the tutor what went away.
+ */
+export interface CancelSeriesResponse {
+  series: LessonSeries;
+  removedLessons: Lesson[];
 }

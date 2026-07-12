@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Placeholder, Skeleton, TextField, useMainButton } from '@/shared/ui';
-import { useBackButton, haptic } from '@/shared/tg';
+import { useBackButton, haptic, notify } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import type { LessonSeries, Student, UpdateLessonSeriesRequest } from '@/shared/api';
 import { formatDate, parsePrice, apiFormErrors } from '@/shared/lib';
@@ -61,7 +61,6 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
   const navigate = useNavigate();
 
   const [title, setTitle] = useState(series.title ?? '');
-  const [endDate, setEndDate] = useState(series.endDate ?? '');
   const [price, setPrice] = useState(series.price != null ? String(series.price) : '');
 
   const updateSeries = useUpdateSeries();
@@ -73,7 +72,6 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
   const body: UpdateLessonSeriesRequest = {};
   const trimmedTitle = title.trim();
   if (trimmedTitle && trimmedTitle !== (series.title ?? '')) body.title = trimmedTitle;
-  if (endDate && endDate !== (series.endDate ?? '')) body.endDate = endDate;
   const priceValue = parsePrice(price);
   if (priceValue !== undefined && priceValue !== series.price) body.price = priceValue;
   const hasChanges = Object.keys(body).length > 0;
@@ -117,14 +115,6 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
           error={fieldError('Title')}
         />
         <TextField
-          header={m.lesson_form_end_date()}
-          value={endDate}
-          onChange={setEndDate}
-          type="date"
-          helper={m.series_edit_end_date_helper()}
-          error={fieldError('EndDate')}
-        />
-        <TextField
           header={m.lesson_form_price()}
           value={price}
           onChange={setPrice}
@@ -141,7 +131,13 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
             onClick={() => {
               if (mutating) return;
               haptic('medium');
-              cancelSeries.mutate(series.id, { onSuccess: () => navigate(-1) });
+              cancelSeries.mutate(series.id, {
+                onSuccess: (res) => {
+                  if (res.removedLessons.length > 0)
+                    notify(m.series_cancel_removed({ count: res.removedLessons.length }));
+                  navigate(-1);
+                },
+              });
             }}
           />
         </Section>

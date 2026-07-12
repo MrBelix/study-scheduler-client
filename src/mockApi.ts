@@ -48,7 +48,6 @@ function seed(): MockState {
       durationMinutes: 60,
       timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone,
       price: null,
-      isActive: true,
       createdAtUtc: day(-14, 12).toISOString(),
     },
   ];
@@ -104,7 +103,6 @@ export function installMockApi() {
   const virtualSlots = (from: Date, to: Date): Lesson[] => {
     const slots: Lesson[] = [];
     for (const s of state.series) {
-      if (!s.isActive) continue;
       const [h, min] = s.startTimeLocal.split(':').map(Number);
       const wanted = new Set(s.weekdays.split(',').map((w) => w.trim()));
       for (let d = new Date(from.getFullYear(), from.getMonth(), from.getDate()); d < to; d.setDate(d.getDate() + 1)) {
@@ -200,13 +198,6 @@ export function installMockApi() {
     if (path === '/profile') {
       if (method === 'PUT') {
         if (!body?.timeZoneId) return validation('TimeZoneId', 'Time zone is required.');
-        // Series anchored to the old profile zone follow it (backend parity).
-        const previousZone = state.profile?.timeZoneId;
-        if (previousZone && previousZone !== body.timeZoneId) {
-          for (const series of state.series) {
-            if (series.isActive && series.timeZoneId === previousZone) series.timeZoneId = body.timeZoneId;
-          }
-        }
         state.profile = {
           timeZoneId: body.timeZoneId,
           languageCode: body.languageCode ?? state.profile?.languageCode ?? null,
@@ -270,7 +261,6 @@ export function installMockApi() {
           durationMinutes: body.durationMinutes,
           timeZoneId: state.profile.timeZoneId,
           price: body.price ?? null,
-          isActive: true,
           createdAtUtc: new Date().toISOString(),
         };
         state.series.push(series);
@@ -302,18 +292,18 @@ export function installMockApi() {
       const series = state.series.find((s) => s.id === seriesMatch[1]);
       if (!series) return notFound();
       if (seriesMatch[2] && method === 'POST') {
-        // End(today): tighten endDate; deactivate only a series that never started.
+        // End(today): tighten endDate, then remove future materialized overrides (> today).
         const today = localDateKey(new Date());
-        if (today < series.startDate) series.isActive = false;
-        else if (!series.endDate || series.endDate > today) series.endDate = today;
+        if (!series.endDate || series.endDate > today) series.endDate = today;
+        const removedLessons = state.lessons.filter(
+          (l) => l.seriesId === series.id && l.occurrenceDate != null && l.occurrenceDate > today,
+        );
+        state.lessons = state.lessons.filter((l) => !removedLessons.includes(l));
         persist();
-        return json(series);
+        return json({ series, removedLessons });
       }
       if (method === 'PATCH') {
-        if (body.endDate && body.endDate < series.startDate)
-          return validation('EndDate', 'End date must not precede start date.');
         if (body.title !== undefined) series.title = body.title;
-        if (body.endDate !== undefined) series.endDate = body.endDate;
         if (body.price !== undefined) series.price = body.price;
         persist();
       }

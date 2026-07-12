@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Badge, Placeholder, Skeleton } from '@/shared/ui';
-import { useBackButton, haptic } from '@/shared/tg';
+import { useBackButton, haptic, notify } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import type { Lesson, LessonStatus } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
@@ -172,7 +172,12 @@ function LessonDetailView({
               onClick={() => {
                 if (mutating) return;
                 haptic('medium');
-                cancelSeries.mutate(series.id);
+                cancelSeries.mutate(series.id, {
+                  onSuccess: (res) => {
+                    if (res.removedLessons.length > 0)
+                      notify(m.series_cancel_removed({ count: res.removedLessons.length }));
+                  },
+                });
               }}
             />
           )}

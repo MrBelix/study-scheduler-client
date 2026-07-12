@@ -89,6 +89,7 @@ function StudentForm({ existing }: { existing?: Student }) {
           value={name}
           onChange={setName}
           error={fieldError('Name')}
+          required
         />
         <TextField
           header={m.form_rate()}

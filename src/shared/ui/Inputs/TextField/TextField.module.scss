@@ -10,6 +10,11 @@
     color: $color-subtitle;
   }
 
+  &__required {
+    color: $color-error;
+    margin-left: 2px;
+  }
+
   &__input {
     width: 100%;
     border: none;

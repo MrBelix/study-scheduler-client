@@ -10,6 +10,11 @@
     color: $color-subtitle;
   }
 
+  &__required {
+    color: $color-error;
+    margin-left: 2px;
+  }
+
   // The Cell provides its own surface; we only round the corners.
   &__trigger {
     background: $color-bg;

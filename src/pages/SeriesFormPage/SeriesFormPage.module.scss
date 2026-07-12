@@ -22,6 +22,11 @@
     color: $color-subtitle;
   }
 
+  &__label-required {
+    color: $color-error;
+    margin-left: 2px;
+  }
+
   &__weekdays {
     display: flex;
     gap: $space-xs;

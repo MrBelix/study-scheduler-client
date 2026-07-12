@@ -8,7 +8,7 @@ import { useStudents } from '@/features/students/queries';
 import { money, formatDate, fmtTime, fmtDayHeader } from '@/shared/lib';
 import { useLesson, useLessons, useLessonSeries, useUpdateLesson, useCancelSeries } from '@/features/lessons/queries';
 import type { LessonTarget } from '@/features/lessons/queries';
-import { weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
+import { weekdaysLabel, isSeriesCancellable } from '@/features/lessons/model';
 import styles from './LessonDetailPage.module.scss';
 
 const STATUS_BADGE: Record<LessonStatus, { mode: 'success' | 'muted'; label: () => string }> = {
@@ -166,7 +166,7 @@ function LessonDetailView({
             title={m.lesson_series_until()}
             value={series.endDate ? formatDate(series.endDate) : m.lesson_series_open_ended()}
           />
-          {isSeriesCurrent(series) && (
+          {isSeriesCancellable(series) && (
             <Cell
               title={<span className={styles['lesson__danger']}>{m.lesson_series_cancel()}</span>}
               onClick={() => {

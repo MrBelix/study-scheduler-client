@@ -6,6 +6,7 @@ import { ApiError } from '@/shared/api';
 import { Placeholder } from '@/shared/ui';
 import { LocaleProvider, useLocale, type AppLocale } from '@/shared/i18n';
 import { useProfile } from '@/features/profile/queries';
+import { OnboardingPage } from '@/pages/Onboarding/OnboardingPage';
 import { router } from './router';
 
 // Auth expiry is handled once, centrally: any query or mutation failing with
@@ -38,6 +39,24 @@ function createQueryClient(onAuthExpired: () => void) {
 function AppRoutes() {
   const { locale } = useLocale();
   return <RouterProvider key={locale} router={router} />;
+}
+
+// First-run gate: decide ONCE, when the profile query first settles, whether to
+// show onboarding. The decision latches via the "adjust state during render"
+// pattern — once it leaves `loading` the guard below never re-runs, so when
+// step 1 saves the profile (flipping `isNotFound` to false) the wizard stays
+// mounted until it calls `onDone`.
+function RootGate() {
+  const { isNotFound, isPending } = useProfile();
+  const [decision, setDecision] = useState<'loading' | 'onboarding' | 'app'>('loading');
+
+  if (decision === 'loading' && !isPending) {
+    setDecision(isNotFound ? 'onboarding' : 'app'); // no profile → onboard; else → app
+  }
+
+  if (decision === 'loading') return null; // brief: profile still loading
+  if (decision === 'onboarding') return <OnboardingPage onDone={() => setDecision('app')} />;
+  return <AppRoutes />;
 }
 
 const APP_LOCALES: AppLocale[] = ['uk', 'en'];
@@ -83,7 +102,7 @@ export function App() {
         ) : (
           <>
             <ProfileLocaleSync />
-            <AppRoutes />
+            <RootGate />
           </>
         )}
       </LocaleProvider>

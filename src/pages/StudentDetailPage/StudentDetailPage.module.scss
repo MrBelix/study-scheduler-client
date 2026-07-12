@@ -18,6 +18,10 @@
     text-align: center;
   }
 
+  &__segment {
+    margin: 0 0 14px;
+  }
+
   &__error {
     text-align: center;
     font-size: $font-caption;

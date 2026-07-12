@@ -6,7 +6,7 @@ interface SearchInputProps {
   placeholder?: string;
 }
 
-export function SearchInput({ value, onChange, placeholder = 'Пошук' }: SearchInputProps) {
+export function SearchInput({ value, onChange, placeholder }: SearchInputProps) {
   return (
     <div className={styles['search-input']}>
       <div className={styles['search-input__bar']}>

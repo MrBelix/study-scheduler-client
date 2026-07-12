@@ -15,19 +15,24 @@ interface StudentPickerFieldProps {
    */
   locked?: boolean;
   error?: string;
+  /** Mark the field as required with a red asterisk after the label. */
+  required?: boolean;
   /** Sheet visibility is lifted so the page's BackButton can close it first. */
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 /** Labeled student field: a Cell-style trigger opening a bottom-sheet list. */
-export function StudentPickerField({ students, value, onChange, locked, error, open, onOpenChange }: StudentPickerFieldProps) {
+export function StudentPickerField({ students, value, onChange, locked, error, required, open, onOpenChange }: StudentPickerFieldProps) {
   const selected = students.find((s) => s.id === value);
   const options = students.filter((s) => s.status !== 'Archived');
 
   return (
     <div className={styles['picker']}>
-      <span className={styles['picker__label']}>{m.lesson_form_student()}</span>
+      <span className={styles['picker__label']}>
+        {m.lesson_form_student()}
+        {required && <span className={styles['picker__required']}>*</span>}
+      </span>
       <div className={styles['picker__trigger']}>
         {selected ? (
           <Cell

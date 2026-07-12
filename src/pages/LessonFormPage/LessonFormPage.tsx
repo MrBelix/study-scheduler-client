@@ -87,6 +87,7 @@ export function LessonFormPage() {
           onChange={setStudentId}
           locked={lockedStudent}
           error={fieldError('StudentId')}
+          required
           open={pickerOpen}
           onOpenChange={setPickerOpen}
         />
@@ -96,8 +97,9 @@ export function LessonFormPage() {
           onChange={setDate}
           type="date"
           error={fieldError('StartUtc')}
+          required
         />
-        <TextField header={m.lesson_form_time()} value={time} onChange={setTime} type="time" />
+        <TextField header={m.lesson_form_time()} value={time} onChange={setTime} type="time" required />
         {tzMismatch && (
           <div className={styles['form__hint']}>
             {m.lesson_form_tz_mismatch({ device: deviceZone, profile: profileZone! })}
@@ -110,6 +112,7 @@ export function LessonFormPage() {
           inputMode="numeric"
           helper={m.lesson_form_duration_helper()}
           error={fieldError('DurationMinutes')}
+          required
         />
         <TextField
           header={m.lesson_form_price()}

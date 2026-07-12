@@ -76,6 +76,15 @@ export function isSeriesCurrent(series: LessonSeries): boolean {
 }
 
 /**
+ * Whether the series can still be cancelled: only while it stays open beyond
+ * today. Once `endDate` is today-or-earlier there is nothing left to cancel
+ * (cancelling sets `endDate` to today, so a cancelled series fails this).
+ */
+export function isSeriesCancellable(series: LessonSeries): boolean {
+  return series.endDate == null || series.endDate > dateKey(new Date());
+}
+
+/**
  * A student's subjects, derived from their current series titles (a student
  * with several subjects simply has several series). Unique, in series order.
  */

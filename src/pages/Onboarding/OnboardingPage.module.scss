@@ -1,0 +1,145 @@
+@use '../../app/styles/variables' as *;
+
+.onboarding {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: $color-secondary-bg;
+}
+
+.onboarding__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(var(--tg-content-safe-area-inset-top, 0px) + #{$space-xl}) $page-gutter $space-lg;
+}
+
+.onboarding__steps {
+  font-size: $font-caption;
+  color: $color-subtitle;
+  margin-bottom: $space-sm;
+}
+
+.onboarding__title {
+  font-size: $font-large-title;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: $color-text;
+  margin-bottom: 6px;
+}
+
+.onboarding__subtitle {
+  font-size: $font-body;
+  line-height: 1.4;
+  color: $color-subtitle;
+  margin-bottom: $space-xl;
+}
+
+.onboarding__fields {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+}
+
+.onboarding__error {
+  text-align: center;
+  font-size: $font-caption;
+  line-height: 1.4;
+  color: $color-error;
+  margin-top: $space-md;
+}
+
+.onboarding__actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+  padding: $space-sm $page-gutter calc(var(--tg-content-safe-area-inset-bottom, 0px) + #{$space-md});
+  background: $color-secondary-bg;
+}
+
+.onboarding__primary {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: $radius-md;
+  background: $color-button;
+  color: $color-button-text;
+  font-family: inherit;
+  font-size: $font-callout;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+
+  &:active:not(:disabled) {
+    opacity: 0.85;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.onboarding__skip {
+  width: 100%;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: $color-link;
+  font-family: inherit;
+  font-size: $font-callout;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.onboarding__sheet-list {
+  flex: 1;
+  overflow-y: auto;
+  background: $color-bg;
+  border-radius: $radius-md;
+}
+
+// Weekday chips — copied from SeriesFormPage to keep the look identical.
+.onboarding__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.onboarding__label {
+  font-size: $font-caption;
+  color: $color-subtitle;
+}
+
+.onboarding__label-required {
+  color: $color-error;
+  margin-left: 2px;
+}
+
+.onboarding__weekdays {
+  display: flex;
+  gap: $space-xs;
+}
+
+.onboarding__weekday {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  border: none;
+  border-radius: $radius-sm;
+  background: $color-bg;
+  color: $color-text;
+  font-family: inherit;
+  font-size: $font-caption;
+  cursor: pointer;
+
+  &[data-selected] {
+    background: $color-button;
+    color: $color-button-text;
+    font-weight: 600;
+  }
+}

@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Placeholder, Skeleton, useMainButton } from '@/shared/ui';
 import type { Lesson, Student } from '@/shared/api';
@@ -39,7 +39,15 @@ function LessonCell({ lesson, student, onClick }: { lesson: Lesson; student?: St
 
 export function SchedulePage() {
   const navigate = useNavigate();
-  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Week lives in the URL so returning from a lesson (navigate(-1) remounts
+  // this page) restores the same week instead of snapping back to today.
+  const weekParam = searchParams.get('week');
+  const weekStart = weekParam ? startOfWeek(new Date(`${weekParam}T00:00`)) : startOfWeek(new Date());
+
+  const goToWeek = (newWeekStart: Date) =>
+    setSearchParams({ week: dateKey(newWeekStart) }, { replace: true });
 
   // Stable ISO bounds for the query key: [Mon 00:00, next Mon 00:00) local.
   const fromIso = useMemo(() => weekStart.toISOString(), [weekStart]);
@@ -63,7 +71,7 @@ export function SchedulePage() {
           type="button"
           className={styles['schedule__nav-arrow']}
           aria-label={m.week_prev()}
-          onClick={() => setWeekStart(addDays(weekStart, -7))}
+          onClick={() => goToWeek(addDays(weekStart, -7))}
         >
           ‹
         </button>
@@ -71,7 +79,7 @@ export function SchedulePage() {
           type="button"
           className={styles['schedule__nav-label']}
           title={m.week_today()}
-          onClick={() => setWeekStart(startOfWeek(new Date()))}
+          onClick={() => goToWeek(startOfWeek(new Date()))}
         >
           {fmtWeekRange(weekStart)}
         </button>
@@ -79,7 +87,7 @@ export function SchedulePage() {
           type="button"
           className={styles['schedule__nav-arrow']}
           aria-label={m.week_next()}
-          onClick={() => setWeekStart(addDays(weekStart, 7))}
+          onClick={() => goToWeek(addDays(weekStart, 7))}
         >
           ›
         </button>

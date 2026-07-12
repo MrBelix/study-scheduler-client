@@ -11,13 +11,18 @@ interface TextFieldProps {
   inputMode?: 'text' | 'numeric';
   /** Native input type — `date`/`time` render the platform picker. */
   type?: 'text' | 'date' | 'time';
+  /** Mark the field as required with a red asterisk after the header. */
+  required?: boolean;
 }
 
 /** Labeled input on a section surface, with optional helper text below. */
-export function TextField({ header, value, onChange, placeholder, helper, error, inputMode = 'text', type = 'text' }: TextFieldProps) {
+export function TextField({ header, value, onChange, placeholder, helper, error, inputMode = 'text', type = 'text', required }: TextFieldProps) {
   return (
     <label className={styles['text-field']}>
-      <span className={styles['text-field__header']}>{header}</span>
+      <span className={styles['text-field__header']}>
+        {header}
+        {required && <span className={styles['text-field__required']}>*</span>}
+      </span>
       <input
         className={styles['text-field__input']}
         type={type}

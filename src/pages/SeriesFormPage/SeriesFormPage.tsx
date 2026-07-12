@@ -100,6 +100,7 @@ export function SeriesFormPage() {
           onChange={setStudentId}
           locked={lockedStudent}
           error={fieldError('StudentId')}
+          required
           open={pickerOpen}
           onOpenChange={setPickerOpen}
         />
@@ -110,7 +111,10 @@ export function SeriesFormPage() {
           onChange={setTitle}
         />
         <div className={styles['form__field']}>
-          <span className={styles['form__label']}>{m.lesson_form_weekdays()}</span>
+          <span className={styles['form__label']}>
+            {m.lesson_form_weekdays()}
+            <span className={styles['form__label-required']}>*</span>
+          </span>
           <div className={styles['form__weekdays']}>
             {WEEKDAY_FLAGS.map((flag, i) => (
               <button
@@ -132,6 +136,7 @@ export function SeriesFormPage() {
           onChange={setTime}
           type="time"
           error={fieldError('StartTimeLocal')}
+          required
         />
         <TextField
           header={m.lesson_form_start_date()}
@@ -139,6 +144,7 @@ export function SeriesFormPage() {
           onChange={setStartDate}
           type="date"
           error={fieldError('StartDate')}
+          required
         />
         <TextField
           header={m.lesson_form_end_date()}
@@ -154,6 +160,7 @@ export function SeriesFormPage() {
           inputMode="numeric"
           helper={m.lesson_form_duration_helper()}
           error={fieldError('DurationMinutes')}
+          required
         />
         <TextField
           header={m.lesson_form_price()}

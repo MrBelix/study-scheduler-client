@@ -31,12 +31,16 @@ export interface UpdateStudentRequest {
  * Tutor (member) settings — `GET /profile`, `PUT /profile` (upsert).
  * `languageCode` is the preferred UI language ("uk" | "en"), null until chosen.
  * `remindMinutes` — bot reminder lead time; null means reminders are off.
+ * `botReachable` — true by default (optimistic); the server flips it to false
+ * after a bot message fails with 403 (blocked/never started), and back to
+ * true on any interaction with the bot.
  */
 export interface Profile {
   timeZoneId: string;
   languageCode: string | null;
   remindMinutes: number | null;
   notifyAfterLesson: boolean;
+  botReachable: boolean;
   createdAtUtc: string;
 }
 

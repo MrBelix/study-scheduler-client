@@ -13,6 +13,7 @@ export {
   miniApp,
   themeParams,
   viewport,
+  openTelegramLink,
 } from '@tma.js/sdk-react';
 
 export { useBackButton } from './useBackButton';

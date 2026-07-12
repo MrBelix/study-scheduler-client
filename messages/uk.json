@@ -125,6 +125,8 @@
   "profile_reminders_before": "За {minutes} хв",
   "profile_after_lesson": "Підсумок після уроку",
   "profile_notifications_footer": "Бот нагадає про урок і запитає підсумок після нього.",
+  "profile_bot_disconnected": "Нотифікації призупинено",
+  "profile_bot_reconnect": "Відкрийте бота, щоб відновити",
   "toggle_on": "Увімк.",
   "toggle_off": "Вимк.",
   "onboarding_step": "Крок {current} з {total}",

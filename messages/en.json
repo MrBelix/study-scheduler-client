@@ -125,6 +125,8 @@
   "profile_reminders_before": "{minutes} min before",
   "profile_after_lesson": "After-lesson follow-up",
   "profile_notifications_footer": "The bot reminds you before a lesson and asks how it went after.",
+  "profile_bot_disconnected": "Notifications paused",
+  "profile_bot_reconnect": "Reopen the bot to resume",
   "toggle_on": "On",
   "toggle_off": "Off",
   "onboarding_step": "Step {current} of {total}",

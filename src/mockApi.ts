@@ -11,7 +11,7 @@ import type {
   LessonStatus,
 } from '@/shared/api';
 
-const STORAGE_KEY = 'mock-api-v3'; // v3: profile notification settings
+const STORAGE_KEY = 'mock-api-v4'; // v4: profile.botReachable
 const LATENCY_MS = 250;
 const BASE = import.meta.env.VITE_API_URL ?? '';
 
@@ -68,7 +68,14 @@ function seed(): MockState {
     createdAtUtc: day(offset - 7, 12).toISOString(),
   });
   return {
-    profile: { timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone, languageCode: null, remindMinutes: 30, notifyAfterLesson: true, createdAtUtc: day(-30, 0).toISOString() },
+    profile: {
+      timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      languageCode: null,
+      remindMinutes: 30,
+      notifyAfterLesson: true,
+      botReachable: true,
+      createdAtUtc: day(-30, 0).toISOString(),
+    },
     students,
     series,
     lessons: [
@@ -208,6 +215,8 @@ export function installMockApi() {
               ? body.remindMinutes === 0 ? null : body.remindMinutes
               : state.profile ? state.profile.remindMinutes : 30,
           notifyAfterLesson: body.notifyAfterLesson ?? state.profile?.notifyAfterLesson ?? true,
+          // Optimistic default, matching the server; the mock has no bot to flip it false.
+          botReachable: true,
           createdAtUtc: state.profile?.createdAtUtc ?? new Date().toISOString(),
         };
         persist();

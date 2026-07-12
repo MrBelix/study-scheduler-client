@@ -2,10 +2,14 @@ import { useState, type ReactNode } from 'react';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, SearchInput, BottomSheet, Skeleton } from '@/shared/ui';
 import { useLocale, LOCALE_NAMES } from '@/shared/i18n';
-import { haptic, getTelegramUser } from '@/shared/tg';
+import { haptic, getTelegramUser, openTelegramLink } from '@/shared/tg';
 import { useProfile, useSaveProfile, useTimeZones } from '@/features/profile/queries';
 import { version as appVersion } from '../../../package.json';
 import styles from './ProfilePage.module.scss';
+
+// @username of the notifications bot — used to deep-link the tutor back into
+// its chat when notifications got disabled (see the reconnect prompt below).
+const BOT_USERNAME = import.meta.env.VITE_BOT_USERNAME;
 
 function Tile({ color, children }: { color: string; children: ReactNode }) {
   return (
@@ -91,6 +95,16 @@ export function ProfilePage() {
   const tgUser = getTelegramUser();
   const displayName = [tgUser?.first_name, tgUser?.last_name].filter(Boolean).join(' ');
 
+  // Notifications are only relevant if some notification is actually enabled.
+  const notificationsEnabled =
+    (profile?.remindMinutes != null && profile.remindMinutes !== 0) || !!profile?.notifyAfterLesson;
+  const showBotDisconnected = !!profile && !profile.botReachable && notificationsEnabled;
+
+  const reconnectBot = () => {
+    haptic('medium');
+    openTelegramLink(`https://t.me/${BOT_USERNAME}?start=notify`);
+  };
+
   return (
     <div className={styles['profile']}>
       {displayName && (
@@ -99,6 +113,33 @@ export function ProfilePage() {
           <div className={styles['profile__name']}>{displayName}</div>
           {tgUser?.username && <div className={styles['profile__username']}>@{tgUser.username}</div>}
         </div>
+      )}
+
+      {showBotDisconnected && (
+        <Section>
+          <Cell
+            leading={
+              <Tile color="var(--ds-color-danger)">
+                <path
+                  d="M12 8v5M12 16.5h.01"
+                  stroke="currentColor"
+                  strokeWidth="1.9"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M10.6 4.3a1.6 1.6 0 012.8 0l7.7 13.4a1.6 1.6 0 01-1.4 2.4H4.3a1.6 1.6 0 01-1.4-2.4l7.7-13.4z"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinejoin="round"
+                />
+              </Tile>
+            }
+            title={<span style={{ color: 'var(--ds-color-danger)', fontWeight: 600 }}>{m.profile_bot_disconnected()}</span>}
+            subtitle={m.profile_bot_reconnect()}
+            chevron
+            onClick={reconnectBot}
+          />
+        </Section>
       )}
 
       <Section

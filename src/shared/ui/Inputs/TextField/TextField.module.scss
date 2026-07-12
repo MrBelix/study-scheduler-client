@@ -17,6 +17,9 @@
 
   &__input {
     width: 100%;
+    // Fixed row height so an empty date/time input keeps its shape: iOS (WKWebView)
+    // renders nothing for an empty native picker, collapsing the box to its padding.
+    min-height: 48px;
     border: none;
     background: $color-bg;
     border-radius: $radius-md;

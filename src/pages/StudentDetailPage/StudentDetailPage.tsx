@@ -63,12 +63,13 @@ export function StudentDetailPage() {
   // "Фізика" ср, each with its own price) — shown in the schedule section.
   const activeSeries = (seriesList ?? []).filter((s) => s.studentId === student.id && isSeriesCurrent(s));
 
-  // Ended schedules and past lessons, both most-recent-first.
+  // Ended schedules and past individual (non-series) lessons, both
+  // most-recent-first. Past series lessons are reached via their series page.
   const endedSeries = (seriesList ?? [])
     .filter((s) => s.studentId === student.id && !isSeriesCurrent(s))
     .sort((a, b) => (b.endDate ?? '').localeCompare(a.endDate ?? ''));
-  const pastLessons = (lessons ?? [])
-    .filter((l) => l.studentId === student.id && l.startUtc < nowIso)
+  const individualPastLessons = (lessons ?? [])
+    .filter((l) => l.studentId === student.id && l.seriesId == null && l.startUtc < nowIso)
     .sort((a, b) => b.startUtc.localeCompare(a.startUtc));
 
   const segItems: SegmentItem<Tab>[] = [
@@ -142,7 +143,7 @@ export function StudentDetailPage() {
           </Section>
           {updateStudent.isError && <div className={styles['detail__error']}>{m.form_error_save()}</div>}
         </>
-      ) : endedSeries.length === 0 && pastLessons.length === 0 ? (
+      ) : endedSeries.length === 0 && individualPastLessons.length === 0 ? (
         <Placeholder glyph="🗂️" title={m.student_archive_empty()} />
       ) : (
         <>
@@ -164,9 +165,9 @@ export function StudentDetailPage() {
             </Section>
           )}
 
-          {pastLessons.length > 0 && (
-            <Section header={m.student_archive_lessons_section()}>
-              {pastLessons.map((l) => {
+          {individualPastLessons.length > 0 && (
+            <Section header={m.student_archive_individual_section()}>
+              {individualPastLessons.map((l) => {
                 const cancelled = l.status === 'Cancelled';
                 const subtitleParts = [`${fmtTime(l.startUtc)}–${fmtTime(l.endUtc)}`];
                 if (l.topic) subtitleParts.push(l.topic);

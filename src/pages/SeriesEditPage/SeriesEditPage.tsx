@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Placeholder, Skeleton, TextField, useMainButton } from '@/shared/ui';
 import { useBackButton, haptic, notify } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
-import type { LessonSeries, Student, UpdateLessonSeriesRequest } from '@/shared/api';
-import { formatDate, parsePrice, apiFormErrors } from '@/shared/lib';
+import type { Lesson, LessonSeries, Student, UpdateLessonSeriesRequest } from '@/shared/api';
+import { formatDate, parsePrice, apiFormErrors, money, fmtTime, fmtDayHeader, addDays } from '@/shared/lib';
 import { useStudents } from '@/features/students/queries';
-import { useLessonSeries, useUpdateSeries, useCancelSeries } from '@/features/lessons/queries';
-import { weekdaysLabel, isSeriesCurrent } from '@/features/lessons/model';
+import { useLessons, useLessonSeries, useUpdateSeries, useCancelSeries } from '@/features/lessons/queries';
+import { weekdaysLabel, isSeriesCancellable, lessonPath } from '@/features/lessons/model';
 import styles from './SeriesEditPage.module.scss';
 
 /** Waits for the series, then mounts the form with seeded state (see StudentFormPage). */
@@ -57,6 +57,27 @@ export function SeriesEditPage() {
   return <SeriesEditForm series={series} student={students?.find((s) => s.id === series.studentId)} />;
 }
 
+/** A row for one of this series' occurrences — mirrors the archive lesson rows. */
+function SeriesLessonCell({ lesson, onClick }: { lesson: Lesson; onClick: () => void }) {
+  const cancelled = lesson.status === 'Cancelled';
+  const subtitleParts = [`${fmtTime(lesson.startUtc)}–${fmtTime(lesson.endUtc)}`];
+  if (lesson.topic) subtitleParts.push(lesson.topic);
+  if (lesson.status === 'Completed') subtitleParts.push(m.status_completed());
+  return (
+    <Cell
+      title={fmtDayHeader(new Date(lesson.startUtc))}
+      subtitle={subtitleParts.join(' · ')}
+      subtitleMuted={cancelled}
+      value={cancelled ? m.status_cancelled() : money(lesson.price)}
+      valueColor={cancelled ? 'var(--ds-color-hint)' : lesson.isPaid ? 'var(--ds-color-success)' : undefined}
+      dimmed={cancelled}
+      chevron
+      minHeight={56}
+      onClick={onClick}
+    />
+  );
+}
+
 function SeriesEditForm({ series, student }: { series: LessonSeries; student?: Student }) {
   const navigate = useNavigate();
 
@@ -66,6 +87,27 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
   const updateSeries = useUpdateSeries();
   const cancelSeries = useCancelSeries();
   const mutating = updateSeries.isPending || cancelSeries.isPending;
+
+  // This series' own occurrences, past and near-future — bounded so a
+  // long-running series doesn't render hundreds of rows. Memoized like
+  // StudentDetailPage does, for stable query keys.
+  const now = useMemo(() => new Date(), []);
+  const nowIso = useMemo(() => now.toISOString(), [now]);
+  const fromIso = useMemo(() => {
+    const start = new Date(series.startDate);
+    const bound = addDays(now, -90);
+    return (start > bound ? start : bound).toISOString();
+  }, [series.startDate, now]);
+  const toIso = useMemo(() => addDays(now, 30).toISOString(), [now]);
+  const { data: lessons } = useLessons(fromIso, toIso);
+
+  const seriesLessons = (lessons ?? []).filter((l) => l.seriesId === series.id);
+  const upcomingLessons = seriesLessons
+    .filter((l) => l.startUtc >= nowIso)
+    .sort((a, b) => a.startUtc.localeCompare(b.startUtc));
+  const pastLessons = seriesLessons
+    .filter((l) => l.startUtc < nowIso)
+    .sort((a, b) => b.startUtc.localeCompare(a.startUtc));
 
   // PATCH applies only provided fields (empty input = leave unchanged), so the
   // body carries only real edits.
@@ -124,7 +166,31 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
         />
       </div>
 
-      {isSeriesCurrent(series) && (
+      {upcomingLessons.length > 0 && (
+        <Section header={m.series_lessons_upcoming()}>
+          {upcomingLessons.map((l) => (
+            <SeriesLessonCell
+              key={l.id ?? `${l.seriesId}:${l.occurrenceDate}`}
+              lesson={l}
+              onClick={() => navigate(lessonPath(l))}
+            />
+          ))}
+        </Section>
+      )}
+
+      {pastLessons.length > 0 && (
+        <Section header={m.series_lessons_past()}>
+          {pastLessons.map((l) => (
+            <SeriesLessonCell
+              key={l.id ?? `${l.seriesId}:${l.occurrenceDate}`}
+              lesson={l}
+              onClick={() => navigate(lessonPath(l))}
+            />
+          ))}
+        </Section>
+      )}
+
+      {isSeriesCancellable(series) && (
         <Section footer={m.lesson_series_footer()}>
           <Cell
             title={<span className={styles['form__danger']}>{m.lesson_series_cancel()}</span>}

@@ -1,5 +1,5 @@
 // Telegram auth failure codes returned by the server on 401.
-export type AuthErrorCode = 'expired' | 'invalid_signature' | 'missing_data' | 'unauthorized';
+export type AuthErrorCode = 'invalid_signature' | 'missing_data' | 'unauthorized';
 
 /**
  * One slot from a 409 body: either an existing lesson (`lessonId`) or a future
@@ -33,11 +33,6 @@ export class ApiError extends Error {
     this.conflicts = conflicts;
   }
 
-  /** Session init data expired — the user must reopen the Mini App. */
-  get isAuthExpired(): boolean {
-    return this.status === 401 && this.code === 'expired';
-  }
-
   /** Build from a failed Response, parsing the server's error shapes. */
   static async fromResponse(res: Response): Promise<ApiError> {
     let code = res.statusText || 'error';
@@ -50,7 +45,7 @@ export class ApiError extends Error {
         code = 'conflict'; // 409: { message, conflicts: [...] }
         conflicts = body.conflicts;
       } else if (typeof body?.error === 'string') {
-        code = body.error; // 401: { error: "expired" | ... }
+        code = body.error; // 401: { error: "invalid_signature" | ... }
       } else if (body?.errors) {
         code = body.title ?? 'validation_error'; // 400: ProblemDetails
         fields = body.errors;

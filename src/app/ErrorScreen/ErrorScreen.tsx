@@ -1,15 +1,10 @@
-import { useRouteError } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { ApiError } from '@/shared/api';
 import styles from './ErrorScreen.module.scss';
 
 /** Root router fallback — catches render-time crashes so the app never white-screens. */
 export function ErrorScreen() {
-  const error = useRouteError();
-  const authExpired = error instanceof ApiError && error.isAuthExpired;
-
-  const title = authExpired ? m.error_screen_title_auth() : m.error_screen_title_generic();
-  const hint = authExpired ? m.error_screen_hint_auth() : m.error_screen_hint_generic();
+  const title = m.error_screen_title_generic();
+  const hint = m.error_screen_hint_generic();
 
   return (
     <div className={styles['error-screen']}>

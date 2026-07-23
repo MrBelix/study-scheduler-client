@@ -1,24 +1,14 @@
 import { useEffect, useState } from 'react';
-import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
-import { m } from '@/paraglide/messages';
 import { ApiError } from '@/shared/api';
-import { Placeholder } from '@/shared/ui';
 import { LocaleProvider, useLocale, type AppLocale } from '@/shared/i18n';
 import { useProfile } from '@/features/profile/queries';
 import { OnboardingPage } from '@/pages/Onboarding/OnboardingPage';
 import { router } from './router';
 
-// Auth expiry is handled once, centrally: any query or mutation failing with
-// a 401 "expired" flips the app into a full-screen "reopen the Mini App"
-// state — pages don't need their own isAuthExpired branches.
-function createQueryClient(onAuthExpired: () => void) {
-  const handleError = (error: unknown) => {
-    if (error instanceof ApiError && error.isAuthExpired) onAuthExpired();
-  };
+function createQueryClient() {
   return new QueryClient({
-    queryCache: new QueryCache({ onError: handleError }),
-    mutationCache: new MutationCache({ onError: handleError }),
     defaultOptions: {
       queries: {
         staleTime: 30_000,
@@ -77,34 +67,14 @@ function ProfileLocaleSync() {
   return null;
 }
 
-// Terminal state: the init data can only be refreshed by reopening the app.
-function AuthExpiredScreen() {
-  const { locale } = useLocale(); // re-render if the locale flips underneath
-  return (
-    <Placeholder
-      key={locale}
-      glyph="🔒"
-      title={m.error_screen_title_auth()}
-      description={m.error_screen_hint_auth()}
-    />
-  );
-}
-
 export function App() {
-  const [authExpired, setAuthExpired] = useState(false);
-  const [queryClient] = useState(() => createQueryClient(() => setAuthExpired(true)));
+  const [queryClient] = useState(() => createQueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
       <LocaleProvider>
-        {authExpired ? (
-          <AuthExpiredScreen />
-        ) : (
-          <>
-            <ProfileLocaleSync />
-            <RootGate />
-          </>
-        )}
+        <ProfileLocaleSync />
+        <RootGate />
       </LocaleProvider>
     </QueryClientProvider>
   );

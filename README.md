@@ -1,5 +1,34 @@
 # React + TypeScript + Vite
 
+## Deployment (Cloudflare Pages)
+
+The client is deployed to **Cloudflare Pages** via git integration — Pages builds on push to `main`.
+
+Pages project settings:
+
+| Setting | Value |
+|---|---|
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| `NODE_VERSION` (env var) | `20` |
+
+Build-time environment variables (Vite bakes them into the bundle at build time — set them in
+Pages → Settings → Environment variables, **Production** scope):
+
+| Variable | Purpose |
+|---|---|
+| `VITE_API_URL` | API base URL, e.g. `https://api.example.com` |
+| `VITE_BOT_USERNAME` | Bot @username (no `@`) for the "reopen the bot" deep link |
+
+Do **not** set `VITE_API_MOCK` in Pages — the in-memory mock is dev-only (guarded by
+`import.meta.env.DEV`, dead-code-eliminated from production builds).
+
+SPA fallback for client-side routes (`/students/123` etc.) is handled by
+[public/_redirects](public/_redirects), which Vite copies into `dist/`.
+
+After deploying, add the Pages origin (`https://<project>.pages.dev` or the custom domain) to the
+API's CORS allowlist (`Cors__AllowedOrigins__0`).
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

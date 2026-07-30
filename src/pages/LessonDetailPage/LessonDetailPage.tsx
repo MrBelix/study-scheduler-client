@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, Badge, Placeholder, Skeleton, BottomSheet, TextField, useMainButton, showToast } from '@/shared/ui';
+import { Section, Cell, Avatar, Badge, Placeholder, Skeleton, BottomSheet, TextField, showToast } from '@/shared/ui';
 import { useBackButton, haptic, notify } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import type { Lesson, LessonStatus } from '@/shared/api';
@@ -11,6 +11,7 @@ import { useLesson, useLessons, useLessonSeries, useUpdateLesson, useCancelSerie
 import type { LessonTarget } from '@/features/lessons/queries';
 import { ConflictList } from '@/features/lessons/ConflictList';
 import { weekdaysLabel, isSeriesCancellable } from '@/features/lessons/model';
+import mainButtonStyles from '@/shared/ui/MainButton/MainButton.module.scss';
 import styles from './LessonDetailPage.module.scss';
 
 const STATUS_BADGE: Record<LessonStatus, { mode: 'success' | 'muted'; label: () => string }> = {
@@ -46,8 +47,10 @@ export function OccurrenceDetailPage() {
 
 /**
  * "Move this lesson" — reschedules just this occurrence's date/time. Its own
- * component so `useMainButton` registers Save only while the sheet is open
- * (unregistered again on close/unmount).
+ * component so it can hold its own reschedule-form state (date/time/mutation),
+ * unwound on close/unmount. Save is rendered inline in the sheet itself
+ * (rather than via `useMainButton`) since the sheet is a full-screen portal
+ * that visually covers the global MainButtonBar.
  */
 function RescheduleSheet({
   lesson,
@@ -73,13 +76,6 @@ function RescheduleSheet({
     );
   };
 
-  useMainButton({
-    text: m.form_save(),
-    onClick: save,
-    enabled: valid && !updateLesson.isPending,
-    loading: updateLesson.isPending,
-  });
-
   const { conflicts, fieldError } = apiFormErrors(updateLesson.error, ['StartUtc']);
 
   // Generic errors aren't tied to the date field — surface them as a toast
@@ -103,6 +99,18 @@ function RescheduleSheet({
         />
         <TextField header={m.lesson_form_time()} value={time} onChange={setTime} type="time" required />
         {conflicts && <ConflictList conflicts={conflicts} />}
+        <button
+          type="button"
+          className={mainButtonStyles['main-button']}
+          disabled={!valid || updateLesson.isPending}
+          onClick={save}
+        >
+          {updateLesson.isPending ? (
+            <span className={mainButtonStyles['main-button__spinner']} aria-hidden="true" />
+          ) : (
+            m.form_save()
+          )}
+        </button>
       </div>
     </BottomSheet>
   );

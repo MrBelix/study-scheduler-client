@@ -20,7 +20,7 @@
     // Fixed row height so an empty date/time input keeps its shape: iOS (WKWebView)
     // renders nothing for an empty native picker, collapsing the box to its padding.
     min-height: 48px;
-    border: none;
+    border: 1px solid transparent;
     background: $color-bg;
     border-radius: $radius-md;
     padding: $space-md $space-lg; // internal text inset
@@ -34,17 +34,15 @@
     &::placeholder {
       color: $color-hint;
     }
+
+    &--error {
+      border-color: $color-error;
+    }
   }
 
   &__helper {
     font-size: $font-caption;
     line-height: 1.4;
     color: $color-hint;
-  }
-
-  &__error {
-    font-size: $font-caption;
-    line-height: 1.4;
-    color: $color-error;
   }
 }

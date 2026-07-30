@@ -3,8 +3,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { ApiError } from '@/shared/api';
 import { LocaleProvider, useLocale, type AppLocale } from '@/shared/i18n';
+import { ToastHost } from '@/shared/ui';
 import { useProfile } from '@/features/profile/queries';
 import { OnboardingPage } from '@/pages/Onboarding/OnboardingPage';
+import { GlobalProgressBar } from './GlobalProgressBar/GlobalProgressBar';
 import { router } from './router';
 
 function createQueryClient() {
@@ -72,6 +74,8 @@ export function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <GlobalProgressBar />
+      <ToastHost />
       <LocaleProvider>
         <ProfileLocaleSync />
         <RootGate />

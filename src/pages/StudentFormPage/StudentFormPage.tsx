@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { TextField, Placeholder, Skeleton, useMainButton } from '@/shared/ui';
+import { TextField, Placeholder, Skeleton, useMainButton, showToast } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
 import { parsePrice, apiFormErrors } from '@/shared/lib';
 import type { Student } from '@/shared/api';
@@ -56,7 +56,14 @@ function StudentForm({ existing }: { existing?: Student }) {
   const trimmed = name.trim();
 
   // ---- error breakdown of the last save attempt ----
-  const { fieldError, genericError: formError } = apiFormErrors(mutation.error);
+  const { fieldError } = apiFormErrors(mutation.error);
+
+  // Generic errors aren't tied to one field — surface them as a toast.
+  useEffect(() => {
+    if (!mutation.error) return;
+    const { genericError } = apiFormErrors(mutation.error);
+    if (genericError) showToast(genericError);
+  }, [mutation.error]);
 
   const save = () => {
     if (!trimmed) return;
@@ -78,6 +85,7 @@ function StudentForm({ existing }: { existing?: Student }) {
     text: isEdit ? m.form_save_changes() : m.form_save(),
     onClick: save,
     enabled: trimmed !== '' && !mutation.isPending,
+    loading: mutation.isPending,
   });
 
   return (
@@ -100,7 +108,6 @@ function StudentForm({ existing }: { existing?: Student }) {
           helper={m.form_rate_helper()}
           error={fieldError('Rate')}
         />
-        {formError && <div className={styles['form__error']}>{formError}</div>}
       </div>
     </div>
   );

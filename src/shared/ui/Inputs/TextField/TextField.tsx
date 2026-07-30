@@ -6,7 +6,7 @@ interface TextFieldProps {
   onChange: (value: string) => void;
   placeholder?: string;
   helper?: string;
-  /** Validation message — replaces the helper and renders in the danger color. */
+  /** Validation error — highlights the input border in the danger color. */
   error?: string;
   inputMode?: 'text' | 'numeric';
   /** Native input type — `date`/`time` render the platform picker. */
@@ -24,18 +24,15 @@ export function TextField({ header, value, onChange, placeholder, helper, error,
         {required && <span className={styles['text-field__required']}>*</span>}
       </span>
       <input
-        className={styles['text-field__input']}
+        className={[styles['text-field__input'], error && styles['text-field__input--error']].filter(Boolean).join(' ')}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={(e) => e.target.scrollIntoView({ block: 'center', behavior: 'smooth' })}
         placeholder={placeholder}
         inputMode={inputMode}
       />
-      {error ? (
-        <span className={styles['text-field__error']}>{error}</span>
-      ) : (
-        helper && <span className={styles['text-field__helper']}>{helper}</span>
-      )}
+      {helper && <span className={styles['text-field__helper']}>{helper}</span>}
     </label>
   );
 }

@@ -52,7 +52,9 @@ export function StudentsPage() {
   const archCount = students.filter((s) => s.status === 'Archived').length;
 
   const q = query.trim().toLowerCase();
-  const base = students.filter((s) => (filter === 'archived' ? s.status === 'Archived' : s.status !== 'Archived'));
+  const base = students
+    .filter((s) => (filter === 'archived' ? s.status === 'Archived' : s.status !== 'Archived'))
+    .sort((a, b) => a.name.localeCompare(b.name));
   const filtered = q ? base.filter((s) => s.name.toLowerCase().includes(q)) : base;
 
   const segItems: SegmentItem<Filter>[] = [

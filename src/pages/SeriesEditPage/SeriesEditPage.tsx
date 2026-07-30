@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, Placeholder, Skeleton, TextField, useMainButton } from '@/shared/ui';
+import { Section, Cell, Avatar, Placeholder, Skeleton, TextField, useMainButton, showToast } from '@/shared/ui';
 import { useBackButton, haptic, notify } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import type { Lesson, LessonSeries, Student, UpdateLessonSeriesRequest } from '@/shared/api';
@@ -127,13 +127,18 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
     text: m.form_save_changes(),
     onClick: save,
     enabled: hasChanges && !mutating,
+    loading: mutating,
   });
 
   // ---- error breakdown of the last save attempt ----
-  // Cancelling has no fields of its own — its failure folds into the generic line.
-  const error = updateSeries.error;
-  const { fields, fieldError } = apiFormErrors(error);
-  const genericError = (error && !fields) || cancelSeries.isError ? m.form_error_save() : undefined;
+  const { fieldError } = apiFormErrors(updateSeries.error);
+
+  // Cancelling has no fields of its own — its failure folds into the generic
+  // toast alongside an update failure that carries no field-level messages.
+  useEffect(() => {
+    const { fields } = apiFormErrors(updateSeries.error);
+    if ((updateSeries.error && !fields) || cancelSeries.isError) showToast(m.form_error_save());
+  }, [updateSeries.error, cancelSeries.error, cancelSeries.isError]);
 
   return (
     <div className={styles['form']}>
@@ -208,8 +213,6 @@ function SeriesEditForm({ series, student }: { series: LessonSeries; student?: S
           />
         </Section>
       )}
-
-      {genericError && <div className={styles['form__error']}>{genericError}</div>}
     </div>
   );
 }

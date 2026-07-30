@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { TextField, useMainButton } from '@/shared/ui';
+import { TextField, useMainButton, showToast } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
 import { dateKey, parsePrice, isValidDuration, apiFormErrors } from '@/shared/lib';
 import { useStudents } from '@/features/students/queries';
@@ -11,6 +11,8 @@ import { useCreateSeries } from '@/features/lessons/queries';
 import { ConflictList } from '@/features/lessons/ConflictList';
 import { WEEKDAY_FLAGS, weekdayShortLabel } from '@/features/lessons/model';
 import styles from './SeriesFormPage.module.scss';
+
+const MAPPED_FIELDS = ['StudentId', 'StartDate', 'Weekdays', 'StartTimeLocal', 'DurationMinutes', 'Price'];
 
 /** Weekly series. `?studentId=` (from the student page) locks the student. */
 export function SeriesFormPage() {
@@ -70,6 +72,7 @@ export function SeriesFormPage() {
     text: m.lesson_form_save_series(),
     onClick: save,
     enabled: valid && !createSeries.isPending && !profile.isNotFound,
+    loading: createSeries.isPending,
   });
 
   const toggleWeekday = (flag: string) => {
@@ -82,14 +85,15 @@ export function SeriesFormPage() {
   };
 
   // ---- error breakdown of the last save attempt ----
-  const { conflicts, fieldError, unmappedMessages, genericError } = apiFormErrors(createSeries.error, [
-    'StudentId',
-    'StartDate',
-    'Weekdays',
-    'StartTimeLocal',
-    'DurationMinutes',
-    'Price',
-  ]);
+  const { conflicts, fieldError } = apiFormErrors(createSeries.error, MAPPED_FIELDS);
+
+  // Generic/unmapped errors aren't tied to one field — surface them as a toast.
+  useEffect(() => {
+    if (!createSeries.error) return;
+    const { unmappedMessages, genericError } = apiFormErrors(createSeries.error, MAPPED_FIELDS);
+    if (unmappedMessages.length > 0) showToast(unmappedMessages.join(' '));
+    else if (genericError) showToast(genericError);
+  }, [createSeries.error]);
 
   return (
     <div className={styles['form']}>
@@ -174,12 +178,6 @@ export function SeriesFormPage() {
 
         {profile.isNotFound && <div className={styles['form__error']}>{m.series_form_no_profile()}</div>}
         {conflicts && <ConflictList conflicts={conflicts} />}
-        {unmappedMessages.map((message, i) => (
-          <div key={i} className={styles['form__error']}>
-            {message}
-          </div>
-        ))}
-        {genericError && <div className={styles['form__error']}>{genericError}</div>}
       </div>
     </div>
   );

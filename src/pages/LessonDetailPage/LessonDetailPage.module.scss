@@ -33,10 +33,9 @@
     color: var(--ds-color-danger);
   }
 
-  &__error {
-    text-align: center;
-    font-size: $font-caption;
-    line-height: 1.4;
-    color: $color-error;
+  &__reschedule-fields {
+    display: flex;
+    flex-direction: column;
+    gap: $space-lg;
   }
 }

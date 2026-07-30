@@ -140,5 +140,6 @@
   "onboarding_student_subtitle": "You can always add more later.",
   "onboarding_series_title": "Set a weekly schedule",
   "onboarding_series_subtitle": "Recurring lessons for {name}.",
-  "onboarding_finish": "Finish"
+  "onboarding_finish": "Finish",
+  "lesson_reschedule": "Reschedule"
 }

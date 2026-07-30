@@ -2,17 +2,18 @@ import { useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Placeholder, Skeleton, useMainButton } from '@/shared/ui';
-import type { Lesson, Student } from '@/shared/api';
-import { useLessons } from '@/features/lessons/queries';
+import type { Lesson, LessonSeries, Student } from '@/shared/api';
+import { useLessons, useSeriesList } from '@/features/lessons/queries';
 import { useStudents } from '@/features/students/queries';
 import { money, startOfWeek, addDays, dateKey, fmtTime, fmtDayHeader } from '@/shared/lib';
 import { fmtWeekRange, groupByDay, lessonPath } from '@/features/lessons/model';
 import styles from './SchedulePage.module.scss';
 
-function LessonCell({ lesson, student, onClick }: { lesson: Lesson; student?: Student; onClick: () => void }) {
+function LessonCell({ lesson, student, series, onClick }: { lesson: Lesson; student?: Student; series?: LessonSeries; onClick: () => void }) {
   const cancelled = lesson.status === 'Cancelled';
   const time = `${fmtTime(lesson.startUtc)}–${fmtTime(lesson.endUtc)}`;
   const subtitleParts = [time];
+  if (series?.title) subtitleParts.push(series.title);
   if (lesson.topic) subtitleParts.push(lesson.topic);
   if (lesson.status === 'Completed') subtitleParts.push(m.status_completed());
 
@@ -55,10 +56,12 @@ export function SchedulePage() {
 
   const lessonsQuery = useLessons(fromIso, toIso);
   const { data: students } = useStudents();
+  const { data: seriesList } = useSeriesList();
 
   useMainButton({ text: m.schedule_add_lesson(), onClick: () => navigate('/lessons/new') });
 
   const studentById = new Map((students ?? []).map((s) => [s.id, s]));
+  const seriesById = new Map((seriesList ?? []).map((s) => [s.id, s]));
   const byDay = groupByDay(lessonsQuery.data ?? []);
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   const todayKey = dateKey(new Date());
@@ -123,6 +126,7 @@ export function SchedulePage() {
                   key={lesson.id ?? `${lesson.seriesId}:${lesson.occurrenceDate}`}
                   lesson={lesson}
                   student={studentById.get(lesson.studentId)}
+                  series={lesson.seriesId ? seriesById.get(lesson.seriesId) : undefined}
                   onClick={() => navigate(lessonPath(lesson))}
                 />
               ))}

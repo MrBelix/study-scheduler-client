@@ -33,7 +33,7 @@ export function StudentPickerField({ students, value, onChange, locked, error, r
         {m.lesson_form_student()}
         {required && <span className={styles['picker__required']}>*</span>}
       </span>
-      <div className={styles['picker__trigger']}>
+      <div className={[styles['picker__trigger'], error && styles['picker__trigger--error']].filter(Boolean).join(' ')}>
         {selected ? (
           <Cell
             leading={<Avatar name={selected.name} size={32} />}
@@ -52,7 +52,6 @@ export function StudentPickerField({ students, value, onChange, locked, error, r
           />
         )}
       </div>
-      {error && <span className={styles['picker__error']}>{error}</span>}
 
       {open && !locked && (
         <BottomSheet title={m.lesson_form_student_placeholder()} onClose={() => onOpenChange(false)}>

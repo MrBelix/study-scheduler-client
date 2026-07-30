@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { TextField, useMainButton } from '@/shared/ui';
+import { TextField, useMainButton, showToast } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
 import { dateKey, parsePrice, isValidDuration, apiFormErrors } from '@/shared/lib';
 import { useProfile } from '@/features/profile/queries';
@@ -10,6 +10,8 @@ import { StudentPickerField } from '@/features/students/StudentPickerField';
 import { useCreateLesson } from '@/features/lessons/queries';
 import { ConflictList } from '@/features/lessons/ConflictList';
 import styles from './LessonFormPage.module.scss';
+
+const MAPPED_FIELDS = ['StudentId', 'StartUtc', 'DurationMinutes', 'Price', 'Topic', 'Description'];
 
 /** One-off lesson. `?studentId=` (from the student page) locks the student. */
 export function LessonFormPage() {
@@ -66,17 +68,20 @@ export function LessonFormPage() {
     text: m.lesson_form_save(),
     onClick: save,
     enabled: valid && !createLesson.isPending,
+    loading: createLesson.isPending,
   });
 
   // ---- error breakdown of the last save attempt ----
-  const { conflicts, fieldError, unmappedMessages, genericError } = apiFormErrors(createLesson.error, [
-    'StudentId',
-    'StartUtc',
-    'DurationMinutes',
-    'Price',
-    'Topic',
-    'Description',
-  ]);
+  const { conflicts, fieldError } = apiFormErrors(createLesson.error, MAPPED_FIELDS);
+
+  // Generic/unmapped errors aren't tied to one field — surface them as a toast
+  // instead of inline text. Field errors stay wired to TextField's border.
+  useEffect(() => {
+    if (!createLesson.error) return;
+    const { unmappedMessages, genericError } = apiFormErrors(createLesson.error, MAPPED_FIELDS);
+    if (unmappedMessages.length > 0) showToast(unmappedMessages.join(' '));
+    else if (genericError) showToast(genericError);
+  }, [createLesson.error]);
 
   return (
     <div className={styles['form']}>
@@ -139,12 +144,6 @@ export function LessonFormPage() {
         />
 
         {conflicts && <ConflictList conflicts={conflicts} />}
-        {unmappedMessages.map((message, i) => (
-          <div key={i} className={styles['form__error']}>
-            {message}
-          </div>
-        ))}
-        {genericError && <div className={styles['form__error']}>{genericError}</div>}
       </div>
     </div>
   );

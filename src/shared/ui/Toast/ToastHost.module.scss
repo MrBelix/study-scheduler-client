@@ -1,0 +1,31 @@
+@use '../tokens' as *;
+
+.toast {
+  position: fixed;
+  left: $page-gutter;
+  right: $page-gutter;
+  top: calc(var(--tg-content-safe-area-inset-top, 0px) + #{$space-md});
+  z-index: $z-toast;
+  margin-inline: auto;
+  max-width: 400px;
+  padding: $space-md $space-lg;
+  border-radius: $radius-md;
+  background: $color-text;
+  color: $color-bg;
+  font-size: $font-caption;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  animation: toast-in 0.18s ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

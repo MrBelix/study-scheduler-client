@@ -4,6 +4,8 @@ export interface MainButtonConfig {
   text: string;
   onClick: () => void;
   enabled: boolean;
+  /** Shows a spinner in place of the label while a mutation is in flight. */
+  loading: boolean;
 }
 
 export interface MainButtonContextValue {
@@ -23,6 +25,8 @@ interface UseMainButtonParams {
   text: string;
   onClick: () => void;
   enabled?: boolean;
+  /** Shows a spinner in place of the label — wire in a mutation's `isPending`. */
+  loading?: boolean;
 }
 
 /**
@@ -30,7 +34,7 @@ interface UseMainButtonParams {
  * button above the tab bar (not Telegram's native MainButton, which sits below
  * the tab bar). Clears when the screen unmounts.
  */
-export function useMainButton({ text, onClick, enabled = true }: UseMainButtonParams) {
+export function useMainButton({ text, onClick, enabled = true, loading = false }: UseMainButtonParams) {
   const { setConfig } = useMainButtonContext();
   const onClickRef = useRef(onClick);
 
@@ -39,7 +43,7 @@ export function useMainButton({ text, onClick, enabled = true }: UseMainButtonPa
   });
 
   useEffect(() => {
-    setConfig({ text, enabled, onClick: () => onClickRef.current() });
+    setConfig({ text, enabled, loading, onClick: () => onClickRef.current() });
     return () => setConfig(null);
-  }, [text, enabled, setConfig]);
+  }, [text, enabled, loading, setConfig]);
 }

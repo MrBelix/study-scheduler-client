@@ -9,13 +9,6 @@
     gap: $space-lg;
   }
 
-  &__error {
-    text-align: center;
-    font-size: $font-caption;
-    line-height: 1.4;
-    color: $color-error;
-  }
-
   &__hint {
     font-size: $font-caption;
     line-height: 1.4;

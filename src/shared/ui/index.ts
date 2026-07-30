@@ -14,3 +14,5 @@ export { TextField } from './Inputs/TextField/TextField';
 export { Icon } from './Icon/Icon';
 export type { IconName } from './Icon/icons';
 export { statusColor, avatarGradient, avatarInitials } from './tokens/colors';
+export { ToastHost } from './Toast/ToastHost';
+export { showToast } from './Toast/toast';

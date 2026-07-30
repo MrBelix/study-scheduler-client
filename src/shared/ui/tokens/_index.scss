@@ -45,6 +45,8 @@ $separator-h: 1px;
 // Z-index
 $z-nav: 20;
 $z-tabbar: 10;
+$z-progress: 30; // above the bottom-sheet backdrop ($z-nav + 1) — always on top
+$z-toast: 40; // above the progress bar — always the topmost surface
 
 // Color aliases → host-themed CSS custom properties.
 // The `--ds-*` contract is defined and mapped by the host app.

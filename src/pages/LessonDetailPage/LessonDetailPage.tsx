@@ -1,13 +1,15 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Avatar, Badge, Placeholder, Skeleton } from '@/shared/ui';
+import { Section, Cell, Avatar, Badge, Placeholder, Skeleton, BottomSheet, TextField, useMainButton, showToast } from '@/shared/ui';
 import { useBackButton, haptic, notify } from '@/shared/tg';
 import { ApiError } from '@/shared/api';
 import type { Lesson, LessonStatus } from '@/shared/api';
 import { useStudents } from '@/features/students/queries';
-import { money, formatDate, fmtTime, fmtDayHeader } from '@/shared/lib';
+import { money, formatDate, fmtTime, fmtDayHeader, dateKey, apiFormErrors } from '@/shared/lib';
 import { useLesson, useLessons, useLessonSeries, useUpdateLesson, useCancelSeries } from '@/features/lessons/queries';
 import type { LessonTarget } from '@/features/lessons/queries';
+import { ConflictList } from '@/features/lessons/ConflictList';
 import { weekdaysLabel, isSeriesCancellable } from '@/features/lessons/model';
 import styles from './LessonDetailPage.module.scss';
 
@@ -42,6 +44,70 @@ export function OccurrenceDetailPage() {
   return <LessonDetailView lesson={lesson} isPending={isPending} isError={isError} />;
 }
 
+/**
+ * "Move this lesson" — reschedules just this occurrence's date/time. Its own
+ * component so `useMainButton` registers Save only while the sheet is open
+ * (unregistered again on close/unmount).
+ */
+function RescheduleSheet({
+  lesson,
+  target,
+  onClose,
+}: {
+  lesson: Lesson;
+  target: LessonTarget;
+  onClose: () => void;
+}) {
+  const start = new Date(lesson.startUtc);
+  const [date, setDate] = useState(dateKey(start));
+  const [time, setTime] = useState(`${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`);
+
+  const updateLesson = useUpdateLesson();
+  const valid = date !== '' && time !== '';
+
+  const save = () => {
+    if (!valid || updateLesson.isPending) return;
+    updateLesson.mutate(
+      { target, body: { startUtc: new Date(`${date}T${time}`).toISOString() } },
+      { onSuccess: onClose },
+    );
+  };
+
+  useMainButton({
+    text: m.form_save(),
+    onClick: save,
+    enabled: valid && !updateLesson.isPending,
+    loading: updateLesson.isPending,
+  });
+
+  const { conflicts, fieldError } = apiFormErrors(updateLesson.error, ['StartUtc']);
+
+  // Generic errors aren't tied to the date field — surface them as a toast
+  // instead of inline text.
+  useEffect(() => {
+    if (!updateLesson.error) return;
+    const { genericError } = apiFormErrors(updateLesson.error, ['StartUtc']);
+    if (genericError) showToast(genericError);
+  }, [updateLesson.error]);
+
+  return (
+    <BottomSheet title={m.lesson_reschedule()} onClose={onClose}>
+      <div className={styles['lesson__reschedule-fields']}>
+        <TextField
+          header={m.lesson_form_date()}
+          value={date}
+          onChange={setDate}
+          type="date"
+          error={fieldError('StartUtc')}
+          required
+        />
+        <TextField header={m.lesson_form_time()} value={time} onChange={setTime} type="time" required />
+        {conflicts && <ConflictList conflicts={conflicts} />}
+      </div>
+    </BottomSheet>
+  );
+}
+
 function LessonDetailView({
   lesson,
   isPending,
@@ -52,13 +118,26 @@ function LessonDetailView({
   isError: boolean;
 }) {
   const navigate = useNavigate();
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
 
   const { data: students } = useStudents();
   const { data: series } = useLessonSeries(lesson?.seriesId);
   const updateLesson = useUpdateLesson();
   const cancelSeries = useCancelSeries();
 
-  useBackButton(() => navigate(-1));
+  // Back closes the reschedule sheet first, then leaves the page.
+  useBackButton(() => {
+    if (rescheduleOpen) setRescheduleOpen(false);
+    else navigate(-1);
+  });
+
+  // Failed patches/cancellations aren't tied to one field — surface as a toast.
+  useEffect(() => {
+    if (updateLesson.isError) showToast(m.form_error_save());
+  }, [updateLesson.isError]);
+  useEffect(() => {
+    if (cancelSeries.isError) showToast(m.form_error_save());
+  }, [cancelSeries.isError]);
 
   if (isPending) {
     return (
@@ -187,6 +266,13 @@ function LessonDetailView({
       {lesson.status === 'Scheduled' && (
         <Section>
           <Cell
+            title={<span className={styles['lesson__accent']}>{m.lesson_reschedule()}</span>}
+            onClick={() => {
+              if (mutating) return;
+              setRescheduleOpen(true);
+            }}
+          />
+          <Cell
             title={<span className={styles['lesson__accent']}>{m.lesson_mark_completed()}</span>}
             onClick={() => patch({ status: 'Completed' })}
           />
@@ -197,8 +283,8 @@ function LessonDetailView({
         </Section>
       )}
 
-      {(updateLesson.isError || cancelSeries.isError) && (
-        <div className={styles['lesson__error']}>{m.form_error_save()}</div>
+      {rescheduleOpen && (
+        <RescheduleSheet lesson={lesson} target={target} onClose={() => setRescheduleOpen(false)} />
       )}
     </div>
   );

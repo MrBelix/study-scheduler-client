@@ -26,10 +26,10 @@ export function MainButtonBar() {
       <button
         type="button"
         className={styles['main-button']}
-        disabled={!config.enabled}
+        disabled={!config.enabled || config.loading}
         onClick={handleClick}
       >
-        {config.text}
+        {config.loading ? <span className={styles['main-button__spinner']} aria-hidden="true" /> : config.text}
       </button>
     </div>
   );

@@ -157,3 +157,21 @@ export interface CancelSeriesResponse {
   series: LessonSeries;
   removedLessons: Lesson[];
 }
+
+/**
+ * Tutor-scoped accounting totals for a half-open range — `GET /reports/summary?from&to`.
+ * `upcomingCount` — future, still Scheduled. `unclosedCount` — past, still
+ * Scheduled (nobody marked it done/cancelled). `outstandingIncome` is derived
+ * as `plannedIncome - actualIncome` on the server.
+ */
+export interface ReportSummary {
+  totalCount: number;
+  completedCount: number;
+  cancelledCount: number;
+  upcomingCount: number;
+  unclosedCount: number;
+  paidCount: number;
+  plannedIncome: number;
+  actualIncome: number;
+  outstandingIncome: number;
+}

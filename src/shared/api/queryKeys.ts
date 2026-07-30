@@ -21,3 +21,8 @@ export const profileKeys = {
   all: ['profile'] as const,
   timezones: ['profile', 'timezones'] as const,
 };
+
+export const reportKeys = {
+  all: ['reports'] as const,
+  summary: (fromIso: string, toIso: string) => ['reports', 'summary', fromIso, toIso] as const,
+};

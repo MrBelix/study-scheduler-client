@@ -1,7 +1,7 @@
 // Public API of the data layer.
 export { apiRequest } from './client';
 export { ApiError } from './errors';
-export { lessonKeys, studentKeys, profileKeys } from './queryKeys';
+export { lessonKeys, studentKeys, profileKeys, reportKeys } from './queryKeys';
 export type { AuthErrorCode, LessonConflict } from './errors';
 export type {
   Student,
@@ -18,4 +18,5 @@ export type {
   CreateLessonSeriesRequest,
   UpdateLessonSeriesRequest,
   CancelSeriesResponse,
+  ReportSummary,
 } from './types';

@@ -368,6 +368,34 @@ export function installMockApi() {
       return json(lesson);
     }
 
+    // --- reports ---
+    if (path === '/reports/summary') {
+      const from = new Date(query.get('from') ?? '');
+      const to = new Date(query.get('to') ?? '');
+      if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime()) || to <= from)
+        return validation('from', 'Invalid range.');
+      const fromIso = from.toISOString();
+      const toIso = to.toISOString();
+      const nowIso = new Date().toISOString();
+      const entries = [...state.lessons, ...virtualSlots(from, to)].filter(
+        (l) => l.startUtc < toIso && fromIso < l.endUtc,
+      );
+      const nonCancelled = entries.filter((l) => l.status !== 'Cancelled');
+      const plannedIncome = nonCancelled.reduce((sum, l) => sum + l.price, 0);
+      const actualIncome = nonCancelled.filter((l) => l.isPaid).reduce((sum, l) => sum + l.price, 0);
+      return json({
+        totalCount: entries.length,
+        completedCount: entries.filter((l) => l.status === 'Completed').length,
+        cancelledCount: entries.filter((l) => l.status === 'Cancelled').length,
+        upcomingCount: entries.filter((l) => l.status === 'Scheduled' && l.startUtc >= nowIso).length,
+        unclosedCount: entries.filter((l) => l.status === 'Scheduled' && l.startUtc < nowIso).length,
+        paidCount: entries.filter((l) => l.isPaid).length,
+        plannedIncome,
+        actualIncome,
+        outstandingIncome: plannedIncome - actualIncome,
+      });
+    }
+
     return notFound();
   };
 

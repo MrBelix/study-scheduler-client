@@ -1,0 +1,21 @@
+@use '../../../app/styles/variables' as *;
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: $space-md $space-lg;
+  background: $color-bg;
+  border-radius: $radius-md;
+
+  &__label {
+    font-size: $font-caption;
+    color: $color-subtitle;
+  }
+
+  &__value {
+    font-size: $font-balance;
+    font-weight: 700;
+    color: $color-text;
+  }
+}

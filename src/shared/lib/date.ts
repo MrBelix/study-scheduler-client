@@ -25,6 +25,22 @@ export function addDays(d: Date, days: number): Date {
   return result;
 }
 
+/** 1st of the month containing `d` (local time), 00:00. */
+export function startOfMonth(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
+
+/** 1st day of the calendar quarter containing `d` (local time), 00:00. */
+export function startOfQuarter(d: Date): Date {
+  return new Date(d.getFullYear(), Math.floor(d.getMonth() / 3) * 3, 1);
+}
+
+export function addMonths(d: Date, months: number): Date {
+  const result = new Date(d);
+  result.setMonth(result.getMonth() + months);
+  return result;
+}
+
 /** Local calendar-day key, e.g. "2026-08-03". */
 export function dateKey(d: Date): string {
   const mm = String(d.getMonth() + 1).padStart(2, '0');

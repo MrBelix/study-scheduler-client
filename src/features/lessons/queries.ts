@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateLessonRequest, CreateLessonSeriesRequest, UpdateLessonRequest, UpdateLessonSeriesRequest } from '@/shared/api';
-import { lessonKeys } from '@/shared/api';
+import { lessonKeys, reportKeys } from '@/shared/api';
 import { getLessons, getLesson, createLesson, updateLesson, updateOccurrence, getSeriesList, getSeries, createSeries, updateSeries, cancelSeries } from './api';
 
 /** Lessons overlapping [from, to). Fetching is what materializes series lessons. */
@@ -39,7 +39,10 @@ export function useCreateLesson() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: CreateLessonRequest) => createLesson(body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: lessonKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: lessonKeys.all });
+      queryClient.invalidateQueries({ queryKey: reportKeys.all });
+    },
   });
 }
 
@@ -54,7 +57,10 @@ export function useUpdateLesson() {
       'lessonId' in target
         ? updateLesson(target.lessonId, body)
         : updateOccurrence(target.seriesId, target.occurrenceDate, body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: lessonKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: lessonKeys.all });
+      queryClient.invalidateQueries({ queryKey: reportKeys.all });
+    },
   });
 }
 
@@ -62,7 +68,10 @@ export function useCreateSeries() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: CreateLessonSeriesRequest) => createSeries(body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: lessonKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: lessonKeys.all });
+      queryClient.invalidateQueries({ queryKey: reportKeys.all });
+    },
   });
 }
 
@@ -70,7 +79,10 @@ export function useUpdateSeries() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, body }: { id: string; body: UpdateLessonSeriesRequest }) => updateSeries(id, body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: lessonKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: lessonKeys.all });
+      queryClient.invalidateQueries({ queryKey: reportKeys.all });
+    },
   });
 }
 
@@ -78,6 +90,9 @@ export function useCancelSeries() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => cancelSeries(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: lessonKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: lessonKeys.all });
+      queryClient.invalidateQueries({ queryKey: reportKeys.all });
+    },
   });
 }

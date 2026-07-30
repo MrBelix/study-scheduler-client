@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './BottomSheet.module.scss';
 
 interface BottomSheetProps {
@@ -15,6 +16,11 @@ interface BottomSheetProps {
  * conditionally (`{open && <BottomSheet …>}`). While mounted it locks body
  * scroll, moves focus into the panel (restored on close) and closes on
  * Escape or a backdrop tap.
+ *
+ * Rendered via a portal to `document.body` so its `position: fixed` backdrop
+ * is never trapped inside a scrolling ancestor (iOS/WebKit clips `fixed`
+ * descendants of elements with `-webkit-overflow-scrolling: touch` to that
+ * ancestor's box instead of the real viewport).
  */
 export function BottomSheet({ title, onClose, fullHeight, children }: BottomSheetProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -40,7 +46,7 @@ export function BottomSheet({ title, onClose, fullHeight, children }: BottomShee
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div className={styles['bottom-sheet__backdrop']} onClick={onClose}>
       <div
         ref={sheetRef}
@@ -60,6 +66,7 @@ export function BottomSheet({ title, onClose, fullHeight, children }: BottomShee
         )}
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

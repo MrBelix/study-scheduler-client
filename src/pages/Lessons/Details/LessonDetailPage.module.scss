@@ -1,0 +1,7 @@
+@use '../../../app/styles/variables' as *;
+
+.lesson {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}

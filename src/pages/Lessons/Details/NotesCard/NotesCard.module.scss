@@ -1,0 +1,63 @@
+@use '../../../../app/styles/variables' as *;
+
+.body {
+  padding: $space-md $space-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+}
+
+.topicRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  color: $color-text;
+}
+
+.topicIcon {
+  flex-shrink: 0;
+  color: $color-hint;
+}
+
+.topicText {
+  flex: 1;
+  min-width: 0;
+  font-size: $type-body-size;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.editIcon {
+  flex-shrink: 0;
+  color: $color-hint;
+}
+
+.sep {
+  height: $separator-h;
+  background: $color-sep;
+}
+
+.notes {
+  width: 100%;
+  text-align: left;
+}
+
+.notesText {
+  display: block;
+  font-size: $font-body;
+  line-height: 1.5;
+  color: $color-text;
+  text-wrap: pretty;
+}
+
+.placeholder {
+  display: block;
+  font-size: $font-body;
+  line-height: 1.5;
+  color: $color-hint;
+  text-wrap: pretty;
+}

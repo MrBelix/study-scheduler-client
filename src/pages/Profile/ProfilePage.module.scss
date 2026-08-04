@@ -1,0 +1,12 @@
+@use '../../app/styles/variables' as *;
+
+.profile {
+  padding: $page-pad-top 0 $page-pad-bottom;
+
+  &__sheet-list {
+    flex: 1;
+    overflow-y: auto;
+    background: $color-bg;
+    border-radius: $radius-md;
+  }
+}

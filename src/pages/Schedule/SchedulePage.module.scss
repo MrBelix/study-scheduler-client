@@ -1,0 +1,75 @@
+@use '../../app/styles/variables' as *;
+
+.schedule {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-bottom: $space-sm;
+}
+
+.month {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+}
+
+.monthLabel {
+  font-size: $font-balance;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.todayChip {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  flex-shrink: 0;
+  background: $color-accent-soft;
+  color: $color-accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.daySection {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+}
+
+.dayHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $space-sm;
+  padding: 0 4px;
+}
+
+.dayTitle {
+  font-size: $font-body;
+  font-weight: 700;
+}
+
+.dayStats {
+  font-size: $type-caption-size;
+  color: $color-hint;
+  white-space: nowrap;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

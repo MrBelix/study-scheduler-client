@@ -3,19 +3,19 @@
 .segmented {
   position: relative;
   display: flex;
-  height: 34px;
-  padding: 2px;
-  border-radius: 9px;
-  background: $color-secondary-fill;
+  height: 42px;
+  gap: 4px;
+  padding: 3px;
+  border-radius: $radius-chip;
+  background: $color-card;
 
   &__pill {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    bottom: 2px;
-    border-radius: 7px;
-    background: $color-bg;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    top: 3px;
+    left: 3px;
+    bottom: 3px;
+    border-radius: 10px;
+    background: $color-accent;
     transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -27,14 +27,15 @@
     align-items: center;
     justify-content: center;
     padding: 0 $space-sm;
-    color: $color-text;
-    font-size: $font-body;
-    font-weight: 400;
+    color: $color-hint;
+    font-size: $type-action-size;
+    font-weight: $type-action-weight;
     white-space: nowrap;
-    transition: font-weight 0.15s ease;
+    transition: color 0.15s ease;
 
     &--active {
-      font-weight: 600;
+      color: $color-accent-text;
+      font-weight: 700;
     }
   }
 }

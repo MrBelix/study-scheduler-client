@@ -1,0 +1,7 @@
+@use '../../../../app/styles/variables' as *;
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+}

@@ -3,24 +3,25 @@ import { icons, type IconName } from './icons';
 interface IconProps {
   name: IconName;
   size?: number;
+  /** Render the FILL 1 variant (falls back to the default path if none exists). */
+  filled?: boolean;
   className?: string;
 }
 
-export function Icon({ name, size = 24, className }: IconProps) {
+/** Material Symbols Rounded glyph — 960×960 viewBox, filled with `currentColor`. */
+export function Icon({ name, size = 24, filled, className }: IconProps) {
+  const icon = icons[name];
+  const d = (filled && icon.dFill) || icon.d;
   return (
     <svg
       className={className}
       width={size}
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.9}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox="0 -960 960 960"
+      fill="currentColor"
       aria-hidden="true"
     >
-      {icons[name]}
+      <path d={d} />
     </svg>
   );
 }

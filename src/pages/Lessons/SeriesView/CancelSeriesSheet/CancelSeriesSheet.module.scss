@@ -1,0 +1,58 @@
+@use '../../../../app/styles/variables' as *;
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.hint {
+  font-size: 14px;
+  color: $color-hint;
+  text-wrap: pretty;
+}
+
+.keepRow {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: 2px 4px;
+}
+
+.keepText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.keepTitle {
+  font-size: $type-body-size;
+  color: $color-text;
+}
+
+.keepHint {
+  font-size: $type-caption-size;
+  color: $color-hint;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}

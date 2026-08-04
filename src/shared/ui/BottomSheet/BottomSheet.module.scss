@@ -1,8 +1,8 @@
 @use '../../../app/styles/variables' as *;
 
 .bottom-sheet {
-  background: $color-secondary-bg;
-  border-radius: $radius-md $radius-md 0 0;
+  background: $color-card;
+  border-radius: 24px 24px 0 0;
   padding: $space-lg $page-gutter calc(#{$space-xl} + var(--tg-content-safe-area-inset-bottom, 0px));
   max-height: 70vh;
   display: flex;
@@ -23,6 +23,15 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+  }
+
+  &__handle {
+    flex: none;
+    align-self: center;
+    width: 36px;
+    height: 5px;
+    border-radius: 3px;
+    background: color-mix(in srgb, $color-text 18%, transparent);
   }
 
   &__title {

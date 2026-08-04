@@ -1,0 +1,37 @@
+@use '../../../app/styles/variables' as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+  padding: $space-lg;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row__top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.row__name,
+.row__value {
+  font-size: $type-action-size;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.row__bar {
+  height: 7px;
+  border-radius: 4px;
+  background: $color-fill;
+}
+
+.row__fill {
+  height: 100%;
+  border-radius: 4px;
+}

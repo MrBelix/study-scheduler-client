@@ -1,0 +1,96 @@
+@use '../../../app/styles/variables' as *;
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  background: $color-card;
+  border-radius: $radius-card;
+  padding: 14px $space-lg;
+  text-align: left;
+  transition: opacity 0.15s ease;
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.timeCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 50px;
+  flex-shrink: 0;
+}
+
+.time {
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: $color-text;
+}
+
+.time--muted {
+  color: $color-hint;
+}
+
+.time--strike {
+  text-decoration: line-through;
+}
+
+.duration {
+  font-size: 11px;
+  color: $color-hint;
+}
+
+.sep {
+  align-self: stretch;
+  width: 1px;
+  flex-shrink: 0;
+  background: $color-sep;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+}
+
+.name {
+  font-size: $type-body-size;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: $type-caption-size;
+  color: $color-hint;
+}
+
+.status--ok {
+  color: $color-ok;
+}
+
+.price {
+  flex-shrink: 0;
+  font-size: $type-action-size;
+  font-weight: 600;
+}
+
+.price--muted {
+  color: $color-hint;
+}

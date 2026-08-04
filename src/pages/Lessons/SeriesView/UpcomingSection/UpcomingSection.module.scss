@@ -1,0 +1,9 @@
+@use '../../../../app/styles/variables' as *;
+
+.title {
+  font-weight: 600;
+}
+
+.hint {
+  color: $color-hint;
+}

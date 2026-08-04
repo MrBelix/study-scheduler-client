@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ApiError, lessonKeys, profileKeys } from '@/shared/api';
+import { ApiError, lessonKeys, profileKeys, reportKeys, studentKeys } from '@/shared/api';
 import type { UpdateProfileRequest } from '@/shared/api';
 import { getProfile, putProfile, getTimeZones } from './api';
 
@@ -31,8 +31,11 @@ export function useSaveProfile() {
     mutationFn: (body: UpdateProfileRequest) => putProfile(body),
     onSuccess: (profile) => {
       queryClient.setQueryData(profileKeys.all, profile);
-      // Occurrence times are materialized in the profile time zone — refetch.
+      // Occurrence times are materialized in the profile time zone — refetch. A time zone change also
+      // shifts students' nextLesson and the reports dashboard's local-date windows/buckets.
       queryClient.invalidateQueries({ queryKey: lessonKeys.all });
+      queryClient.invalidateQueries({ queryKey: studentKeys.all });
+      queryClient.invalidateQueries({ queryKey: reportKeys.all });
     },
   });
 }

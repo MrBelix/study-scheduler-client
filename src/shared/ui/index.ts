@@ -1,9 +1,8 @@
 // Public API of the UI kit. Import primitives from here: `@/shared/ui`.
 export { useMainButton } from './MainButton/useMainButton';
-export { Section } from './Section/Section';
+export { Section, SectionLabel } from './Section/Section';
 export { Cell } from './Cell/Cell';
 export { Avatar } from './Avatar/Avatar';
-export { Badge } from './Badge/Badge';
 export { SegmentedControl } from './SegmentedControl/SegmentedControl';
 export type { SegmentItem } from './SegmentedControl/SegmentedControl';
 export { Placeholder } from './Placeholder/Placeholder';
@@ -13,7 +12,15 @@ export { BottomSheet } from './BottomSheet/BottomSheet';
 export { SearchInput } from './Inputs/SearchInput/SearchInput';
 export { TextField } from './Inputs/TextField/TextField';
 export { Icon } from './Icon/Icon';
-export type { IconName } from './Icon/icons';
-export { statusColor, avatarGradient, avatarInitials } from './tokens/colors';
+export type { IconName, IconDef } from './Icon/icons';
+export { Button } from './Button/Button';
+export type { ButtonVariant } from './Button/Button';
+export { StatusPill } from './StatusPill/StatusPill';
+export type { StatusPillTone } from './StatusPill/StatusPill';
+export { EmptyState } from './EmptyState/EmptyState';
+export { Tile } from './Tile/Tile';
+export { Switch } from './Switch/Switch';
+export { FieldError } from './FieldError/FieldError';
+export { avatarColor, avatarInitials } from './tokens/colors';
 export { ToastHost } from './Toast/ToastHost';
 export { showToast } from './Toast/toast';

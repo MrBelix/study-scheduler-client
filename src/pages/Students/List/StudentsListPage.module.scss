@@ -1,0 +1,38 @@
+@use '../../../app/styles/variables' as *;
+
+.students-page {
+  padding: $page-pad-top 0 $page-pad-bottom;
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $space-sm;
+    padding: 0 $space-xs;
+    margin-bottom: $space-md;
+  }
+
+  &__title {
+    font-size: $font-balance;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  &__hint {
+    font-size: $font-footnote;
+    color: $color-hint;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+
+    // Section carries its own $gap-group bottom margin for the generic
+    // "space before the next block" case — here the footer row IS that next
+    // block, at the tighter 8px above, so it's zeroed.
+    > :first-child {
+      margin-bottom: 0;
+    }
+  }
+}

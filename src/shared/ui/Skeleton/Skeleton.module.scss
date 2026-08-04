@@ -4,16 +4,16 @@
   display: block;
   flex-shrink: 0;
   border-radius: 6px;
-  background: $color-secondary-fill;
+  background: $color-fill;
   animation: skeleton-pulse 1.4s ease-in-out infinite;
 }
 
 @keyframes skeleton-pulse {
   0%,
   100% {
-    opacity: 1;
+    opacity: 0.55;
   }
   50% {
-    opacity: 0.45;
+    opacity: 1;
   }
 }

@@ -1,0 +1,6 @@
+@use '../../../../app/styles/variables' as *;
+
+.price {
+  font-weight: 600;
+  color: $color-text;
+}

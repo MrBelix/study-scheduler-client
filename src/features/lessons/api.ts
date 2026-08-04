@@ -2,45 +2,54 @@ import { apiRequest } from '@/shared/api';
 import type {
   Lesson,
   CreateLessonRequest,
+  CreateLessonResponse,
   UpdateLessonRequest,
+  SettleLessonsRequest,
+  SettleLessonsResponse,
   LessonSeries,
-  CreateLessonSeriesRequest,
   UpdateLessonSeriesRequest,
+  UpdateSeriesResponse,
   CancelSeriesResponse,
 } from '@/shared/api';
 
 /**
- * `GET /lessons?from&to` — the schedule overlapping the range: physical
- * lessons (cancelled included) merged with virtual series slots expanded on
- * the fly. Read-only on the server.
+ * `GET /lessons?from&to&studentId` — the schedule overlapping the range: every
+ * occurrence is already a physical row (series lessons are generated eagerly,
+ * not expanded on the fly), cancelled ones included. `studentId` narrows it to
+ * one student's schedule. Read-only on the server.
  */
-export const getLessons = (fromIso: string, toIso: string, signal?: AbortSignal) => {
+export const getLessons = (fromIso: string, toIso: string, studentId?: string, signal?: AbortSignal) => {
   const params = new URLSearchParams({ from: fromIso, to: toIso });
+  if (studentId) params.set('studentId', studentId);
   return apiRequest<Lesson[]>(`/lessons?${params}`, { signal });
 };
 
-/** `GET /lessons/{id}`. */
-export const getLesson = (id: string, signal?: AbortSignal) =>
-  apiRequest<Lesson>(`/lessons/${id}`, { signal });
+/** `GET /lessons/{id}` — the lesson row by its Guid id (see `Lesson.id`). */
+export const getLesson = (id: string, signal?: AbortSignal) => apiRequest<Lesson>(`/lessons/${id}`, { signal });
 
-/** `POST /lessons` — one-off lesson. 409 → ApiError.conflicts. */
+/**
+ * `POST /lessons` — the one create route: a one-off lesson without `repeat`,
+ * a weekly series with it. Returns exactly one of `lesson`/`series`. 409 →
+ * ApiError.conflicts; needs a saved profile.
+ */
 export const createLesson = (body: CreateLessonRequest) =>
-  apiRequest<Lesson>('/lessons', { method: 'POST', body: JSON.stringify(body) });
+  apiRequest<CreateLessonResponse>('/lessons', { method: 'POST', body: JSON.stringify(body) });
 
-/** `PATCH /lessons/{id}` — partial update of a physical lesson; cancelling is `{ status: "Cancelled" }`. */
+/**
+ * `PATCH /lessons/{id}` — partial update of any lesson, addressed by its Guid id; cancelling is
+ * `{ status: "Cancelled" }`.
+ */
 export const updateLesson = (id: string, body: UpdateLessonRequest) =>
   apiRequest<Lesson>(`/lessons/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
 
 /**
- * `PATCH /lessons/series/{seriesId}/occurrences/{occurrenceDate}` — mutates one
- * slot of a series by its original date, materializing it on demand. The body
- * is the same partial update as `PATCH /lessons/{id}`.
+ * `POST /lessons/settle` — marks unpaid Completed lessons paid in bulk (the student debts page's
+ * confirm action). Distinct ids only (duplicates deduped); an already-paid id is an idempotent
+ * no-op still counted in the response. All-or-nothing: a 400 (unknown/non-Completed id) saves
+ * nothing.
  */
-export const updateOccurrence = (seriesId: string, occurrenceDate: string, body: UpdateLessonRequest) =>
-  apiRequest<Lesson>(`/lessons/series/${seriesId}/occurrences/${occurrenceDate}`, {
-    method: 'PATCH',
-    body: JSON.stringify(body),
-  });
+export const settleLessons = (body: SettleLessonsRequest) =>
+  apiRequest<SettleLessonsResponse>('/lessons/settle', { method: 'POST', body: JSON.stringify(body) });
 
 /** `GET /lessons/series` — all series of the tutor, inactive included. */
 export const getSeriesList = (signal?: AbortSignal) =>
@@ -50,18 +59,22 @@ export const getSeriesList = (signal?: AbortSignal) =>
 export const getSeries = (id: string, signal?: AbortSignal) =>
   apiRequest<LessonSeries>(`/lessons/series/${id}`, { signal });
 
-/** `POST /lessons/series`. 409 → ApiError.conflicts; needs a saved profile. */
-export const createSeries = (body: CreateLessonSeriesRequest) =>
-  apiRequest<LessonSeries>('/lessons/series', { method: 'POST', body: JSON.stringify(body) });
-
-/** `PATCH /lessons/series/{id}` — metadata only (title, price); days, time and end date are immutable here. */
+/**
+ * `PATCH /lessons/series/{id}` — a full edit: title, price, the weekly
+ * schedule (weekdays/time/duration) and the end date. Returns the updated
+ * series plus any future rows the change swept away.
+ */
 export const updateSeries = (id: string, body: UpdateLessonSeriesRequest) =>
-  apiRequest<LessonSeries>(`/lessons/series/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
+  apiRequest<UpdateSeriesResponse>(`/lessons/series/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
 
 /**
- * `POST /lessons/series/{id}/cancel` — ends the series as of today: future
- * virtual slots stop expanding, past occurrences and physical lessons stay.
- * Returns the ended series plus the future materialized overrides that were removed.
+ * `POST /lessons/series/{id}/cancel` — ends the series as of today: no more rows
+ * generate past it, while past occurrences stay exactly as they are.
+ * `keepCustomized` is optional and defaults to `true` server-side when omitted.
+ * Returns the ended series plus the future rows that got swept away.
  */
-export const cancelSeries = (id: string) =>
-  apiRequest<CancelSeriesResponse>(`/lessons/series/${id}/cancel`, { method: 'POST' });
+export const cancelSeries = (id: string, keepCustomized?: boolean) =>
+  apiRequest<CancelSeriesResponse>(`/lessons/series/${id}/cancel`, {
+    method: 'POST',
+    body: keepCustomized === undefined ? undefined : JSON.stringify({ keepCustomized }),
+  });

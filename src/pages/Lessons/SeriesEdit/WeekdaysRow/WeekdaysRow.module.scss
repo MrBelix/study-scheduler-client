@@ -1,0 +1,33 @@
+@use '../../../../app/styles/variables' as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}
+
+.weekdays {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 2px 2px 0;
+}
+
+.weekday {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: $color-card;
+  color: $color-hint;
+  font-size: $type-caption-size;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--active {
+    background: $color-accent;
+    color: $color-accent-text;
+    font-weight: 700;
+  }
+}

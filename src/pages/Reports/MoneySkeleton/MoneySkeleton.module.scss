@@ -1,0 +1,21 @@
+@use '../../../app/styles/variables' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $gap-row;
+}

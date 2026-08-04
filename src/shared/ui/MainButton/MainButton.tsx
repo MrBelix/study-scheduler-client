@@ -1,5 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { haptic } from '@/shared/tg';
+import { cx } from '../../lib/cx';
+import { Icon } from '../Icon/Icon';
 import { MainButtonContext, useMainButtonContext, type MainButtonConfig } from './useMainButton';
 import styles from './MainButton.module.scss';
 
@@ -25,11 +27,16 @@ export function MainButtonBar() {
     <div className={styles['main-button-bar']}>
       <button
         type="button"
-        className={styles['main-button']}
+        className={cx(styles['main-button'], config.variant === 'tinted' && styles['main-button--tinted'])}
         disabled={!config.enabled || config.loading}
         onClick={handleClick}
       >
-        {config.loading ? <span className={styles['main-button__spinner']} aria-hidden="true" /> : config.text}
+        {config.loading ? (
+          <span className={styles['main-button__spinner']} aria-hidden="true" />
+        ) : (
+          config.icon && <Icon name={config.icon} size={22} />
+        )}
+        <span className={styles['main-button__label']}>{config.text}</span>
       </button>
     </div>
   );

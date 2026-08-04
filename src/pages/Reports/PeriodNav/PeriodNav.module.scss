@@ -1,0 +1,31 @@
+@use '../../../app/styles/variables' as *;
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-bottom: $gap-row;
+
+  &__arrow {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-icon-lg;
+    background: $color-card;
+    color: $color-accent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:disabled {
+      color: $color-hint;
+      cursor: default;
+    }
+  }
+
+  &__label {
+    font-size: $type-action-lg-size;
+    font-weight: 700;
+  }
+}

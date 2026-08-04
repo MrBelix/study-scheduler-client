@@ -1,0 +1,15 @@
+@use '../../../../app/styles/variables' as *;
+
+.add {
+  border: 1px dashed color-mix(in srgb, var(--ds-color-text) 14%, transparent);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 15px;
+  color: $color-accent;
+  font-size: $type-body-size;
+  font-weight: 600;
+  width: 100%;
+}

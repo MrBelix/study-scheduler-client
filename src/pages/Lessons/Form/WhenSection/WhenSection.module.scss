@@ -1,0 +1,149 @@
+@use '../../../../app/styles/variables' as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}
+
+.chips {
+  display: flex;
+  gap: $space-sm;
+}
+
+.chip {
+  height: $h-chip;
+  padding: 0 $space-lg;
+  border-radius: $radius-chip;
+  background: $color-card;
+  color: $color-text-soft;
+  font-size: $type-action-size;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+
+  &--active {
+    background: $color-accent;
+    color: $color-accent-text;
+    font-weight: 700;
+  }
+}
+
+.chipIcon {
+  color: $color-accent;
+
+  .chip--active & {
+    color: $color-accent-text;
+  }
+}
+
+.timeCard {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  background: $color-card;
+  border-radius: $radius-card;
+  padding: 14px $space-lg;
+}
+
+.timeCell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeLabel {
+  font-size: $type-caption-size;
+  color: $color-hint;
+}
+
+.timeInput {
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: $font-large-title;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: $color-text;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.timeValue {
+  font-size: $font-large-title;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: $color-hint;
+}
+
+.timeDivider {
+  width: 1px;
+  align-self: stretch;
+  background: $color-sep;
+}
+
+.hint {
+  font-size: $type-caption-size;
+  line-height: 1.4;
+  color: $color-hint;
+  padding: 0 $space-xs;
+}
+
+.durationChips {
+  display: flex;
+  gap: $space-sm;
+}
+
+.durationChip {
+  flex: 1;
+  height: $h-chip;
+  border-radius: $radius-chip;
+  background: $color-card;
+  color: $color-text-soft;
+  font-size: $type-action-size;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--active {
+    background: $color-accent;
+    color: $color-accent-text;
+    font-weight: 700;
+  }
+}
+
+.customDuration {
+  display: flex;
+  align-items: baseline;
+  gap: $space-sm;
+  background: $color-card;
+  border-radius: $radius-card;
+  padding: $space-md $space-lg;
+}
+
+.customDurationInput {
+  width: 60px;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: $type-body-size;
+  font-weight: 600;
+  color: $color-text;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.customDurationSuffix {
+  font-size: $type-caption-size;
+  color: $color-hint;
+}

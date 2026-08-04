@@ -1,0 +1,110 @@
+@use '../../../app/styles/variables' as *;
+
+.strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  padding: 4px $page-gutter 12px;
+  margin-left: -#{$page-gutter};
+  margin-right: -#{$page-gutter};
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  width: $size-day;
+  scroll-snap-align: center;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: $color-hint;
+}
+
+.label--today {
+  font-weight: 700;
+  color: $color-text;
+}
+
+.circle {
+  width: $size-day;
+  height: $size-day;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 17px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: $color-hint;
+  border: 2px solid color-mix(in srgb, var(--ds-color-text) 6%, transparent);
+}
+
+.circle--busy {
+  background: $color-card;
+  border-color: color-mix(in srgb, var(--ds-color-text) 13%, transparent);
+  font-weight: 600;
+  color: $color-text;
+}
+
+.circle--picked {
+  background: $color-fill;
+  border-color: color-mix(in srgb, var(--ds-color-text) 22%, transparent);
+  font-weight: 600;
+  color: $color-text;
+}
+
+.circle--today {
+  background: $color-accent;
+  border-color: transparent;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ds-color-accent) 20%, transparent);
+  color: $color-accent-text;
+  font-weight: 700;
+}
+
+.circle--done {
+  background: $color-ok-soft;
+  border-color: color-mix(in srgb, var(--ds-color-ok) 45%, transparent);
+  color: $color-ok;
+}
+
+.dotsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 11px;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.dot--ok {
+  background: $color-ok;
+}
+
+.dot--accent {
+  background: $color-accent;
+}
+
+.overflow {
+  font-size: 11px;
+  font-weight: 600;
+  color: $color-hint;
+}

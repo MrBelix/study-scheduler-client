@@ -1,0 +1,135 @@
+@use '../../../app/styles/variables' as *;
+
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(var(--tg-content-safe-area-inset-top, 0px) + #{$space-lg}) $page-gutter $space-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+}
+
+.weekdays {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.weekday {
+  width: $size-day;
+  height: 52px;
+  border-radius: $radius-icon-lg;
+  background: $color-fill;
+  color: $color-hint;
+  font-size: $type-action-size;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekday--active {
+  background: $color-accent;
+  color: $color-accent-text;
+  font-weight: 700;
+}
+
+.card {
+  background: $color-card;
+  border-radius: $radius-card;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: $space-md $space-lg;
+}
+
+.rowLabel {
+  flex: 1;
+  min-width: 0;
+  font-size: $type-body-size;
+  color: $color-text;
+}
+
+.rowInput {
+  flex-shrink: 0;
+  max-width: 60%;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: $type-body-size;
+  font-weight: 600;
+  color: $color-text;
+  text-align: right;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &::placeholder {
+    color: $color-hint;
+    font-weight: 400;
+  }
+}
+
+.rowInputNumeric {
+  flex-shrink: 0;
+  width: 40px;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: $type-body-size;
+  font-weight: 600;
+  color: $color-text;
+  text-align: right;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.rowSuffix {
+  flex-shrink: 0;
+  font-size: $type-body-size;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.divider {
+  height: $separator-h;
+  margin-left: $space-lg;
+  background: $color-sep;
+  transform: scaleY(0.5);
+  transform-origin: top;
+}
+
+.hint {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-sm;
+  background: $color-ok-soft;
+  border-radius: $radius-card;
+  padding: $space-md;
+}
+
+.hintIcon {
+  flex-shrink: 0;
+  color: $color-ok;
+}
+
+.hintText {
+  font-size: $type-caption-size;
+  line-height: 1.45;
+  color: $color-text-soft;
+}

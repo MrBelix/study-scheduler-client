@@ -1,0 +1,21 @@
+@use '../../../app/styles/variables' as *;
+
+.bar {
+  display: flex;
+  gap: 6px;
+  padding: 4px 0 $space-xl;
+}
+
+.segment {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: $color-fill;
+}
+
+.segment--active {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: $color-accent;
+}

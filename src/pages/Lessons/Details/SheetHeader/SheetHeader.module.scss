@@ -1,0 +1,21 @@
+@use '../../../../app/styles/variables' as *;
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.hint {
+  font-size: 14px;
+  color: $color-hint;
+  text-wrap: pretty;
+}

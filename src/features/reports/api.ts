@@ -1,11 +1,14 @@
 import { apiRequest } from '@/shared/api';
-import type { ReportSummary } from '@/shared/api';
+import type { Dashboard, DashboardPeriodKind } from '@/shared/api';
 
 /**
- * `GET /reports/summary?from&to` — tutor-scoped accounting totals for the
- * half-open range (max 366 days, same validation as `GET /lessons`).
+ * `GET /reports/dashboard?period&anchor` — the whole Money screen payload for one reporting
+ * window: income (received/expected/previous), the all-time debt ledger, lesson counts, weekly
+ * load, chart buckets and per-student income. `anchor` (`yyyy-MM-dd`) is any date inside the
+ * wanted window — omitted, the server resolves "today" in the tutor's own time zone.
  */
-export const getReportSummary = (fromIso: string, toIso: string, signal?: AbortSignal) => {
-  const params = new URLSearchParams({ from: fromIso, to: toIso });
-  return apiRequest<ReportSummary>(`/reports/summary?${params}`, { signal });
+export const getDashboard = (period: DashboardPeriodKind, anchor?: string, signal?: AbortSignal) => {
+  const params = new URLSearchParams({ period });
+  if (anchor) params.set('anchor', anchor);
+  return apiRequest<Dashboard>(`/reports/dashboard?${params}`, { signal });
 };

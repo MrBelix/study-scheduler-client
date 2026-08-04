@@ -1,0 +1,16 @@
+@use '../../../app/styles/variables' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-group;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.profileWarning {
+  font-size: $type-caption-size;
+  line-height: 1.4;
+  color: $color-danger;
+  text-align: center;
+  padding: 0 $space-sm;
+}

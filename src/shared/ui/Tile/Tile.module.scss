@@ -1,0 +1,72 @@
+@use '../../../app/styles/variables' as *;
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &--muted {
+    width: 34px;
+    height: 34px;
+    border-radius: $radius-icon-lg;
+    background: $color-fill;
+    color: $color-text-soft;
+  }
+
+  &--accent {
+    width: 30px;
+    height: 30px;
+    border-radius: $radius-icon-sm;
+    background: $color-accent;
+    color: #fff;
+  }
+
+  &--danger {
+    width: 30px;
+    height: 30px;
+    border-radius: $radius-icon-sm;
+    background: $color-danger;
+    color: #fff;
+  }
+
+  &--accent-soft {
+    width: 34px;
+    height: 34px;
+    border-radius: $radius-icon-lg;
+    background: $color-accent-soft;
+    color: $color-accent;
+  }
+
+  &--danger-soft {
+    width: 34px;
+    height: 34px;
+    border-radius: $radius-icon-lg;
+    background: $color-danger-soft;
+    color: $color-danger;
+  }
+
+  &--purple {
+    width: 30px;
+    height: 30px;
+    border-radius: $radius-icon-sm;
+    background: $color-purple;
+    color: #fff;
+  }
+
+  &--ok {
+    width: 30px;
+    height: 30px;
+    border-radius: $radius-icon-sm;
+    background: $color-ok;
+    color: #08301f;
+  }
+
+  &--neutral {
+    width: 30px;
+    height: 30px;
+    border-radius: $radius-icon-sm;
+    background: $color-fill;
+    color: $color-text-soft;
+  }
+}

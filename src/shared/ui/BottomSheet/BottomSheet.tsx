@@ -59,6 +59,7 @@ export function BottomSheet({ title, onClose, fullHeight, children }: BottomShee
         }
         onClick={(e) => e.stopPropagation()}
       >
+        <div className={styles['bottom-sheet__handle']} aria-hidden="true" />
         {title && (
           <div id={titleId} className={styles['bottom-sheet__title']}>
             {title}

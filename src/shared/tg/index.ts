@@ -1,20 +1,6 @@
 import { retrieveRawInitData, initData as initDataSdk } from '@tma.js/sdk-react';
 
-export {
-  useSignal,
-  useLaunchParams,
-  useRawInitData,
-} from '@tma.js/sdk-react';
-
-export {
-  backButton,
-  hapticFeedback,
-  initData,
-  miniApp,
-  themeParams,
-  viewport,
-  openTelegramLink,
-} from '@tma.js/sdk-react';
+export { openTelegramLink } from '@tma.js/sdk-react';
 
 export { useBackButton } from './useBackButton';
 export { haptic } from './haptics';

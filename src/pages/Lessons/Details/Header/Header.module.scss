@@ -1,0 +1,23 @@
+@use '../../../../app/styles/variables' as *;
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-sm;
+  padding: $space-xs 0 $space-lg;
+  text-align: center;
+}
+
+.time {
+  font-size: $type-hero-size;
+  font-weight: $type-hero-weight;
+  letter-spacing: $type-hero-tracking;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.subtitle {
+  font-size: $font-body;
+  color: $color-hint;
+}

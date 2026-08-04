@@ -1,5 +1,17 @@
 // Public API of the shared helpers. Import from here: `@/shared/lib`.
 export { cx } from './cx';
-export { fmt, money, parsePrice, isValidDuration } from './format';
-export { formatDate, startOfWeek, addDays, dateKey, fmtTime, fmtDayHeader, startOfMonth, startOfQuarter, addMonths } from './date';
+export { fmt, money, parsePrice, isValidDuration, pluralUk } from './format';
+export {
+  formatDate,
+  formatDayMonth,
+  formatDayShortMonth,
+  startOfWeek,
+  addDays,
+  dateKey,
+  fmtTime,
+  fmtDayHeader,
+  startOfMonth,
+  startOfQuarter,
+  addMonths,
+} from './date';
 export { apiFormErrors } from './apiFormErrors';

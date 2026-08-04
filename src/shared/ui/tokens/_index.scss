@@ -13,24 +13,65 @@ $space-xl: 24px;
 $space-2xl: 32px;
 $space-3xl: 48px;
 
-// Typography (iOS / Telegram scale)
-$font-xs: 10px;
+// Typography (iOS / Telegram scale) — pre-redesign scale, kept for pages not
+// yet migrated to the `$type-*` scale below.
 $font-sm: 12px;
 $font-caption: 13px;
 $font-footnote: 14px;
 $font-body: 15px;
-$font-callout: 17px;
 $font-headline: 20px;
 $font-balance: 22px;
 $font-large-title: 24px;
 $font-title: 28px;
 
-// Radii
+// Type scale (redesign, see design-system.html "Типографіка"). Font-size /
+// weight / letter-spacing grouped per role; components pick what they need.
+$type-hero-size: 36px;
+$type-hero-weight: 700;
+$type-hero-tracking: -0.03em;
+
+$type-title-size: 26px;
+$type-title-weight: 700;
+$type-title-tracking: -0.02em;
+
+$type-h2-size: 19px;
+$type-h2-weight: 700;
+
+$type-body-size: 16px;
+
+$type-action-size: 15px;
+$type-action-weight: 600;
+
+$type-action-lg-size: 17px; // primary buttons
+$type-action-lg-weight: 700;
+
+$type-caption-size: 13px;
+
+$type-label-size: 12px;
+$type-label-weight: 700;
+$type-label-tracking: 0.06em;
+
+$type-tab-size: 10px;
+$type-tab-weight: 600;
+
+// Radii — pre-redesign scale, kept for pages not yet migrated.
 $radius-sm: 10px;
 $radius-md: 12px;
 
-// Layout
-$nav-height: 52px;
+// Radii (redesign)
+$radius-hero: 20px;
+$radius-card: 18px;
+$radius-button: 16px;
+$radius-chip: 13px;
+$radius-icon-lg: 12px;
+$radius-icon-sm: 9px;
+
+// Touch sizes (redesign)
+$h-button: 52px;
+$h-button-secondary: 48px;
+$h-row-min: 44px;
+$h-chip: 40px;
+$size-day: 44px;
 
 // Page layout — the horizontal gutter that page-level content (Sections,
 // SearchInput, form fields) insets from the screen edges, plus standard
@@ -38,6 +79,11 @@ $nav-height: 52px;
 $page-gutter: $space-lg; // 16px
 $page-pad-top: $space-md; // 12px
 $page-pad-bottom: $space-xl; // 24px
+
+// Gaps (redesign)
+$gap-screen: 16px;
+$gap-row: 8px;
+$gap-group: 20px;
 
 // Separator (inset hairline rendered via scaleY(.5))
 $separator-h: 1px;
@@ -50,22 +96,39 @@ $z-toast: 40; // above the progress bar — always the topmost surface
 
 // Color aliases → host-themed CSS custom properties.
 // The `--ds-*` contract is defined and mapped by the host app.
-$color-bg: var(--ds-color-bg); // card / section surface
-$color-secondary-bg: var(--ds-color-secondary-bg); // screen backdrop
-$color-header-bg: var(--ds-color-header-bg);
-$color-secondary-fill: var(--ds-color-secondary-fill);
-$color-tertiary-fill: var(--ds-color-tertiary-fill);
+//
+// NOTE on the `--ds-color-bg` / `--ds-color-card` rename: the redesign flips
+// what "bg" means (screen backdrop, was `--ds-color-secondary-bg`) vs "card"
+// (row/field surface, was `--ds-color-bg`). `$color-bg` / `$color-secondary-bg`
+// keep their OLD meaning (card / screen respectively) so pages not yet
+// rebuilt keep compiling and looking the same; new code should use
+// `$color-card` / the new `$color-*` aliases below directly.
+$color-bg: var(--ds-color-card); // card / section surface (legacy name)
+$color-secondary-bg: var(--ds-color-bg); // screen backdrop (legacy name)
+$color-header-bg: var(--ds-color-bg); // nav header + tab bar chrome (legacy name)
 $color-text: var(--ds-color-text);
-$color-subtitle: var(--ds-color-subtitle);
+$color-subtitle: var(--ds-color-hint); // subtitle folded into hint (legacy name)
 $color-hint: var(--ds-color-hint);
-$color-link: var(--ds-color-link);
-$color-button: var(--ds-color-accent);
-$color-button-text: var(--ds-color-accent-text);
-$color-destructive: var(--ds-color-danger);
-$color-separator: var(--ds-color-separator);
-$color-section-separator: var(--ds-color-section-separator);
+$color-button: var(--ds-color-accent); // legacy name
+$color-button-text: var(--ds-color-accent-text); // legacy name
+$color-error: var(--ds-color-danger); // legacy name
 
-// Semantic status colors
-$color-success: var(--ds-color-success);
-$color-warning: var(--ds-color-warning);
-$color-error: var(--ds-color-danger);
+// Color aliases (redesign) — the `--ds-*` names from the token contract.
+$color-card: var(--ds-color-card);
+$color-accent: var(--ds-color-accent);
+$color-accent-text: var(--ds-color-accent-text);
+$color-accent-soft: var(--ds-color-accent-soft);
+$color-ok: var(--ds-color-ok);
+$color-ok-soft: var(--ds-color-ok-soft);
+$color-warn: var(--ds-color-warn);
+$color-warn-soft: var(--ds-color-warn-soft);
+$color-purple: var(--ds-color-purple);
+$color-danger: var(--ds-color-danger);
+$color-danger-soft: var(--ds-color-danger-soft);
+// Invalid-field border tint — 55% alpha over danger (design-system.html "FieldError").
+$color-danger-border: color-mix(in srgb, var(--ds-color-danger) 55%, transparent);
+$color-sep: var(--ds-color-sep);
+$color-fill: var(--ds-color-fill);
+// Bright-muted content on fill squares / ghost-button labels — softer than
+// full text color, brighter than hint (design-system.html #c7c7cc).
+$color-text-soft: var(--ds-color-text-soft);

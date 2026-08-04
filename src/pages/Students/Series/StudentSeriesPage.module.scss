@@ -1,0 +1,35 @@
+@use '../../../app/styles/variables' as *;
+
+.series {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: $space-xs 0 $space-lg;
+  }
+
+  &__title {
+    font-size: $font-large-title;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  &__hint {
+    font-size: $font-footnote;
+    color: $color-hint;
+  }
+
+  &__empty {
+    margin-bottom: $gap-group;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+  }
+}

@@ -1,0 +1,112 @@
+@use '../../../../app/styles/variables' as *;
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  width: 100%;
+  padding: 14px $space-lg;
+  text-align: left;
+  transition: opacity 0.15s ease;
+
+  &:active {
+    opacity: 0.85;
+  }
+
+  // Inset hairline divider — hidden on the last row (same technique as `Cell`).
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: $space-lg;
+    right: 0;
+    bottom: 0;
+    height: $separator-h;
+    transform: scaleY(0.5);
+    background: $color-sep;
+  }
+}
+
+.dateCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 36px;
+  flex-shrink: 0;
+}
+
+.day {
+  font-size: 16px;
+  font-weight: 700;
+  color: $color-text;
+  font-variant-numeric: tabular-nums;
+}
+
+.day--muted {
+  color: $color-hint;
+}
+
+.weekday {
+  font-size: 11px;
+  color: $color-hint;
+  text-transform: uppercase;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.time {
+  font-size: 16px;
+  font-weight: 600;
+  color: $color-text;
+  font-variant-numeric: tabular-nums;
+}
+
+.time--muted {
+  color: $color-hint;
+}
+
+.time--strike {
+  text-decoration: line-through;
+}
+
+.sub {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: $type-caption-size;
+  color: $color-hint;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sub--warn {
+  color: $color-warn;
+}
+
+.checkIcon {
+  flex-shrink: 0;
+  color: $color-ok;
+}
+
+.price {
+  flex-shrink: 0;
+  font-size: $type-action-size;
+  font-weight: $type-action-weight;
+  color: $color-text;
+}
+
+.price--muted {
+  color: $color-hint;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: $color-hint;
+}

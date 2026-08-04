@@ -1,0 +1,116 @@
+@use '../../../../app/styles/variables' as *;
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  width: 100%;
+  background: $color-fill;
+  border-radius: $radius-button;
+  padding: 14px $space-lg;
+  text-align: left;
+}
+
+.optionIcon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: $radius-icon-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.optionIcon--accent {
+  background: $color-accent-soft;
+  color: $color-accent;
+}
+
+.optionIcon--danger {
+  background: $color-danger-soft;
+  color: $color-danger;
+}
+
+.optionText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.optionTitle {
+  font-size: $type-body-size;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.optionSub {
+  font-size: $type-caption-size;
+  color: $color-hint;
+}
+
+.radio {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: $radius-icon-lg;
+  border: 2px solid color-mix(in srgb, var(--ds-color-text) 20%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio--checked {
+  border-color: $color-accent;
+}
+
+.radioDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 6px;
+  background: $color-accent;
+}
+
+.keepRow {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: 2px 4px;
+}
+
+.keepText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.keepTitle {
+  font-size: $type-body-size;
+  color: $color-text;
+}
+
+.keepHint {
+  font-size: $type-caption-size;
+  color: $color-hint;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}

@@ -1,0 +1,20 @@
+@use '../../../../app/styles/variables' as *;
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 2px $space-xs 2px;
+}
+
+.title {
+  font-size: $type-title-size;
+  font-weight: $type-title-weight;
+  letter-spacing: $type-title-tracking;
+  color: $color-text;
+}
+
+.subtitle {
+  font-size: $font-footnote;
+  color: $color-hint;
+}

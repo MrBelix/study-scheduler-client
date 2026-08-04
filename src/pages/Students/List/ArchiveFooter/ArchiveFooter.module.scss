@@ -1,0 +1,15 @@
+@use '../../../../app/styles/variables' as *;
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: $h-row-min;
+  text-align: center;
+}
+
+.footerLink {
+  font-size: $type-action-size;
+  font-weight: $type-action-weight;
+  color: $color-hint;
+}

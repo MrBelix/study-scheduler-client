@@ -1,0 +1,32 @@
+@use '../../../app/styles/variables' as *;
+
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(var(--tg-content-safe-area-inset-top, 0px) + #{$space-lg}) $page-gutter $space-lg;
+}
+
+.mark {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, #{$color-text} 18%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mark--active {
+  border-color: transparent;
+  background: $color-accent;
+  color: $color-accent-text;
+}

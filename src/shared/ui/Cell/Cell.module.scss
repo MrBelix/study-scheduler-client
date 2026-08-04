@@ -6,29 +6,29 @@
   align-items: center;
   gap: $space-md;
   width: 100%;
-  padding: $space-sm $space-lg;
+  padding: $space-md $gap-screen;
   text-align: left;
   color: $color-text;
-  font-size: $font-callout;
+  font-size: $type-body-size;
   background: transparent;
 
   // Inset hairline divider — hidden on the last row.
   &:not(:last-child)::after {
     content: '';
     position: absolute;
-    left: var(--cell-inset, #{$space-lg});
+    left: var(--cell-inset, #{$gap-screen});
     right: 0;
     bottom: 0;
     height: $separator-h;
     transform: scaleY(0.5);
-    background: $color-section-separator;
+    background: $color-sep;
   }
 
   &--clickable {
     cursor: pointer;
 
     &:active {
-      background: $color-tertiary-fill;
+      background: $color-fill;
     }
   }
 
@@ -49,10 +49,20 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+
+    // Two-line row (name + context) reads as a list item — bold the title.
+    // Excludes the stacked variant (small label above a bold value) and the
+    // plain variant (settings row with a hint subtitle) — both set the title
+    // back to regular weight via their own rules below; without the :not()s
+    // here, this selector's higher specificity would always win.
+    &:has(.cell__subtitle):not(.cell__content--stacked):not(.cell__content--plain) .cell__title {
+      font-weight: 600;
+    }
   }
 
   &__title {
-    font-size: $font-callout;
+    font-size: $type-body-size;
+    font-weight: 400;
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
@@ -60,22 +70,37 @@
   }
 
   &__subtitle {
-    font-size: $font-footnote;
+    font-size: $type-caption-size;
     line-height: 1.2;
-    color: $color-subtitle;
+    color: $color-hint;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
     &--muted {
+      opacity: 0.7;
+    }
+  }
+
+  // Stacked variant — small label above a bold value (icon-tile rows).
+  &__content--stacked {
+    .cell__title {
+      font-size: $type-caption-size;
+      font-weight: 400;
       color: $color-hint;
+    }
+
+    .cell__subtitle {
+      font-size: $type-body-size;
+      font-weight: 600;
+      color: $color-text;
     }
   }
 
   &__value {
     flex-shrink: 0;
-    font-size: $font-callout;
-    color: $color-subtitle;
+    font-size: $type-body-size;
+    color: $color-hint;
     white-space: nowrap;
 
     &--emphasis {

@@ -1,0 +1,30 @@
+@use '../../../../app/styles/variables' as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: $space-xs 0 $space-lg;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rate {
+  font-size: $font-caption;
+  color: $color-hint;
+}

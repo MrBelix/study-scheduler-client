@@ -1,0 +1,49 @@
+@use '../../../app/styles/variables' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.header {
+  padding: 0 4px;
+}
+
+.strip {
+  display: flex;
+  gap: 10px;
+  overflow: hidden;
+  padding: 0 4px;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: $color-card;
+  border-radius: $radius-card;
+  padding: 14px $space-lg;
+}
+
+.rowBody {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+}

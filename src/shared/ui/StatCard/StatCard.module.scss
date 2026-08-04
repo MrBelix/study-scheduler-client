@@ -5,17 +5,27 @@
   flex-direction: column;
   gap: 4px;
   padding: $space-md $space-lg;
-  background: $color-bg;
-  border-radius: $radius-md;
+  background: $color-card;
+  border-radius: $radius-card;
+
+  &--warn {
+    background: $color-warn-soft;
+  }
 
   &__label {
-    font-size: $font-caption;
-    color: $color-subtitle;
+    font-size: $type-label-size;
+    color: $color-hint;
   }
 
   &__value {
-    font-size: $font-balance;
+    font-size: 24px;
     font-weight: 700;
+    letter-spacing: -0.02em;
     color: $color-text;
+  }
+
+  &__caption {
+    font-size: $type-label-size;
+    color: $color-hint;
   }
 }

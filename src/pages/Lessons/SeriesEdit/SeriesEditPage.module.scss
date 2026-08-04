@@ -1,0 +1,21 @@
+@use '../../../app/styles/variables' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-group;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.formHeaderSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px $space-xs 2px;
+}
+
+.formSkeletonBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

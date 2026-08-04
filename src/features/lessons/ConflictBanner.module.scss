@@ -1,0 +1,59 @@
+@use '../../app/styles/variables' as *;
+
+.banner {
+  background: $color-warn-soft;
+  border-radius: $radius-card;
+  padding: $space-md;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-sm;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: $color-warn;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.title {
+  font-size: $type-body-size;
+  font-weight: 600;
+  color: $color-warn;
+}
+
+.sub {
+  font-size: $type-caption-size;
+  line-height: 1.45;
+  color: $color-text-soft;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-sm;
+}
+
+.chip {
+  height: 38px;
+  padding: 0 $space-md;
+  border-radius: $radius-icon-lg;
+  background: $color-fill;
+  display: flex;
+  align-items: center;
+  font-size: $type-caption-size;
+  font-weight: 700;
+  color: $color-text;
+}

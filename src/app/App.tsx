@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { ApiError } from '@/shared/api';
@@ -47,21 +47,51 @@ function RootGate() {
   }
 
   if (decision === 'loading') return null; // brief: profile still loading
-  if (decision === 'onboarding') return <OnboardingPage onDone={() => setDecision('app')} />;
+  if (decision === 'onboarding') {
+    return (
+      <OnboardingPage
+        onDone={(path) => {
+          // Navigate the router singleton before `AppRoutes` ever mounts, so
+          // `RouterProvider` picks up the target location on its first render
+          // (used by O4's "set one manually" exit) — react-router supports
+          // calling `router.navigate()` imperatively from outside React.
+          if (path) router.navigate(path);
+          setDecision('app');
+        }}
+      />
+    );
+  }
   return <AppRoutes />;
 }
 
 const APP_LOCALES: AppLocale[] = ['uk', 'en'];
 
-// The server-side member settings win over the device: a language chosen on
-// one device follows the tutor to the next. No-ops until the profile loads.
+// The server-side member settings win over the device — but ONLY at startup.
+// This is a one-shot sync, latched via a ref: the first time the profile
+// query carries a real `languageCode`, it's applied (if valid and different)
+// and the latch closes for the rest of the session. `code` stays undefined
+// while onboarding is in progress (the profile is a 404), so the latch isn't
+// consumed until a real profile exists — the first post-onboarding load still
+// gets a sync, it's just a no-op because `LanguageStep` already set the locale.
+//
+// Without the latch this raced `ProfilePage.pickLanguage()`: that handler
+// calls `setLocale(next)` optimistically and only then `saveProfile.mutate`.
+// This effect would still see the stale cached profile and immediately call
+// `setLocale(old)` (remount #2, reverting the language), then fire again once
+// the PUT's `onSuccess` cache update lands (remount #3) — a visible
+// new → old → new flicker. Post-startup, the local pick is authoritative: it's
+// persisted via PUT anyway, a failed PUT surfaces through the existing
+// `saveProfile.isError` toast, and the next app start re-syncs from the server.
 function ProfileLocaleSync() {
   const { data: profile } = useProfile();
   const { locale, setLocale } = useLocale();
   const code = profile?.languageCode;
+  const synced = useRef(false);
 
   useEffect(() => {
-    if (code && code !== locale && APP_LOCALES.includes(code as AppLocale)) {
+    if (synced.current || !code) return; // wait for a real (post-onboarding) profile
+    synced.current = true;
+    if (code !== locale && APP_LOCALES.includes(code as AppLocale)) {
       setLocale(code as AppLocale);
     }
   }, [code, locale, setLocale]);

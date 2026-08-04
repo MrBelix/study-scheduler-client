@@ -1,0 +1,39 @@
+@use '../../../../app/styles/variables' as *;
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  width: 100%;
+  padding: 13px $space-lg;
+  background: $color-warn-soft;
+  border-radius: 16px;
+  text-align: left;
+  margin-bottom: $gap-group;
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  color: $color-warn;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  font-size: $type-body-size;
+  color: $color-text;
+}
+
+.amount {
+  font-weight: 700;
+  color: $color-warn;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: $color-warn;
+}

@@ -3,37 +3,32 @@
 .picker {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: $gap-row;
+}
 
-  &__label {
-    font-size: $font-caption;
-    color: $color-subtitle;
+.required {
+  color: $color-danger;
+  margin-left: 2px;
+}
+
+// The Cell provides its own surface; we only round the corners.
+.trigger {
+  background: $color-card;
+  border-radius: $radius-card;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+
+  &--error {
+    border-color: $color-danger-border;
   }
+}
 
-  &__required {
-    color: $color-error;
-    margin-left: 2px;
-  }
+.placeholder {
+  color: $color-hint;
+}
 
-  // The Cell provides its own surface; we only round the corners.
-  &__trigger {
-    background: $color-bg;
-    border-radius: $radius-md;
-    overflow: hidden;
-    border: 1px solid transparent;
-
-    &--error {
-      border-color: $color-error;
-    }
-  }
-
-  &__placeholder {
-    color: $color-hint;
-  }
-
-  &__sheet-list {
-    overflow-y: auto;
-    background: $color-bg;
-    border-radius: $radius-md;
-  }
+.sheet-list {
+  overflow-y: auto;
+  background: $color-card;
+  border-radius: $radius-card;
 }

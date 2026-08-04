@@ -1,0 +1,72 @@
+@use '../../../../app/styles/variables' as *;
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-sm;
+  padding: $space-xs 0 $space-lg;
+  text-align: center;
+}
+
+.icon {
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-hero;
+  background: $color-accent-soft;
+  color: $color-accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.title {
+  font-size: $type-title-size;
+  font-weight: $type-title-weight;
+  letter-spacing: $type-title-tracking;
+  line-height: 1.15;
+}
+
+.subtitle {
+  font-size: $font-body;
+  color: $color-hint;
+}
+
+// The rate-loading skeleton rides inline with the subtitle's other text — inline-flex keeps it on
+// the same line and vertically centered against the surrounding text baseline.
+.pricePlaceholder {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+// Status chip — same dot + tinted-pill shape as `SeriesCard`'s own chip.
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 12px;
+  padding: 5px 12px;
+  font-size: $type-caption-size;
+  font-weight: 700;
+  margin-top: 2px;
+
+  &--ok {
+    background: $color-ok-soft;
+    color: $color-ok;
+  }
+
+  &--warn {
+    background: $color-warn-soft;
+    color: $color-warn;
+  }
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: currentColor;
+  flex-shrink: 0;
+}

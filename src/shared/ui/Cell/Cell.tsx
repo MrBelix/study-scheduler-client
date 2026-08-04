@@ -1,5 +1,6 @@
 import { type CSSProperties, type ReactNode } from 'react';
 import { cx } from '../../lib/cx';
+import { Icon } from '../Icon/Icon';
 import styles from './Cell.module.scss';
 
 interface CellProps {
@@ -9,6 +10,19 @@ interface CellProps {
   subtitle?: ReactNode;
   /** Render the subtitle in hint (muted) color instead of subtitle color. */
   subtitleMuted?: boolean;
+  /**
+   * Stacked layout: `title` renders as a small label above `subtitle`, which
+   * renders as the bold, larger value — for icon-tile rows like
+   * "Постійні уроки / Алгебра, НМТ" (see design-system.html "SectionLabel +
+   * Card + Row").
+   */
+  stacked?: boolean;
+  /**
+   * Opt out of the two-line auto-bold title (list-item convention). For
+   * settings-style rows that pair a plain-weight title with a hint subtitle
+   * (e.g. a switch row) rather than a name + context list item.
+   */
+  plainTitle?: boolean;
   /** Trailing value (right-aligned). */
   value?: ReactNode;
   /** CSS color for the trailing value (e.g. a `--ds-*` var). */
@@ -26,24 +40,18 @@ interface CellProps {
   onClick?: () => void;
 }
 
-function Chevron() {
-  return (
-    <svg className={styles['cell__chevron']} width="8" height="13" viewBox="0 0 8 13" fill="none">
-      <path d="M1.5 1.5L6.5 6.5L1.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 export function Cell({
   leading,
   title,
   subtitle,
   subtitleMuted,
+  stacked,
+  plainTitle,
   value,
   valueColor,
   chevron,
   inset = 16,
-  minHeight = 46,
+  minHeight = 44,
   emphasis,
   dimmed,
   onClick,
@@ -60,7 +68,13 @@ export function Cell({
       {...extraProps}
     >
       {leading && <span className={styles['cell__leading']}>{leading}</span>}
-      <span className={styles['cell__content']}>
+      <span
+        className={cx(
+          styles['cell__content'],
+          stacked && styles['cell__content--stacked'],
+          plainTitle && styles['cell__content--plain'],
+        )}
+      >
         <span className={styles['cell__title']}>{title}</span>
         {subtitle != null && (
           <span className={cx(styles['cell__subtitle'], subtitleMuted && styles['cell__subtitle--muted'])}>
@@ -76,7 +90,7 @@ export function Cell({
           {value}
         </span>
       )}
-      {chevron && <Chevron />}
+      {chevron && <Icon name="chevron_right" size={20} className={styles['cell__chevron']} />}
     </Tag>
   );
 }

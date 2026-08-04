@@ -1,0 +1,32 @@
+@use '../tokens' as *;
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 11px;
+  padding: 5px 10px;
+  font-size: $type-caption-size;
+  font-weight: 700;
+  line-height: 1.2;
+
+  &--ok {
+    background: $color-ok-soft;
+    color: $color-ok;
+  }
+
+  &--accent {
+    background: $color-accent-soft;
+    color: $color-accent;
+  }
+
+  &--warn {
+    background: $color-warn-soft;
+    color: $color-warn;
+  }
+
+  &--neutral {
+    background: $color-fill;
+    color: $color-text-soft;
+  }
+}

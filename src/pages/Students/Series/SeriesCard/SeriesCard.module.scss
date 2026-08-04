@@ -1,0 +1,86 @@
+@use '../../../../app/styles/variables' as *;
+
+.card {
+  background: $color-card;
+  border-radius: $radius-hero;
+  padding: $space-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+  text-align: left;
+  width: 100%;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-md;
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardSubtitle {
+  font-size: $font-caption;
+  color: $color-hint;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardChevron {
+  flex-shrink: 0;
+  color: $color-hint;
+}
+
+.cardStatus {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 10px;
+  padding: 4px 9px;
+  font-size: $font-sm;
+  font-weight: 700;
+
+  &--ok {
+    background: $color-ok-soft;
+    color: $color-ok;
+  }
+
+  &--warn {
+    background: $color-warn-soft;
+    color: $color-warn;
+  }
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.caption {
+  font-size: $font-caption;
+  color: $color-hint;
+}

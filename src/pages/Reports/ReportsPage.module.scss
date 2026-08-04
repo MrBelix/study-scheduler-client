@@ -1,0 +1,20 @@
+@use '../../app/styles/variables' as *;
+
+.money {
+  padding: $page-pad-top 0 $page-pad-bottom;
+
+  &__segment {
+    margin-bottom: $space-md;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $gap-row;
+    margin-bottom: $gap-group;
+
+    &--single {
+      grid-template-columns: 1fr;
+    }
+  }
+}

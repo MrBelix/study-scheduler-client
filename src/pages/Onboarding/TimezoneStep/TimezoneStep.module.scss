@@ -1,0 +1,118 @@
+@use '../../../app/styles/variables' as *;
+
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(var(--tg-content-safe-area-inset-top, 0px) + #{$space-lg}) $page-gutter $space-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  background: $color-card;
+  border: 1.5px solid color-mix(in srgb, #{$color-accent} 45%, transparent);
+  border-radius: $radius-hero;
+  padding: $space-lg;
+}
+
+.cardIcon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-icon-lg;
+  background: $color-accent-soft;
+  color: $color-accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cardZone {
+  font-size: $type-h2-size;
+  font-weight: 700;
+  color: $color-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardHint {
+  font-size: $type-caption-size;
+  color: $color-hint;
+}
+
+.cardCheck {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: $color-accent;
+  color: $color-accent-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reminder {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}
+
+.reminderChips {
+  display: flex;
+  gap: $space-sm;
+}
+
+.chip {
+  flex: 1;
+  height: $h-chip;
+  border-radius: $radius-chip;
+  background: $color-fill;
+  color: $color-text-soft;
+  font-size: $type-action-size;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chip--active {
+  background: $color-accent;
+  color: $color-accent-text;
+  font-weight: 700;
+}
+
+.reminderFooter {
+  font-size: $type-caption-size;
+  line-height: 1.45;
+  color: $color-hint;
+  padding: 0 $space-xs;
+}
+
+.sheetList {
+  flex: 1;
+  overflow-y: auto;
+  background: $color-bg;
+  border-radius: $radius-md;
+}

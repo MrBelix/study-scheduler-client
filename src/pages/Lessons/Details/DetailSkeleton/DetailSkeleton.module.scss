@@ -1,0 +1,26 @@
+@use '../../../../app/styles/variables' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-sm;
+  padding: $space-xs 0 $space-lg;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $gap-row;
+  margin-bottom: $gap-group;
+
+  > *:first-child {
+    grid-column: span 3;
+  }
+}

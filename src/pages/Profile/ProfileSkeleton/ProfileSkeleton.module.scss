@@ -1,0 +1,30 @@
+@use '../../../app/styles/variables' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: $space-xs 0 $gap-group;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+  margin-bottom: $gap-group;
+  padding: 0 4px;
+}

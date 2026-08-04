@@ -1,0 +1,43 @@
+@use '../../../app/styles/variables' as *;
+
+.history {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: $space-xs 0 $space-lg;
+  }
+
+  &__title {
+    font-size: $font-large-title;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  &__hint {
+    font-size: $font-footnote;
+    color: $color-hint;
+  }
+
+  &__segment {
+    margin-bottom: $gap-group;
+  }
+}
+
+.tabHint {
+  padding: $space-2xl $space-lg;
+  text-align: center;
+  font-size: $type-caption-size;
+  color: $color-hint;
+}
+
+.cappedNote {
+  margin: -8px 4px 0;
+  font-size: $type-caption-size;
+  color: $color-hint;
+  line-height: 1.4;
+}

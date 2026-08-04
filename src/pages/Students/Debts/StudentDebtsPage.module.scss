@@ -1,0 +1,23 @@
+@use '../../../app/styles/variables' as *;
+
+.debts {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.header {
+  padding: $space-xs 0 $space-lg;
+}
+
+.title {
+  font-size: $font-large-title;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.summary {
+  padding: 0 4px $space-sm;
+  font-size: $type-caption-size;
+  color: $color-hint;
+}

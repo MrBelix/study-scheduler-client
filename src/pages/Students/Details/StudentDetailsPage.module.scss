@@ -1,0 +1,22 @@
+@use '../../../app/styles/variables' as *;
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+
+  // ---- schedule card ----
+  &__scheduleCard {
+    background: $color-card;
+    border-radius: $radius-hero;
+    overflow: hidden;
+    margin-bottom: $gap-group;
+  }
+
+  &__stats {
+    font-size: $font-caption;
+    line-height: 1.45;
+    color: $color-hint;
+    padding: 0 4px $gap-group;
+  }
+}

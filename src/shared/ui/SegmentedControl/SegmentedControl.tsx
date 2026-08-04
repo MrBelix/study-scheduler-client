@@ -13,12 +13,15 @@ interface SegmentedControlProps<T extends string> {
   onChange: (value: T) => void;
 }
 
+const GAP = 4;
+
 /** iOS-style segmented control with a sliding selection pill. */
 export function SegmentedControl<T extends string>({ items, value, onChange }: SegmentedControlProps<T>) {
   const activeIndex = Math.max(0, items.findIndex((item) => item.value === value));
+  const totalGap = (items.length - 1) * GAP;
   const pillStyle = {
-    width: `calc((100% - ${2 * 2}px) / ${items.length})`,
-    transform: `translateX(${activeIndex * 100}%)`,
+    width: `calc((100% - ${3 * 2 + totalGap}px) / ${items.length})`,
+    transform: `translateX(calc(${activeIndex * 100}% + ${activeIndex * GAP}px))`,
   } as CSSProperties;
 
   return (

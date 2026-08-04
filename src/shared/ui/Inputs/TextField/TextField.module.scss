@@ -1,31 +1,45 @@
 @use '../../../../app/styles/variables' as *;
 
+.text-field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}
+
 .text-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  background: $color-card;
+  border-radius: $radius-card;
+  border: 1.5px solid transparent;
+  padding: $space-md $space-lg;
+
+  &--error {
+    border-color: $color-danger-border;
+  }
 
   &__header {
-    font-size: $font-caption;
-    color: $color-subtitle;
+    font-size: $type-caption-size;
+    color: $color-hint;
   }
 
   &__required {
-    color: $color-error;
+    color: $color-danger;
     margin-left: 2px;
   }
 
   &__input {
     width: 100%;
-    // Fixed row height so an empty date/time input keeps its shape: iOS (WKWebView)
-    // renders nothing for an empty native picker, collapsing the box to its padding.
-    min-height: 48px;
-    border: 1px solid transparent;
-    background: $color-bg;
-    border-radius: $radius-md;
-    padding: $space-md $space-lg; // internal text inset
+    // Fixed min-height so an empty date/time input keeps its shape: iOS (WKWebView)
+    // renders nothing for an empty native picker, collapsing the box to its content.
+    min-height: 22px;
+    border: none;
+    background: none;
+    padding: 0;
     font-family: inherit;
-    font-size: $font-callout;
+    font-size: $type-body-size;
+    font-weight: 600;
     color: $color-text;
     outline: none;
     appearance: none;
@@ -33,15 +47,12 @@
 
     &::placeholder {
       color: $color-hint;
-    }
-
-    &--error {
-      border-color: $color-error;
+      font-weight: 400;
     }
   }
 
   &__helper {
-    font-size: $font-caption;
+    font-size: $type-caption-size;
     line-height: 1.4;
     color: $color-hint;
   }

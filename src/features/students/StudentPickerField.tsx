@@ -1,11 +1,12 @@
 import { m } from '@/paraglide/messages';
-import { Cell, Avatar, BottomSheet } from '@/shared/ui';
+import { Cell, Avatar, BottomSheet, SectionLabel, FieldError } from '@/shared/ui';
 import { haptic } from '@/shared/tg';
 import type { Student } from '@/shared/api';
+import { money, cx } from '@/shared/lib';
 import styles from './StudentPickerField.module.scss';
 
 interface StudentPickerFieldProps {
-  /** Full student list — the sheet offers the active ones. */
+  /** Active students — callers source this from `useStudents()`, which only ever returns active ones. */
   students: Student[];
   value: string;
   onChange: (id: string) => void;
@@ -22,41 +23,42 @@ interface StudentPickerFieldProps {
   onOpenChange: (open: boolean) => void;
 }
 
-/** Labeled student field: a Cell-style trigger opening a bottom-sheet list. */
+/** Labeled student field: a SectionLabel + card trigger opening a bottom-sheet list. */
 export function StudentPickerField({ students, value, onChange, locked, error, required, open, onOpenChange }: StudentPickerFieldProps) {
   const selected = students.find((s) => s.id === value);
-  const options = students.filter((s) => s.status !== 'Archived');
 
   return (
-    <div className={styles['picker']}>
-      <span className={styles['picker__label']}>
+    <div className={styles.picker}>
+      <SectionLabel>
         {m.lesson_form_student()}
-        {required && <span className={styles['picker__required']}>*</span>}
-      </span>
-      <div className={[styles['picker__trigger'], error && styles['picker__trigger--error']].filter(Boolean).join(' ')}>
+        {required && <span className={styles.required}>*</span>}
+      </SectionLabel>
+      <div className={cx(styles.trigger, error && styles['trigger--error'])}>
         {selected ? (
           <Cell
-            leading={<Avatar name={selected.name} size={32} />}
+            leading={<Avatar name={selected.name} size={36} />}
             title={selected.name}
+            subtitle={selected.rate ? money(selected.rate) : undefined}
             chevron={!locked}
-            inset={60}
-            minHeight={52}
+            inset={64}
+            minHeight={56}
             onClick={locked ? undefined : () => onOpenChange(true)}
           />
         ) : (
           <Cell
-            title={<span className={styles['picker__placeholder']}>{m.lesson_form_student_placeholder()}</span>}
+            title={<span className={styles.placeholder}>{m.lesson_form_student_placeholder()}</span>}
             chevron
-            minHeight={52}
+            minHeight={56}
             onClick={() => onOpenChange(true)}
           />
         )}
       </div>
+      {error && <FieldError message={error} />}
 
       {open && !locked && (
         <BottomSheet title={m.lesson_form_student_placeholder()} onClose={() => onOpenChange(false)}>
-          <div className={styles['picker__sheet-list']}>
-            {options.map((s) => (
+          <div className={styles['sheet-list']}>
+            {students.map((s) => (
               <Cell
                 key={s.id}
                 leading={<Avatar name={s.name} size={42} />}

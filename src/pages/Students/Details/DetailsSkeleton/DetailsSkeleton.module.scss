@@ -1,0 +1,32 @@
+@use '../../../../app/styles/variables' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: $space-xs 0 $space-lg;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.hero {
+  background: color-mix(in srgb, var(--ds-color-accent) 11%, transparent);
+  border-radius: $radius-hero;
+  padding: $space-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+  margin-bottom: $gap-group;
+}

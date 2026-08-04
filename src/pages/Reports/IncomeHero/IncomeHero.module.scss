@@ -1,0 +1,94 @@
+@use '../../../app/styles/variables' as *;
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: $color-card;
+  border-radius: $radius-hero;
+  padding: 18px;
+  margin-bottom: $gap-group;
+}
+
+.hero__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $space-sm;
+}
+
+.hero__main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hero__label {
+  font-size: $type-label-size;
+  font-weight: $type-label-weight;
+  letter-spacing: $type-label-tracking;
+  text-transform: uppercase;
+  color: $color-hint;
+}
+
+.hero__value {
+  font-size: $type-hero-size;
+  font-weight: $type-hero-weight;
+  letter-spacing: $type-hero-tracking;
+  line-height: 1;
+  color: $color-ok;
+}
+
+.hero__progress {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.hero__bar {
+  height: 10px;
+  border-radius: 5px;
+  background: $color-fill;
+  overflow: hidden;
+}
+
+.hero__fill {
+  height: 100%;
+  background: $color-ok;
+}
+
+.hero__progress-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hero__plan {
+  font-size: $type-caption-size;
+  color: $color-hint;
+}
+
+.hero__collected {
+  font-size: $type-caption-size;
+  color: $color-text-soft;
+}
+
+.hero__sep {
+  height: $separator-h;
+  background: $color-sep;
+}
+
+.hero__previous {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hero__previous-label {
+  font-size: $font-footnote;
+  color: $color-hint;
+}
+
+.hero__previous-value {
+  font-size: $font-footnote;
+  font-weight: 600;
+  color: $color-text-soft;
+}

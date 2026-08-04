@@ -1,0 +1,36 @@
+@use '../../../../app/styles/variables' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  padding: $page-pad-top 0 $page-pad-bottom;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: $space-xs 0 $space-lg;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}
+
+.cardSkeleton {
+  background: $color-card;
+  border-radius: $radius-hero;
+  padding: $space-lg;
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+}
+
+.cardSkeletonText {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+  flex: 1;
+}

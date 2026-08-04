@@ -1,0 +1,107 @@
+@use '../../../../app/styles/variables' as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}
+
+.card {
+  background: $color-card;
+  border-radius: $radius-card;
+  overflow: hidden;
+}
+
+.divider {
+  height: $separator-h;
+  margin-left: $space-lg;
+  background: $color-sep;
+  transform: scaleY(0.5);
+  transform-origin: top;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: $space-md;
+  padding: 14px $space-lg;
+  text-align: left;
+
+  &--error {
+    box-shadow: inset 0 0 0 1.5px $color-danger-border;
+  }
+}
+
+.rowLabel {
+  flex: 1;
+  min-width: 0;
+  font-size: $type-body-size;
+  color: $color-text;
+}
+
+.rowInput {
+  flex-shrink: 0;
+  max-width: 60%;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: $type-body-size;
+  font-weight: 600;
+  color: $color-text;
+  text-align: right;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &::placeholder {
+    color: $color-hint;
+    font-weight: 400;
+  }
+}
+
+.rowValue {
+  flex-shrink: 0;
+  font-size: $type-body-size;
+  color: $color-hint;
+}
+
+.rowChevron {
+  flex-shrink: 0;
+  color: $color-hint;
+}
+
+.endEditor {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+  padding: 0 $space-xs;
+}
+
+.endInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: $color-card;
+  border-radius: $radius-icon-lg;
+  padding: $space-sm $space-md;
+  font-family: inherit;
+  font-size: $type-body-size;
+  color: $color-text;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.endClear {
+  flex-shrink: 0;
+  height: 38px;
+  padding: 0 $space-md;
+  border-radius: $radius-icon-lg;
+  background: $color-fill;
+  color: $color-accent;
+  font-size: $type-caption-size;
+  font-weight: 700;
+  white-space: nowrap;
+}

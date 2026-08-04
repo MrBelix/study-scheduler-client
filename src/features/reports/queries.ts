@@ -1,11 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { reportKeys } from '@/shared/api';
-import { getReportSummary } from './api';
+import type { DashboardPeriodKind } from '@/shared/api';
+import { getDashboard } from './api';
 
-/** Accounting summary for the range [fromIso, toIso). */
-export function useReportSummary(fromIso: string, toIso: string) {
+/**
+ * The Money dashboard for one period window, anchored on `anchor` (`yyyy-MM-dd`, inside the window).
+ * `placeholderData: keepPreviousData` keeps the previous period's numbers on screen while the new
+ * one loads instead of unmounting to the skeleton on every nav tap — `GlobalProgressBar` (it tracks
+ * `useIsFetching` regardless of `placeholderData`) still shows the in-flight fetch.
+ */
+export function useDashboard(period: DashboardPeriodKind, anchor: string) {
   return useQuery({
-    queryKey: reportKeys.summary(fromIso, toIso),
-    queryFn: ({ signal }) => getReportSummary(fromIso, toIso, signal),
+    queryKey: reportKeys.dashboard(period, anchor),
+    queryFn: ({ signal }) => getDashboard(period, anchor, signal),
+    placeholderData: keepPreviousData,
   });
 }

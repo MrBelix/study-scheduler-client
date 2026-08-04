@@ -1,0 +1,10 @@
+@use '../../../app/styles/variables' as *;
+
+.actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+  padding: $space-sm $page-gutter calc(var(--tg-safe-area-inset-bottom, 0px) + #{$space-md});
+  background: $color-secondary-bg;
+}

@@ -51,3 +51,9 @@ Thumbs.db
 # Tunneling (for local Telegram Mini App testing)
 .ngrok
 .cloudflared
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example

@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -13,6 +15,7 @@ export default defineConfig({
       outdir: './src/paraglide',
       strategy: ['localStorage', 'preferredLanguage', 'baseLocale'],
     }),
+    cloudflare()
   ],
   // Absolute base: with the SPA fallback, deep links (/students/123) must
   // resolve assets from the root, not relative to the virtual path.

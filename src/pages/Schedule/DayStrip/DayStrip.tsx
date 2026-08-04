@@ -16,19 +16,39 @@ interface DayStripProps {
 
 /**
  * Horizontally scrolling multi-week strip — see design-system.html "DayStrip
- * · DayCell states". Keeps the selected day scrolled into view (covers both
- * the initial "today visible on mount" requirement and the "jump to today"
- * chip, which just re-selects today). Centered rather than `nearest` so the
- * upcoming days — the primary browsing direction — stay visible instead of
- * the selected cell parking at the trailing edge.
+ * · DayCell states". Keeps the selected day reachable (covers both the initial
+ * "today visible on mount" requirement and the "jump to today" chip, which just
+ * re-selects today), but only moves when it has to: re-centering a day that is
+ * already on screen made every tap yank the strip sideways. Scrolling is done
+ * on the strip's own `scrollLeft` rather than via `scrollIntoView`, which also
+ * scrolls the ancestors and so jerked the whole page vertically whenever the
+ * strip sat partly above the fold.
  */
 export function DayStrip({ days, byDay, selectedKey, todayKey, onSelect }: DayStripProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    containerRef.current
-      ?.querySelector<HTMLElement>(`[data-day="${selectedKey}"]`)
-      ?.scrollIntoView({ inline: 'center', block: 'nearest' });
+    const strip = containerRef.current;
+    const cell = strip?.querySelector<HTMLElement>(`[data-day="${selectedKey}"]`);
+    if (!strip || !cell) return;
+
+    const stripBox = strip.getBoundingClientRect();
+    const cellBox = cell.getBoundingClientRect();
+    const before = cellBox.left - stripBox.left;
+    const after = stripBox.right - cellBox.right;
+
+    // If the tutor can see the day, they tapped what they meant — leave the
+    // scroll exactly where they put it. Only a clipped or off-screen day is
+    // worth moving for: a partly hidden cell, a deep link, or the "today" chip
+    // after browsing away. On mount the selected day sits a week or more past
+    // the right edge, so this same check is what brings today into view at all.
+    if (before >= 0 && after >= 0) return;
+
+    // Centered when it does move, so the upcoming days — the primary browsing
+    // direction — stay visible instead of the selected cell parking at the
+    // trailing edge. The centred stop is itself a snap point, so the strip
+    // lands where it is told instead of being nudged again afterwards.
+    strip.scrollBy({ left: before - (stripBox.width - cellBox.width) / 2 });
   }, [selectedKey]);
 
   return (

@@ -36,7 +36,7 @@ export function MainButtonBar() {
         ) : (
           config.icon && <Icon name={config.icon} size={22} />
         )}
-        <span className={styles['main-button__label']}>{config.text}</span>
+        <span>{config.text}</span>
       </button>
     </div>
   );

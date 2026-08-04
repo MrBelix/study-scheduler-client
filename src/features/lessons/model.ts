@@ -81,6 +81,25 @@ export function weekdayFlagOfDate(dateStr: string): string {
   return WEEKDAY_FLAGS[(new Date(y, mo - 1, d).getDay() + 6) % 7];
 }
 
+/**
+ * The next full hour after `from`, as a real Date — so an hour that rolls past
+ * midnight carries its own calendar day with it. Both lesson forms seed their
+ * "Початок" from this, and their default day from the SAME value: taking only
+ * the hour would open the form on today at 00:00 when it's 23:xx, i.e. a day in
+ * the past.
+ */
+export function nextFullHourStart(from: Date): Date {
+  const start = new Date(from);
+  start.setMinutes(0, 0, 0);
+  if (from.getMinutes() > 0) start.setHours(start.getHours() + 1);
+  return start;
+}
+
+/** `HH:00` wall clock of a Date — the shape the forms' time field holds. */
+export function hourOfDay(date: Date): string {
+  return `${String(date.getHours()).padStart(2, '0')}:00`;
+}
+
 /** Detail-page route for a schedule entry — `id` is the lesson's Guid id. */
 export function lessonPath(lesson: Lesson): string {
   return routes.lessons.details(lesson.id);

@@ -10,7 +10,7 @@ import { useStudents } from '@/features/students/queries';
 import { StudentPickerField } from '@/features/students/StudentPickerField';
 import { useCreateLesson } from '@/features/lessons/queries';
 import { ConflictBanner } from '@/features/lessons/ConflictBanner';
-import { WEEKDAY_FLAGS, weekdayFlagOfDate } from '@/features/lessons/model';
+import { WEEKDAY_FLAGS, weekdayFlagOfDate, nextFullHourStart, hourOfDay } from '@/features/lessons/model';
 import { Header } from './Header/Header';
 import { WhenSection } from './WhenSection/WhenSection';
 import type { DateMode, DurationMode } from './WhenSection/WhenSection';
@@ -29,14 +29,7 @@ const MAPPED_FIELDS = [
   'Topic',
   'Weekdays',
   'EndDate',
-  'Profile',
 ];
-
-/** "Початок" defaults to the next full hour (F8's etalon shows a round 18:00) — so the form never opens with an empty required time field. */
-function nextFullHour(from: Date): string {
-  const hour = (from.getHours() + (from.getMinutes() > 0 ? 1 : 0)) % 24;
-  return `${String(hour).padStart(2, '0')}:00`;
-}
 
 /**
  * F8 — one unified form: a one-off lesson, or (when "Повторювати" is set to
@@ -54,11 +47,24 @@ export function LessonFormPage() {
   const [pickerOpen, setPickerOpen] = useState(false);
 
   // ---- КОЛИ: today/tomorrow/custom-date chips + wall-clock time + duration ----
+  // "Початок" and the default day come from ONE moment — the next full hour,
+  // frozen at mount. Past 23:00 that hour belongs to tomorrow, so the day chip
+  // has to move with it; seeding the time alone would open the form on today at
+  // 00:00, a timestamp that has already passed (and which saves without a peep,
+  // since neither the form nor the server refuses the past).
+  const [defaultStart] = useState(() => nextFullHourStart(new Date()));
   const todayKey = dateKey(new Date());
   const tomorrowKey = dateKey(addDays(new Date(), 1));
   const paramDate = params.get('date');
-  const initialDateMode: DateMode =
-    !paramDate || paramDate === todayKey ? 'today' : paramDate === tomorrowKey ? 'tomorrow' : 'custom';
+  const initialDateMode: DateMode = !paramDate
+    ? dateKey(defaultStart) === tomorrowKey
+      ? 'tomorrow'
+      : 'today'
+    : paramDate === todayKey
+      ? 'today'
+      : paramDate === tomorrowKey
+        ? 'tomorrow'
+        : 'custom';
   const [dateMode, setDateMode] = useState<DateMode>(initialDateMode);
   const [customDate, setCustomDate] = useState(initialDateMode === 'custom' ? (paramDate as string) : todayKey);
   const date = dateMode === 'today' ? todayKey : dateMode === 'tomorrow' ? tomorrowKey : customDate;
@@ -70,7 +76,7 @@ export function LessonFormPage() {
     setDateMode(mode);
   };
 
-  const [time, setTime] = useState(() => nextFullHour(new Date()));
+  const [time, setTime] = useState(() => hourOfDay(defaultStart));
   const [durationMode, setDurationMode] = useState<DurationMode>('60');
   const [customDuration, setCustomDuration] = useState('60');
   const durationMinutes = durationMode === 'custom' ? Number(customDuration) : Number(durationMode);

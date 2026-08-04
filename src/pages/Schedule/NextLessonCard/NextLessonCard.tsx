@@ -65,7 +65,10 @@ export function NextLessonCard({ hero, now, student, series, onComplete, complet
           type="button"
           className={styles['iconBtn']}
           aria-label={m.lesson_reschedule()}
-          onClick={() => navigate(lessonPath(lesson))}
+          // Opens the detail page with its reschedule sheet already up — without
+          // the state it lands on the same screen as the "more" button next to
+          // it, and the label promises an action it never performs.
+          onClick={() => navigate(lessonPath(lesson), { state: { openSheet: 'reschedule' } })}
         >
           <Icon name="swap_horiz" size={20} />
         </button>

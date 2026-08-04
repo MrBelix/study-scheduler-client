@@ -18,10 +18,17 @@ export function StudentsListPage() {
 
   const activeQuery = useStudents();
   const archivedQuery = useArchivedStudents();
-  // The view just picks which query drives the currently rendered state
-  // (skeleton/error/data) — each list is its own endpoint, no client-side
-  // status filtering of a combined list.
-  const { isPending, isError, refetch } = view === 'archived' ? archivedQuery : activeQuery;
+  // Each list is its own endpoint (no client-side status filtering of a combined
+  // list), but BOTH gate the screen: every branch below reads both counts, so a
+  // still-loading or failed archive must not be mistaken for an empty one — that
+  // is what made "no students at all" flash, and stick for good when the archive
+  // request failed, hiding the only route back to it.
+  const isPending = activeQuery.isPending || archivedQuery.isPending;
+  const isError = activeQuery.isError || archivedQuery.isError;
+  const refetch = () => {
+    if (activeQuery.isError) activeQuery.refetch();
+    if (archivedQuery.isError) archivedQuery.refetch();
+  };
 
   const activeStudents = [...(activeQuery.data ?? [])].sort((a, b) => a.name.localeCompare(b.name));
   const archivedStudents = [...(archivedQuery.data ?? [])].sort((a, b) => a.name.localeCompare(b.name));

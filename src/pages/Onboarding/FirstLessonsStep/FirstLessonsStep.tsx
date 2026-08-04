@@ -4,7 +4,7 @@ import { Icon, Button, showToast } from '@/shared/ui';
 import { useBackButton } from '@/shared/tg';
 import { cx, dateKey, isValidDuration } from '@/shared/lib';
 import { useCreateLesson } from '@/features/lessons/queries';
-import { WEEKDAY_FLAGS, weekdayShortLabel, weekdaysLabel } from '@/features/lessons/model';
+import { WEEKDAY_FLAGS, weekdayShortLabel, weekdaysLabel, nextFullHourStart, hourOfDay } from '@/features/lessons/model';
 import { ProgressBar } from '../ProgressBar/ProgressBar';
 import { StepHeading } from '../StepHeading/StepHeading';
 import { StepActions } from '../StepActions/StepActions';
@@ -18,12 +18,6 @@ interface FirstLessonsStepProps {
   onBack: () => void;
 }
 
-/** "Початок" defaults to the next full hour (same rule F8's LessonFormPage uses) so the form never opens with an empty required time field. */
-function nextFullHour(from: Date): string {
-  const hour = (from.getHours() + (from.getMinutes() > 0 ? 1 : 0)) % 24;
-  return `${String(hour).padStart(2, '0')}:00`;
-}
-
 /**
  * O4 — the just-created student's first weekly series, created through the
  * same `POST /lessons` + `repeat` route as F8. No price/topic/end-date here —
@@ -34,7 +28,10 @@ function nextFullHour(from: Date): string {
  */
 export function FirstLessonsStep({ studentId, studentName, onFinish, onManual, onBack }: FirstLessonsStepProps) {
   const [weekdays, setWeekdays] = useState<Set<string>>(new Set());
-  const [time, setTime] = useState(() => nextFullHour(new Date()));
+  // Start day and "Початок" come from the same moment, so a series started at
+  // 23:xx begins tomorrow at 00:00 rather than today at a time already gone.
+  const [defaultStart] = useState(() => nextFullHourStart(new Date()));
+  const [time, setTime] = useState(() => hourOfDay(defaultStart));
   const [duration, setDuration] = useState('60');
   const [title, setTitle] = useState('');
 
@@ -65,7 +62,7 @@ export function FirstLessonsStep({ studentId, studentName, onFinish, onManual, o
     createSeries.mutate(
       {
         studentId,
-        date: dateKey(new Date()),
+        date: dateKey(defaultStart),
         startTimeLocal: `${time}:00`,
         durationMinutes,
         repeat: {

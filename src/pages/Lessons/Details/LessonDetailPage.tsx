@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { Section, Cell, Avatar, Placeholder, EmptyState, showToast } from '@/shared/ui';
 import { useBackButton, haptic } from '@/shared/tg';
@@ -19,6 +19,11 @@ import { DetailSkeleton } from './DetailSkeleton/DetailSkeleton';
 import styles from './LessonDetailPage.module.scss';
 
 type SheetKind = 'reschedule' | 'edit' | 'cancel' | null;
+
+/** Navigation state a caller can use to land here with one sheet already open (schedule's hero card "Перенести"). */
+interface OpenSheetState {
+  openSheet?: Exclude<SheetKind, null>;
+}
 
 /**
  * Lesson detail — `/lessons/:id`. One route for both a one-off lesson and a
@@ -47,7 +52,8 @@ function LessonDetailView({
   onRetry: () => void;
 }) {
   const navigate = useNavigate();
-  const [sheet, setSheet] = useState<SheetKind>(null);
+  const { state } = useLocation();
+  const [sheet, setSheet] = useState<SheetKind>(() => (state as OpenSheetState | null)?.openSheet ?? null);
 
   // Ticking clock (not a bare `new Date()` in render): the header's
   // relative-time pill is time-derived, so without a periodic re-render it

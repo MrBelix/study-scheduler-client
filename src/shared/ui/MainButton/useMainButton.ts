@@ -5,7 +5,7 @@ export interface MainButtonConfig {
   text: string;
   onClick: () => void;
   enabled: boolean;
-  /** Shows a spinner in place of the label while a mutation is in flight. */
+  /** Swaps the icon for a spinner while a mutation is in flight; the label stays put so the button doesn't resize mid-save. */
   loading: boolean;
   icon?: IconName;
   /** Visual weight — `tinted` for a secondary action alongside a more important flow. @default 'primary' */
@@ -29,7 +29,7 @@ interface UseMainButtonParams {
   text: string;
   onClick: () => void;
   enabled?: boolean;
-  /** Shows a spinner in place of the label — wire in a mutation's `isPending`. */
+  /** Swaps the icon for a spinner, keeping the label — wire in a mutation's `isPending`. */
   loading?: boolean;
   icon?: IconName;
   /** Hides the bar entirely — for screens whose empty state carries its own action button. */

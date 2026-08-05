@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { m } from '@/paraglide/messages';
-import { Section, Cell, Tile, Switch, SearchInput, BottomSheet, Skeleton, EmptyState, showToast } from '@/shared/ui';
+import { Section, Cell, Tile, Switch, SearchInput, TextField, Button, BottomSheet, Skeleton, EmptyState, showToast } from '@/shared/ui';
 import { useLocale, LOCALE_NAMES, type AppLocale } from '@/shared/i18n';
 import { haptic, getTelegramUser, openTelegramLink } from '@/shared/tg';
+import { pluralUk } from '@/shared/lib';
 import { useProfile, useSaveProfile, useTimeZones } from '@/features/profile/queries';
 import { useStudents } from '@/features/students/queries';
 import { version as appVersion } from '../../../package.json';
@@ -19,6 +20,18 @@ const BOT_USERNAME = import.meta.env.VITE_BOT_USERNAME;
 // + 12 (gap) — see design-system.html "SectionLabel + Card + Row".
 const ROW_INSET = 58;
 
+/** "4 уроки" — locale-aware count, reused from the schedule day-header wording (uk has 3 plural forms, en just 2). */
+function lessonsCountLabel(count: number, locale: AppLocale): string {
+  if (locale === 'uk') {
+    return pluralUk(count, {
+      one: m.schedule_lessons_count_one({ count }),
+      few: m.schedule_lessons_count_few({ count }),
+      many: m.schedule_lessons_count_many({ count }),
+    });
+  }
+  return count === 1 ? m.schedule_lessons_count_one({ count }) : m.schedule_lessons_count_many({ count });
+}
+
 export function ProfilePage() {
   const { locale, setLocale } = useLocale();
   const { data: profile, isPending, isError, isNotFound, refetch } = useProfile();
@@ -30,6 +43,9 @@ export function ProfilePage() {
   const [tzQuery, setTzQuery] = useState('');
   const [remindSheetOpen, setRemindSheetOpen] = useState(false);
   const [langSheetOpen, setLangSheetOpen] = useState(false);
+  const [agendaSheetOpen, setAgendaSheetOpen] = useState(false);
+  const [agendaCustomOpen, setAgendaCustomOpen] = useState(false);
+  const [agendaCustomTime, setAgendaCustomTime] = useState('');
 
   useEffect(() => {
     if (saveProfile.isError) showToast(m.form_error_save());
@@ -58,10 +74,11 @@ export function ProfilePage() {
     setLangSheetOpen(false);
   };
 
-  // Bot reminder lead time: 0 = off (an omitted field keeps the stored value).
-  const REMIND_CHOICES = [0, 15, 30, 60];
-  const remindLabel = (minutes: number | null) =>
-    minutes ? m.profile_reminders_before({ minutes }) : m.profile_reminders_off();
+  // Bot reminder lead time: the "За скільки" row only shows once reminders are on
+  // (0/off is now the switch below, not a sheet choice).
+  const REMIND_CHOICES = [15, 30, 60];
+  const DEFAULT_REMIND_MINUTES = 30;
+  const remindOn = profile?.remindMinutes != null && profile.remindMinutes !== 0;
 
   const pickRemind = (minutes: number) => {
     haptic('light');
@@ -69,9 +86,33 @@ export function ProfilePage() {
     setRemindSheetOpen(false);
   };
 
-  const setAfterLesson = (checked: boolean) => {
+  const toggleRemind = (checked: boolean) => {
     haptic('light');
-    saveProfile.mutate({ timeZoneId: currentZone(), notifyAfterLesson: checked });
+    saveProfile.mutate({ timeZoneId: currentZone(), remindMinutes: checked ? DEFAULT_REMIND_MINUTES : 0 });
+  };
+
+  const toggleMorningAgenda = (checked: boolean) => {
+    haptic('light');
+    saveProfile.mutate({ timeZoneId: currentZone(), morningAgenda: checked });
+  };
+
+  const toggleDaySummary = (checked: boolean) => {
+    haptic('light');
+    saveProfile.mutate({ timeZoneId: currentZone(), daySummary: checked });
+  };
+
+  const AGENDA_TIME_PRESETS = ['07:00', '08:00', '09:00', '10:00'];
+
+  const pickAgendaTime = (time: string) => {
+    haptic('light');
+    saveProfile.mutate({ timeZoneId: currentZone(), morningAgendaAt: time });
+    setAgendaSheetOpen(false);
+    setAgendaCustomOpen(false);
+  };
+
+  const openAgendaCustom = () => {
+    setAgendaCustomTime(profile?.morningAgendaAt ?? '');
+    setAgendaCustomOpen(true);
   };
 
   const pickTimeZone = (zone: string) => {
@@ -99,9 +140,13 @@ export function ProfilePage() {
   const initials = `${tgUser?.first_name?.[0] ?? ''}${tgUser?.last_name?.[0] ?? ''}`.toUpperCase() || undefined;
 
   // Notifications are only relevant if some notification is actually enabled.
-  const notificationsEnabled =
-    (profile?.remindMinutes != null && profile.remindMinutes !== 0) || !!profile?.notifyAfterLesson;
+  const notificationsEnabled = remindOn || !!profile?.daySummary || !!profile?.morningAgenda;
   const showBotDisconnected = !!profile && !profile.botReachable && notificationsEnabled;
+
+  const closeAgendaSheet = () => {
+    setAgendaSheetOpen(false);
+    setAgendaCustomOpen(false);
+  };
 
   const reconnectBot = () => {
     haptic('medium');
@@ -141,28 +186,53 @@ export function ProfilePage() {
 
       {showBotDisconnected && <ReconnectBotBanner onClick={reconnectBot} />}
 
-      <Section header={m.profile_reminders_section()}>
+      <Section header={m.profile_reminders_section()} footer={m.profile_reminders_caption()}>
         <Cell
           leading={<Tile tone="accent" icon="notifications" />}
           inset={ROW_INSET}
           title={m.profile_reminders()}
-          value={remindLabel(profile?.remindMinutes ?? null)}
-          chevron
-          onClick={() => setRemindSheetOpen(true)}
-        />
-        <Cell
-          leading={<Tile tone="ok" icon="fact_check" />}
-          inset={ROW_INSET}
-          title={m.profile_after_lesson()}
-          subtitle={m.profile_after_lesson_hint()}
+          subtitle={m.profile_reminders_hint({ minutes: profile?.remindMinutes ?? DEFAULT_REMIND_MINUTES })}
           plainTitle
-          value={
-            <Switch
-              checked={profile?.notifyAfterLesson ?? true}
-              onChange={setAfterLesson}
-              disabled={saveProfile.isPending}
-            />
-          }
+          dimmed={showBotDisconnected}
+          value={<Switch checked={remindOn} onChange={toggleRemind} disabled={saveProfile.isPending} />}
+        />
+        {remindOn && (
+          <Cell
+            title={m.profile_reminders_amount()}
+            dimmed={showBotDisconnected}
+            value={m.profile_reminders_before({ minutes: profile?.remindMinutes ?? DEFAULT_REMIND_MINUTES })}
+            chevron
+            onClick={() => setRemindSheetOpen(true)}
+          />
+        )}
+
+        <Cell
+          leading={<Tile tone="warn" icon="wb_sunny" />}
+          inset={ROW_INSET}
+          title={m.profile_agenda()}
+          subtitle={m.profile_agenda_hint()}
+          plainTitle
+          dimmed={showBotDisconnected}
+          value={<Switch checked={!!profile?.morningAgenda} onChange={toggleMorningAgenda} disabled={saveProfile.isPending} />}
+        />
+        {profile?.morningAgenda && (
+          <Cell
+            title={m.profile_agenda_time()}
+            dimmed={showBotDisconnected}
+            value={profile.morningAgendaAt}
+            chevron
+            onClick={() => setAgendaSheetOpen(true)}
+          />
+        )}
+
+        <Cell
+          leading={<Tile tone="purple" icon="bedtime" />}
+          inset={ROW_INSET}
+          title={m.profile_summary()}
+          subtitle={m.profile_summary_hint()}
+          plainTitle
+          dimmed={showBotDisconnected}
+          value={<Switch checked={!!profile?.daySummary} onChange={toggleDaySummary} disabled={saveProfile.isPending} />}
         />
       </Section>
 
@@ -184,17 +254,59 @@ export function ProfilePage() {
       </Section>
 
       {remindSheetOpen && (
-        <BottomSheet title={m.profile_reminders()} onClose={() => setRemindSheetOpen(false)}>
+        <BottomSheet title={m.profile_reminders_amount()} onClose={() => setRemindSheetOpen(false)}>
           <div className={styles['profile__sheet-list']}>
             {REMIND_CHOICES.map((minutes) => (
               <Cell
                 key={minutes}
-                title={remindLabel(minutes || null)}
-                value={(profile?.remindMinutes ?? 0) === minutes ? '✓' : undefined}
+                title={m.profile_reminders_before({ minutes })}
+                value={profile?.remindMinutes === minutes ? '✓' : undefined}
                 valueColor="var(--ds-color-accent)"
                 onClick={() => pickRemind(minutes)}
               />
             ))}
+          </div>
+        </BottomSheet>
+      )}
+
+      {agendaSheetOpen && (
+        <BottomSheet title={m.profile_agenda_time_title()} onClose={closeAgendaSheet}>
+          <div className={styles['profile__sheet-list']}>
+            {AGENDA_TIME_PRESETS.map((t) => (
+              <Cell
+                key={t}
+                title={t}
+                value={t === profile?.morningAgendaAt ? '✓' : undefined}
+                valueColor="var(--ds-color-accent)"
+                onClick={() => pickAgendaTime(t)}
+              />
+            ))}
+            <Cell
+              title={m.profile_agenda_time_custom()}
+              value={profile?.morningAgendaAt && !AGENDA_TIME_PRESETS.includes(profile.morningAgendaAt) ? '✓' : undefined}
+              valueColor="var(--ds-color-accent)"
+              onClick={openAgendaCustom}
+            />
+          </div>
+          {agendaCustomOpen && (
+            <div className={styles['profile__sheet-custom']}>
+              <TextField header={m.profile_agenda_time_custom()} value={agendaCustomTime} onChange={setAgendaCustomTime} type="time" />
+              <Button
+                fullWidth
+                disabled={!agendaCustomTime}
+                loading={saveProfile.isPending}
+                onClick={() => pickAgendaTime(agendaCustomTime)}
+              >
+                {m.form_save()}
+              </Button>
+            </div>
+          )}
+          <div className={styles['profile__sheet-footer']}>{m.profile_agenda_time_footer({ tz: currentZone() })}</div>
+          <div className={styles['profile__sheet-footer']}>
+            {m.profile_agenda_time_hint({
+              time: profile?.morningAgendaAt ?? '08:00',
+              count: lessonsCountLabel(profile?.tomorrowLessonsCount ?? 0, locale),
+            })}
           </div>
         </BottomSheet>
       )}

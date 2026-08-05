@@ -40,6 +40,13 @@
   color: $color-hint;
 }
 
+.banner__action {
+  font-size: $type-caption-size;
+  font-weight: 600;
+  color: $color-warn;
+  margin-top: 3px;
+}
+
 .banner__chevron {
   flex-shrink: 0;
   color: $color-warn;

@@ -9,4 +9,18 @@
     background: $color-bg;
     border-radius: $radius-md;
   }
+
+  &__sheet-custom {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+    padding: $space-lg 0 0;
+  }
+
+  &__sheet-footer {
+    padding: 7px $space-lg 0;
+    font-size: $font-caption;
+    color: $color-hint;
+    line-height: 1.4;
+  }
 }

@@ -52,13 +52,16 @@ import type {
   StudentIncome,
 } from '@/shared/api';
 
-const STORAGE_KEY = 'mock-api-v9'; // v9: plain-Guid lesson id contract — series rows generated eagerly, no more virtual/materialize
+const STORAGE_KEY = 'mock-api-v10'; // v10: notifyAfterLesson -> daySummary + morningAgenda/morningAgendaAt, tomorrowLessonsCount
 const LATENCY_MS = 250;
 
 const WEEKDAY_FLAGS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 /** `nextLesson` is server-computed, never stored — students in state carry everything else the wire type has. */
 type StoredStudent = Omit<Student, 'nextLesson'>;
+
+/** `tomorrowLessonsCount` is server-computed off `state.lessons`, never stored — see `toWireProfile`. */
+type StoredProfile = Omit<Profile, 'tomorrowLessonsCount'>;
 
 /**
  * A physical lesson row — every occurrence within the planning horizon is one,
@@ -69,7 +72,7 @@ type StoredStudent = Omit<Student, 'nextLesson'>;
 type StoredLesson = Omit<Lesson, 'id'> & { dbId: string };
 
 interface MockState {
-  profile: Profile | null;
+  profile: StoredProfile | null;
   students: StoredStudent[];
   lessons: StoredLesson[];
   series: LessonSeries[];
@@ -205,7 +208,9 @@ function seed(): MockState {
       timeZoneId,
       languageCode: null,
       remindMinutes: 30,
-      notifyAfterLesson: true,
+      daySummary: true,
+      morningAgenda: false,
+      morningAgendaAt: '08:00',
       botReachable: true,
       createdAtUtc: day(-30, 0).toISOString(),
     },
@@ -334,6 +339,16 @@ export function installMockApi() {
     return details ? { startUtc: details.startUtc, subject: details.subject } : null;
   };
   const withNextLesson = (student: StoredStudent): Student => ({ ...student, nextLesson: computeNextLesson(student.id) });
+
+  // Non-cancelled lessons starting tomorrow (device-local, like the rest of this mock) — the hint
+  // the agenda-time bottom sheet shows, mirrors the real backend's `TomorrowLessonsCount`.
+  const computeTomorrowLessonsCount = (): number => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const key = localDateKey(tomorrow);
+    return state.lessons.filter((l) => l.status !== 'Cancelled' && localDateKey(new Date(l.startUtc)) === key).length;
+  };
+  const toWireProfile = (profile: StoredProfile): Profile => ({ ...profile, tomorrowLessonsCount: computeTomorrowLessonsCount() });
 
   // Unpaid Completed lessons for a student — shared by StudentDetails.debt and
   // GET /students/{id}/debts so the two stay consistent (null-when-zero on one, the same rows
@@ -614,7 +629,7 @@ export function installMockApi() {
 
     // --- profile ---
     if (path === '/profile') {
-      if (method === 'GET') return state.profile ? json(state.profile) : notFound();
+      if (method === 'GET') return state.profile ? json(toWireProfile(state.profile)) : notFound();
       if (method === 'PUT') {
         const req = body as UpdateProfileRequest;
         if (!req.timeZoneId) return validation('TimeZoneId', 'Time zone is required.');
@@ -622,12 +637,14 @@ export function installMockApi() {
           timeZoneId: req.timeZoneId,
           languageCode: req.languageCode ?? state.profile?.languageCode ?? null,
           remindMinutes: req.remindMinutes ?? state.profile?.remindMinutes ?? null,
-          notifyAfterLesson: req.notifyAfterLesson ?? state.profile?.notifyAfterLesson ?? true,
+          daySummary: req.daySummary ?? state.profile?.daySummary ?? true,
+          morningAgenda: req.morningAgenda ?? state.profile?.morningAgenda ?? false,
+          morningAgendaAt: req.morningAgendaAt ?? state.profile?.morningAgendaAt ?? '08:00',
           botReachable: state.profile?.botReachable ?? true,
           createdAtUtc: state.profile?.createdAtUtc ?? new Date().toISOString(),
         };
         persist();
-        return json(state.profile);
+        return json(toWireProfile(state.profile));
       }
     }
     if (path === '/profile/timezones' && method === 'GET') {

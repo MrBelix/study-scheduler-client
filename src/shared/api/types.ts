@@ -110,28 +110,41 @@ export interface StudentDebtsResponse {
 /** Tutor (member) settings — `GET /profile`, `PUT /profile` (upsert).
  * `languageCode` is the preferred UI language ("uk" | "en"), null until chosen.
  * `remindMinutes` — bot reminder lead time; null means reminders are off.
+ * `daySummary` — evening "mark your lessons" digest, sent once the day's last
+ * lesson ends. `morningAgenda` — opt-in morning digest of the day's lessons;
+ * `morningAgendaAt` is the wall-clock "HH:mm" send time in the tutor's own
+ * zone, and survives `morningAgenda` being toggled off and back on.
  * `botReachable` — true by default (optimistic); the server flips it to false
  * after a bot message fails with 403 (blocked/never started), and back to
- * true on any interaction with the bot.
+ * true on any interaction with the bot. `tomorrowLessonsCount` is the number
+ * of non-cancelled lessons starting tomorrow (local) — the hint the
+ * agenda-time bottom sheet shows.
  */
 export interface Profile {
   timeZoneId: string;
   languageCode: string | null;
   remindMinutes: number | null;
-  notifyAfterLesson: boolean;
+  daySummary: boolean;
+  morningAgenda: boolean;
+  morningAgendaAt: string;
   botReachable: boolean;
+  tomorrowLessonsCount: number;
   createdAtUtc: string;
 }
 
 /**
  * Omitted fields keep their stored values; `remindMinutes: 0` turns reminders
  * off (an omitted field can't, or unrelated saves would disable them).
+ * `morningAgendaAt` is never gated on `morningAgenda` — omitting it while
+ * flipping `morningAgenda` keeps the previously stored send time.
  */
 export interface UpdateProfileRequest {
   timeZoneId: string;
   languageCode?: string;
   remindMinutes?: number;
-  notifyAfterLesson?: boolean;
+  daySummary?: boolean;
+  morningAgenda?: boolean;
+  morningAgendaAt?: string;
 }
 
 /** Lifecycle status of a lesson. */

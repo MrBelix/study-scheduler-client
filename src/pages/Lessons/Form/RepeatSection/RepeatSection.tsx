@@ -13,6 +13,8 @@ interface RepeatSectionProps {
   onModeChange: (mode: RepeatMode) => void;
   weekdays: Set<string>;
   onToggleWeekday: (flag: string) => void;
+  /** The start date's own weekday flag — locked into the selection, can't be toggled off. */
+  lockedWeekday: string;
   weekdaysError?: string;
   title: string;
   onTitleChange: (value: string) => void;
@@ -35,6 +37,7 @@ export function RepeatSection({
   onModeChange,
   weekdays,
   onToggleWeekday,
+  lockedWeekday,
   weekdaysError,
   title,
   onTitleChange,
@@ -52,6 +55,7 @@ export function RepeatSection({
     { label: m.lesson_form_repeat_never(), value: 'never' },
     { label: m.lesson_form_repeat_weekly(), value: 'weekly' },
   ];
+  const lockedWeekdayLabel = weekdayShortLabel((WEEKDAY_FLAGS as readonly string[]).indexOf(lockedWeekday));
 
   return (
     <div className={styles.section}>
@@ -65,13 +69,21 @@ export function RepeatSection({
               <button
                 key={flag}
                 type="button"
-                className={cx(styles.weekday, weekdays.has(flag) && styles['weekday--active'])}
+                className={cx(
+                  styles.weekday,
+                  weekdays.has(flag) && styles['weekday--active'],
+                  flag === lockedWeekday && styles['weekday--locked'],
+                )}
+                title={flag === lockedWeekday ? m.lesson_form_weekday_locked_hint({ day: lockedWeekdayLabel }) : undefined}
                 onClick={() => onToggleWeekday(flag)}
               >
                 {weekdayShortLabel(i)}
               </button>
             ))}
           </div>
+          <span className={styles.weekdaysHint}>
+            {m.lesson_form_weekday_locked_hint({ day: lockedWeekdayLabel })}
+          </span>
           {weekdaysError && <FieldError message={weekdaysError} />}
 
           <div className={styles.card}>

@@ -3,7 +3,7 @@ import type { IconName } from '../Icon/icons';
 import { cx } from '../../lib/cx';
 import styles from './Tile.module.scss';
 
-type TileTone = 'muted' | 'accent' | 'danger' | 'accent-soft' | 'danger-soft' | 'purple' | 'ok' | 'neutral';
+type TileTone = 'muted' | 'accent' | 'danger' | 'accent-soft' | 'danger-soft' | 'purple' | 'ok' | 'warn' | 'neutral';
 
 // 34px/lg-radius tones read as "large" (size-19 glyph); the 30px/sm-radius
 // tones read as "small" (size-18 glyph) — see design-system.html "SectionLabel

@@ -223,7 +223,7 @@ export function LessonFormPage() {
 
   return (
     <div className={styles.form}>
-      <Header />
+      <Header ready={valid} />
 
       <StudentPickerField
         students={students ?? []}
@@ -270,6 +270,7 @@ export function LessonFormPage() {
         onModeChange={setRepeatMode}
         weekdays={weekdays}
         onToggleWeekday={toggleWeekday}
+        lockedWeekday={lockedWeekday}
         weekdaysError={fieldError('Weekdays')}
         title={seriesTitle}
         onTitleChange={setSeriesTitle}

@@ -1,8 +1,11 @@
 import { m } from '@/paraglide/messages';
 import { Icon } from '@/shared/ui';
 import type { LessonConflict } from '@/shared/api';
-import { fmtTime } from '@/shared/lib';
+import { formatDayShortMonth, fmtTime } from '@/shared/lib';
 import styles from './ConflictBanner.module.scss';
+
+/** Cap the rendered chips — a weekly series with no end date can collide with an unbounded number of occurrences. */
+const MAX_VISIBLE = 5;
 
 /**
  * The 409 payload rendered for the create form — see design-system.html
@@ -13,6 +16,8 @@ import styles from './ConflictBanner.module.scss';
  * resubmission (the tutor can just change the time and save again).
  */
 export function ConflictBanner({ conflicts }: { conflicts: LessonConflict[] }) {
+  const visible = conflicts.slice(0, MAX_VISIBLE);
+  const hiddenCount = conflicts.length - visible.length;
   return (
     <div className={styles.banner}>
       <div className={styles.head}>
@@ -23,12 +28,15 @@ export function ConflictBanner({ conflicts }: { conflicts: LessonConflict[] }) {
         </div>
       </div>
       <div className={styles.list}>
-        {conflicts.map((c, i) => (
+        {visible.map((c, i) => (
           <span key={i} className={styles.chip}>
-            {fmtTime(c.startUtc)}–{fmtTime(c.endUtc)}
+            {formatDayShortMonth(c.startUtc)} · {fmtTime(c.startUtc)}–{fmtTime(c.endUtc)}
             {c.seriesTitle ? ` · ${c.seriesTitle}` : ''}
           </span>
         ))}
+        {hiddenCount > 0 && (
+          <span className={styles.chip}>{m.lesson_form_conflict_more({ count: hiddenCount })}</span>
+        )}
       </div>
     </div>
   );

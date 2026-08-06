@@ -32,23 +32,28 @@ export function DayStrip({ days, byDay, selectedKey, todayKey, onSelect }: DaySt
     const cell = strip?.querySelector<HTMLElement>(`[data-day="${selectedKey}"]`);
     if (!strip || !cell) return;
 
-    const stripBox = strip.getBoundingClientRect();
-    const cellBox = cell.getBoundingClientRect();
-    const before = cellBox.left - stripBox.left;
-    const after = stripBox.right - cellBox.right;
+    // Measured against the strip's content (the strip is positioned, so
+    // `offsetLeft` is relative to it) rather than against the viewport: the
+    // content never moves, so the target below is absolute and re-running this
+    // lands in the same place. A delta-based `scrollBy` was not idempotent —
+    // WebKit applies a programmatic scroll asynchronously, so a second pass
+    // re-measured the *pre-scroll* rects and applied the same delta again,
+    // opening the strip half a screen past today on iOS.
+    const start = cell.offsetLeft;
+    const end = start + cell.offsetWidth;
 
     // If the tutor can see the day, they tapped what they meant — leave the
     // scroll exactly where they put it. Only a clipped or off-screen day is
     // worth moving for: a partly hidden cell, or the "today" chip after
     // browsing away. On mount the selected day sits a week or more past
     // the right edge, so this same check is what brings today into view at all.
-    if (before >= 0 && after >= 0) return;
+    if (start >= strip.scrollLeft && end <= strip.scrollLeft + strip.clientWidth) return;
 
     // Centered when it does move, so the upcoming days — the primary browsing
     // direction — stay visible instead of the selected cell parking at the
     // trailing edge. The centred stop is itself a snap point, so the strip
     // lands where it is told instead of being nudged again afterwards.
-    strip.scrollBy({ left: before - (stripBox.width - cellBox.width) / 2 });
+    strip.scrollLeft = start - (strip.clientWidth - cell.offsetWidth) / 2;
   }, [selectedKey]);
 
   return (

@@ -1,6 +1,9 @@
 @use '../../../app/styles/variables' as *;
 
 .strip {
+  // Makes the strip the cells' offsetParent, so their `offsetLeft` is a stable
+  // content coordinate the scroll effect can target absolutely.
+  position: relative;
   display: flex;
   gap: 10px;
   overflow-x: auto;

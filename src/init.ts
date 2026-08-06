@@ -40,6 +40,14 @@ export async function init(options: { debug: boolean }): Promise<void> {
     } catch {
       /* theme param not provided by this client — leave native chrome as-is */
     }
+
+    // The theme carried by the launch params is absent or stale on iOS often
+    // enough to matter (same quirk as the visibility handler below), leaving
+    // the app on the CSS literals in global.scss — a black screen where the
+    // client's own background is grey. Ask for the real theme immediately;
+    // `bindCssVars` above is already listening, so the answer re-binds the
+    // variables as soon as it lands.
+    postEvent('web_app_request_theme');
   }
 
   if (viewport.mount.isAvailable()) {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { EmptyState, Icon, useMainButton, showToast } from '@/shared/ui';
 import { haptic } from '@/shared/tg';
@@ -34,20 +34,8 @@ function lessonsCountLabel(count: number): string {
   return count === 1 ? m.schedule_lessons_count_one({ count }) : m.schedule_lessons_count_many({ count });
 }
 
-/** Strict `yyyy-MM-dd` shape check — precedes the `Date` parse below. */
-const DAY_PARAM_RE = /^\d{4}-\d{2}-\d{2}$/;
-
-/** Parses a `?day=` param into a local-midnight `Date`; `null` if malformed or not a real calendar date. */
-function parseDayParam(value: string | null): Date | null {
-  if (!value || !DAY_PARAM_RE.test(value)) return null;
-  const day = new Date(`${value}T00:00`);
-  if (Number.isNaN(day.getTime()) || dateKey(day) !== value) return null;
-  return day;
-}
-
 export function SchedulePage() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
   // The strip's bounds are anchored once per mount so they don't shift as the
   // session goes on — roughly a week back, ~8 weeks forward (amendment 1).
@@ -78,17 +66,12 @@ export function SchedulePage() {
   const todayMidnight = new Date(`${todayKey}T00:00`);
   const tomorrowKey = dateKey(addDays(todayMidnight, 1));
 
-  const dayParam = searchParams.get('day');
-  const parsedDay = parseDayParam(dayParam);
-  const selectedDay = parsedDay ?? todayMidnight;
+  // Page state, deliberately not a URL param: as `?day=` the pick was restored
+  // by a history POP — a swipe/hardware back out of a lesson reopened the
+  // schedule on that lesson's day, weeks away from today. Opening the schedule
+  // always lands on today; the pick lives only while the page is mounted.
+  const [selectedDay, setSelectedDay] = useState(rangeAnchor);
   const selectedKey = dateKey(selectedDay);
-  const selectDay = (day: Date) => setSearchParams({ day: dateKey(day) }, { replace: true });
-
-  // A malformed `day` param falls back to today for this render; normalize
-  // the URL itself so a bad/bookmarked link doesn't linger.
-  useEffect(() => {
-    if (dayParam && !parsedDay) setSearchParams({ day: todayKey }, { replace: true });
-  }, [dayParam, parsedDay, todayKey, setSearchParams]);
 
   const lessonsQuery = useLessons(fromIso, toIso);
   const { data: students } = useStudents();
@@ -156,14 +139,14 @@ export function SchedulePage() {
             type="button"
             className={styles['todayChip']}
             aria-label={m.week_today()}
-            onClick={() => selectDay(todayMidnight)}
+            onClick={() => setSelectedDay(todayMidnight)}
           >
             <Icon name="today" size={18} />
           </button>
         )}
       </div>
 
-      <DayStrip days={days} byDay={byDay} selectedKey={selectedKey} todayKey={todayKey} onSelect={selectDay} />
+      <DayStrip days={days} byDay={byDay} selectedKey={selectedKey} todayKey={todayKey} onSelect={setSelectedDay} />
 
       <div className={styles['daySection']}>
         {dayLessons.length > 0 && (

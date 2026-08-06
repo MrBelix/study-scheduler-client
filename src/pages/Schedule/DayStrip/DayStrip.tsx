@@ -39,8 +39,8 @@ export function DayStrip({ days, byDay, selectedKey, todayKey, onSelect }: DaySt
 
     // If the tutor can see the day, they tapped what they meant — leave the
     // scroll exactly where they put it. Only a clipped or off-screen day is
-    // worth moving for: a partly hidden cell, a deep link, or the "today" chip
-    // after browsing away. On mount the selected day sits a week or more past
+    // worth moving for: a partly hidden cell, or the "today" chip after
+    // browsing away. On mount the selected day sits a week or more past
     // the right edge, so this same check is what brings today into view at all.
     if (before >= 0 && after >= 0) return;
 

@@ -74,7 +74,7 @@ function LessonDetailView({
 
   useBackButton(() => {
     if (sheet) setSheet(null);
-    else navigate(routes.schedule());
+    else navigate(-1);
   });
 
   useEffect(() => {
@@ -166,7 +166,7 @@ function LessonDetailView({
           lesson={lesson}
           series={series}
           onClose={() => setSheet(null)}
-          onSeriesCancelled={() => navigate(routes.schedule())}
+          onSeriesCancelled={() => navigate(-1)}
         />
       )}
     </div>

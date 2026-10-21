@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { m } from '@/paraglide/messages';
 import { EmptyState, Icon, useMainButton, showToast } from '@/shared/ui';
 import { haptic } from '@/shared/tg';
@@ -36,6 +36,7 @@ function lessonsCountLabel(count: number): string {
 
 export function SchedulePage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // The strip's bounds are anchored once per mount so they don't shift as the
   // session goes on — roughly a week back, ~8 weeks forward (amendment 1).
@@ -66,12 +67,21 @@ export function SchedulePage() {
   const todayMidnight = new Date(`${todayKey}T00:00`);
   const tomorrowKey = dateKey(addDays(todayMidnight, 1));
 
-  // Page state, deliberately not a URL param: as `?day=` the pick was restored
-  // by a history POP — a swipe/hardware back out of a lesson reopened the
-  // schedule on that lesson's day, weeks away from today. Opening the schedule
-  // always lands on today; the pick lives only while the page is mounted.
-  const [selectedDay, setSelectedDay] = useState(rangeAnchor);
+  // The URL is the source of truth: Back restores the selected day, while the
+  // schedule tab links to `/` without a day and therefore opens today.
+  const dayParam = searchParams.get('day');
+  const parsedDay = dayParam && /^\d{4}-\d{2}-\d{2}$/.test(dayParam) ? new Date(`${dayParam}T00:00`) : null;
+  const selectedDay = parsedDay && dateKey(parsedDay) === dayParam && parsedDay >= rangeStart && parsedDay <= rangeEnd
+    ? parsedDay
+    : todayMidnight;
   const selectedKey = dateKey(selectedDay);
+  const setSelectedDay = (day: Date) => {
+    setSearchParams((params) => {
+      const nextParams = new URLSearchParams(params);
+      nextParams.set('day', dateKey(day));
+      return nextParams;
+    }, { replace: true });
+  };
 
   const lessonsQuery = useLessons(fromIso, toIso);
   const { data: students } = useStudents();
